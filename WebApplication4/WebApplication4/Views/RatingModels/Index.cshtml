@@ -1,0 +1,46 @@
+﻿@model IEnumerable<WebApplication4.Models.RatingModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Home/Index.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.songname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.rating)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.review)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.songname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.rating)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.review)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.songid }) |
+            @Html.ActionLink("Details", "Details", new { id=item.songid }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.songid })
+        </td>
+    </tr>
+}
+
+</table>

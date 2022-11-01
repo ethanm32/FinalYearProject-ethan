@@ -1,0 +1,24 @@
+﻿@using HtmlAgilityPack
+@using WebApplication4.DataContext;
+@using WebApplication4.Models;
+@model IEnumerable<WebApplication4.Models.RatingModel>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<html>
+<head>
+    <body>
+        @foreach (var item in Model)
+        {
+            string song = item.songname;
+            //Html.ActionLink(song, "Index", "Rating", new { name = item.songname}, null);
+            <a href="@Url.Action("Index", "Rating", new { name = item.songname })">@song</a>
+
+
+        }
+    </body>
+</head>
+</html>

@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "HomePage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var sessionLog = Session["login"] as string;
+}
+
+
+<h2>@sessionLog</h2>
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" value="Logout" class="btn btn-default" onclick="window.location.href='@Url.Action("Logout", "User")'" />
+        </div>
+    </div>
+}
