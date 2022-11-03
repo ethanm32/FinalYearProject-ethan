@@ -55,6 +55,12 @@ namespace WebApplication4.Controllers
             return View();
         }
 
+        public ActionResult Search()
+        {
+            return View();
+        }
+
+
 
         [AllowAnonymous]
         public ActionResult HomePage()
