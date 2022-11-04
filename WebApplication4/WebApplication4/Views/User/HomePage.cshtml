@@ -16,4 +16,29 @@
             <input type="button" value="Logout" class="btn btn-default" onclick="window.location.href='@Url.Action("Logout", "User")'" />
         </div>
     </div>
+
+    <script>
+        fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.tracks.items.length)
+                addData(data);
+
+            });
+        
+
+        function addData(data) {
+            for (let i = 0; i < 10; i++) {
+                ar div = document.createElement("div");
+                var img = document.createElement("img");
+                img.src = returned[i].album.images[1].url;
+
+                div.appendChild(img);
+                div.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                container.appendChild(div);
+            }
+        }
+
+    </script>
 }
