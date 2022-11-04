@@ -8,11 +8,11 @@
     <h2>Search</h2>
 
     <input type="search" id="search-value" />
-    <input type="button" value="Search" onclick="Search()" />
+    <input type="button" value="Search" onclick="Search()"/>
 
-    <div id="container">
+    <div id="container"></div>
 
-    </div>
+    
 </body>
 <script>
     var accessToken = null;
@@ -33,37 +33,52 @@
             .then(() => console.log(accessToken))
         }
 
-        async function Search() {
-            var input = document.getElementById("search-value").value;
-            console.log(input)
+    async function Search() {
+        var input = document.getElementById("search-value").value;
+        console.log(input)
 
-            var trackParams = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
-                }
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
             }
-            var returnedTracks = await fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    console.log(data.tracks.items.length)
-                    addData(data);
+        }
+        var returnedTracks = await fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.tracks.items.length)
+                addData(data);
 
-                });
+            });
 
-            function addData(data) {
-                var returned = data.tracks.items;
-                var container = document.getElementById("container");
-                for (let i = 0; i < returned.length; i++) {
-                    var div = document.createElement("div");
-                    div.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + '<hr>';
-                    container.appendChild(div);
-                }
+        function addData(data) {
+            var returned = data.tracks.items;
+            var container = document.getElementById("container");
+            for (let i = 0; i < returned.length; i++) {
+                var div = document.createElement("div");
+                var img = document.createElement("img");
+                img.src = returned[i].album.images[1].url;
+
+                div.appendChild(img);
+                div.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+
+                container.appendChild(div);
+                
+                    //location.href = '@Url.Action("Login", "User")?div=' + div;
+
+                
             }
-     }
-        
-    
+        }
+    }
+
+
 </script>
-
+<style>
+    #container {
+        display: grid;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+    }
+</style>

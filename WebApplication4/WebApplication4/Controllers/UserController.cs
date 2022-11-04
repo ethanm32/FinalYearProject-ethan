@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.Ajax.Utilities;
+using Npgsql;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -44,9 +45,10 @@ namespace WebApplication4.Controllers
             return View();
         }
 
-        public ActionResult Login()
+        public ActionResult Login(String div)
         {
-            return View();
+            Console.WriteLine(div);
+            return View(div);
         }
 
 
