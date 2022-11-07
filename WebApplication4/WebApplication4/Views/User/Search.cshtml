@@ -34,6 +34,7 @@
         }
 
     async function Search() {
+        
         var input = document.getElementById("search-value").value;
         console.log(input)
 
@@ -49,21 +50,28 @@
             .then(data => {
                 console.log(data);
                 console.log(data.tracks.items.length)
+                
                 addData(data);
 
             });
 
+        $('#search-value').on('focus', function () {
+            document.getElementById("container").innerHTML = "";
+        });
+
         function addData(data) {
+
             var returned = data.tracks.items;
             var container = document.getElementById("container");
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
+                
                 img.src = returned[i].album.images[1].url;
-
+                div.style.color = "white";
+                div.id = "textDiv";
                 div.appendChild(img);
                 div.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
-
                 container.appendChild(div);
                 
                     //location.href = '@Url.Action("Login", "User")?div=' + div;
@@ -80,5 +88,16 @@
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-gap: 10px;
+        
     }
+    #textDiv {
+        text-align: justify;
+        width: 180px;
+    }
+
+        #textDiv img {
+            display: block;
+            margin: 0 auto;
+            
+        }
 </style>
