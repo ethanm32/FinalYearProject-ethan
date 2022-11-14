@@ -7,14 +7,9 @@ using System.Web;
 
 namespace WebApplication4.Models
 {
-    [Table("user", Schema = "public")]
-    public class UserModel
+    public class ClickModel
     {
-        [Key]
-        public int id { get; set; }
-        public string email { get; set; }
-        public string pass { get; set; }
-        
+        public string HtmlSong { get; set; }
 
     }
 }

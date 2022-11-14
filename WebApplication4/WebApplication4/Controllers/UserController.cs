@@ -4,6 +4,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using WebApplication4.DataContext;
 using WebApplication4.Models;
@@ -45,11 +46,7 @@ namespace WebApplication4.Controllers
             return View();
         }
 
-        public ActionResult Login(String div)
-        {
-            Console.WriteLine(div);
-            return View(div);
-        }
+        
 
 
         public ActionResult SignUp()
@@ -63,6 +60,11 @@ namespace WebApplication4.Controllers
         }
 
 
+        public ActionResult Login()
+        {
+           
+            return View();
+        }
 
         [AllowAnonymous]
         public ActionResult HomePage()

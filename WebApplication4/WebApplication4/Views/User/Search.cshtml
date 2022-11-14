@@ -1,19 +1,25 @@
-﻿
+﻿@model WebApplication4.Models.ClickModel
+@Html.HiddenFor(m => m.HtmlSong, new { id = "song" })
+
 @{
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
+
+
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <body>
     <h2>Search</h2>
 
     <input type="search" id="search-value" />
-    <input type="button" value="Search" onclick="Search()"/>
+    <input type="button" value="Search" onclick="Search()" />
 
     <div id="container"></div>
 
-    
+
 </body>
+
 <script>
     var accessToken = null;
     window.onload = function getApiAccess() {
@@ -31,10 +37,10 @@
             .then(response => response.json())
             .then(data => accessToken = data.access_token)
             .then(() => console.log(accessToken))
-        }
+    }
 
     async function Search() {
-        
+
         var input = document.getElementById("search-value").value;
         console.log(input)
 
@@ -50,7 +56,7 @@
             .then(data => {
                 console.log(data);
                 console.log(data.tracks.items.length)
-                
+
                 addData(data);
 
             });
@@ -66,18 +72,30 @@
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
-                
+                var p = document.createElement("p");
+
                 img.src = returned[i].album.images[1].url;
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
-                div.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                div.appendChild(p);
                 container.appendChild(div);
-                
-                    //location.href = '@Url.Action("Login", "User")?div=' + div;
 
-                
+
+
+                div.onclick = function () {
+                    var value = this.innerHTML;
+                    localStorage.setItem("storageName", value);
+                    window.open('@Url.Action("Login", "User")');
+
+
+                }
+
             }
+
+
+
         }
     }
 
@@ -88,8 +106,8 @@
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-gap: 10px;
-        
     }
+
     #textDiv {
         text-align: justify;
         width: 180px;
@@ -98,6 +116,5 @@
         #textDiv img {
             display: block;
             margin: 0 auto;
-            
         }
 </style>
