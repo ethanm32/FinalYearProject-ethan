@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<h2></h2>
+<div id="song-container"></div>
+<div class="rating">
+
+    My Rating 
+    </br>
+    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star" ></i>
+</div>
+
+<div id="review">
+ <h2>Review</h2>
+<textarea id="text-note"></textarea>
+<button onclick='createNote()' id="add">Add Review</button>
+
+</div>
+<script>
+    var song = localStorage.getItem("storageName");
+    var newSong = document.getElementById('song-container');
+    newSong.innerHTML = song;
+    var InnerSong = newSong.innerHTML;
+    const afterp = InnerSong.substring(InnerSong.indexOf('<p'));
+    console.log(afterp);
+    var rating = document.getElementById("rating");
+
+    $('.rating').on('click', '.rating_stars', function () {
+        var star = $(this).index();
+        $('.rating_stars').each(function (index) {
+            return index >= star -1 ? $(this).addClass('selected') :
+                $(this).removeClass('selected');
+        });
+       
+    });
+
+    let counter = 0;
+    function createNote() {
+        counter++;
+        var addBtn = document.getElementById("add");
+        addBtn.style.display = 'none';
+        var divnote = document.createElement('div');
+        var text = document.getElementById("text-note").value;
+        divnote.innerHTML += text;
+        divnote.setAttribute("id", "div" + counter);
+        var review = document.getElementById("review");
+        review.appendChild(divnote);
+        var deleteBtn = document.createElement('button');
+        deleteBtn.setAttribute("id", "div" + counter);
+        deleteBtn.innerHTML = "Delete";
+        var editBtn = document.createElement('button');
+        editBtn.innerHTML = "Edit";
+        editBtn.setAttribute("id", "div" + counter);
+        review.appendChild(deleteBtn);
+        divnote.style.width = "fit-content";
+        review.appendChild(editBtn);
+        divnote.style.whiteSpace = "pre-wrap";
+        divnote.style.wordWrap = "word-break";
+        
+
+
+      
+        divnote.style.border = "1px solid black";
+        divnote.style.borderRadius = "5px";
+
+        deleteBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).innerHTML = "";
+            deleteBtn.remove();
+            editBtn.remove();
+            addBtn.style.display = 'inline-block';
+
+        };
+
+        editBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).contentEditable = "true";
+            var saveBtn = document.createElement('button');
+            saveBtn.innerHTML = "Save Changes";
+            saveBtn.setAttribute("id", id);
+
+            review.appendChild(saveBtn);
+
+            saveBtn.onclick = function () {
+                var saveId = event.srcElement.id;
+                console.log(counter);
+                document.getElementById(saveId).contentEditable = "false";
+                saveBtn.remove();
+            }
+        }
+
+        return divnote.id;
+    }
+</script>
+<style>
+
+    div {
+        color: white;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .rating_stars.selected {
+        color: orange;
+    }
+
+    i {
+        display: inline-block;
+    }
+
+    .rating {
+        text-align: left;
+        direction: rtl;
+    }
+
+    i:hover ~ i,
+    i:hover {
+        color: orange;
+    }
+
+    #review {
+        position: absolute;
+        left: 50%;
+        top: 100px;
+    }
+
+    #h2 {
+        color: white;
+    }
+    
+    textarea {
+        color: black;
+        
+    }
+
+    button {
+        background-color: darkgoldenrod;
+        margin-bottom: 60px;
+    }
+</style>
+

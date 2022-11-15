@@ -78,7 +78,10 @@ namespace WebApplication4.Controllers
             return View();
         }
 
-
+        public ActionResult Song()
+        {
+            return View();
+        }
         
 
         [HttpPost]
