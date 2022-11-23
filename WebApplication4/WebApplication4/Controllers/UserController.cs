@@ -19,10 +19,10 @@ namespace WebApplication4.Controllers
 
         
         // GET: User
-        public ActionResult Index()
-        {
-            return View(db.UserObj.ToList());
-        }
+        //public ActionResult Index()
+        //{
+        //    return View(db.UserObj.ToList());
+        //}
 
         // GET: User/Details/5
         public ActionResult Details(int? id)
@@ -86,24 +86,24 @@ namespace WebApplication4.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignUp([Bind(Include = "id,email,pass")] UserModel userModel)
+        public ActionResult SignUp([Bind(Include = "id,email,password")] UserModel userModel)
         {
             try
             {
-                var sql = "INSERT INTO public.user(email,pass) VALUES(@email, crypt(@pass, gen_salt('bf')))";
-                var conn = "Host=localhost;Port=5432;Database=users;User Id=postgres;Password=ethan";
+                var sql = "INSERT INTO public.users(email,password) VALUES(@email, crypt(@password, gen_salt('bf')))";
+                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
                 var cmd = new NpgsqlCommand(sql, newConn);
 
                 cmd.Parameters.AddWithValue("email", userModel.email);
-                cmd.Parameters.AddWithValue("pass", userModel.pass);
+                cmd.Parameters.AddWithValue("password", userModel.password);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("HomePage");
             }
             catch (Exception ex)
             {
@@ -117,19 +117,19 @@ namespace WebApplication4.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Login([Bind(Include = "id,email,pass")] UserModel userModel)
+        public ActionResult Login([Bind(Include = "id,email,password")] UserModel userModel)
         {
             ViewBag.loggedIn = "Not Logged in";
             if (ModelState.IsValid)
             {
-                var sql = "select count(*) from public.user where email=@email and pass = crypt(@pass, pass); ";
-                var conn = "Host=localhost;Port=5432;Database=users;User Id=postgres;Password=ethan";
+                var sql = "select count(*) from public.users where email=@email and password = crypt(@password, password); ";
+                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
                 var cmd = new NpgsqlCommand(sql, newConn);
                 cmd.Parameters.AddWithValue("email", userModel.email);
-                cmd.Parameters.AddWithValue("pass", userModel.pass);
+                cmd.Parameters.AddWithValue("password", userModel.password);
                 Int64 count = (Int64)cmd.ExecuteScalar();
                 if (count > 0)
                 {
@@ -156,21 +156,21 @@ namespace WebApplication4.Controllers
             // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,email,pass")] UserModel userModel)
+        public ActionResult Create([Bind(Include = "id,email,password")] UserModel userModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var sql = "INSERT INTO public.user(email,pass) VALUES(@email, crypt(@pass, gen_salt('bf')))";
-                    var conn = "Host=localhost;Port=5432;Database=users;User Id=postgres;Password=ethan";
+                    var sql = "INSERT INTO public.users(email,password) VALUES(@email, crypt(@password, gen_salt('bf')))";
+                    var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
 
                     var newConn = new NpgsqlConnection(conn);
                     newConn.Open();
                     var cmd = new NpgsqlCommand(sql, newConn);
 
                     cmd.Parameters.AddWithValue("email", userModel.email);
-                    cmd.Parameters.AddWithValue("pass", userModel.pass);
+                    cmd.Parameters.AddWithValue("password", userModel.password);
                     // db.UserObj.Add(userModel);
                     cmd.Prepare();
                     cmd.ExecuteNonQuery();
@@ -208,7 +208,7 @@ namespace WebApplication4.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,email,pass")] UserModel userModel)
+        public ActionResult Edit([Bind(Include = "id,email,password")] UserModel userModel)
         {
             if (ModelState.IsValid)
             {

@@ -1,0 +1,120 @@
+﻿@model WebApplication4.Models.ClickModel
+@Html.HiddenFor(m => m.HtmlSong, new { id = "song" })
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<body>
+    <h2>Search</h2>
+
+    <input type="search" id="search-value" />
+    <input type="button" value="Search" onclick="Search()" />
+
+    <div id="container"></div>
+
+
+</body>
+
+<script>
+    var accessToken = null;
+    window.onload = function getApiAccess() {
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+        }
+
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+    }
+
+    async function Search() {
+
+        var input = document.getElementById("search-value").value;
+        console.log(input)
+
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+        var returnedTracks = await fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.tracks.items.length)
+
+                addData(data);
+
+            });
+
+        $('#search-value').on('focus', function () {
+            document.getElementById("container").innerHTML = "";
+        });
+
+        function addData(data) {
+
+            var returned = data.tracks.items;
+            var container = document.getElementById("container");
+            for (let i = 0; i < returned.length; i++) {
+                var div = document.createElement("div");
+                var img = document.createElement("img");
+                var p = document.createElement("p");
+                console.log(data);
+                img.src = returned[i].album.images[1].url;
+                div.style.color = "white";
+                div.id = "textDiv";
+                div.appendChild(img);
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                div.appendChild(p);
+                container.appendChild(div);
+
+
+
+                div.onclick = function () {
+                    var value = this.innerHTML;
+                    localStorage.setItem("storageName", value);
+                    window.open('@Url.Action("Song", "User")');
+
+
+                }
+
+            }
+
+
+
+        }
+    }
+
+
+</script>
+<style>
+    #container {
+        display: grid;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+    }
+
+    #textDiv {
+        text-align: justify;
+        width: 180px;
+    }
+
+        #textDiv img {
+            display: block;
+            margin: 0 auto;
+        }
+</style>

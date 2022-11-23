@@ -7,13 +7,13 @@ using System.Web;
 
 namespace WebApplication4.Models
 {
-    [Table("user", Schema = "public")]
+    [Table("users", Schema = "public")]
     public class UserModel
     {
         [Key]
         public int id { get; set; }
         public string email { get; set; }
-        public string pass { get; set; }
+        public string password { get; set; }
         
 
     }

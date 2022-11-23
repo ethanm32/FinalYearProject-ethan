@@ -1,0 +1,92 @@
+﻿
+@model WebApplication4.Models.UserModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    ViewBag.Title = "SignUp";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<body style="background-color: #1E163A ">
+    <div class="form-horizontal">
+
+        <h4>Sign Up</h4>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Sign Up" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    <div id="error">
+        @Html.Raw(@ViewBag.ErrorContent)
+    </div>
+    <div id="login">@Html.ActionLink("Already have an account? Log in here", "Login")</div>
+</body>
+}
+<style>
+    label, h4, div, #login {
+        color: white;
+    }
+
+    div.navbar-collapse collapse {
+        color: #000000;
+    }
+
+    input.btn {
+        background-color: #d89898;
+        border-color: #d89898;
+    }
+
+    
+    .form-group{
+        transform: translate(250px, 300px);
+        
+    }
+    .btn-default {
+        transform: translateX(100px);
+    }
+    h4 {
+        transform: translate(550px, 250px);
+    }
+
+    #error {
+        transform: translate(500px, 300px);
+    }
+
+    #login {
+        transform: translate(450px, 300px);
+    }
+</style>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}
+
+
+
