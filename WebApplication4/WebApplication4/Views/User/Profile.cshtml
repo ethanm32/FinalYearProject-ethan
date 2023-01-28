@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "HomePage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var sessionLog = Session["login"] as string;
+}
+
+
+<h1>Profile</h1>
+<style>
+    #container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 40px;
+        padding-left: 250px;
+    }
+
+    #textDiv {
+        text-align: justify;
+        width: 240px;
+    }
+
+        #textDiv img {
+            display: block;
+            transform: scale(1.5); /* Equal to scaleX(0.7) scaleY(0.7) */
+        }
+</style>

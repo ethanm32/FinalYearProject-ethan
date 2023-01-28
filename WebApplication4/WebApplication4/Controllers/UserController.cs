@@ -46,7 +46,10 @@ namespace WebApplication4.Controllers
             return View();
         }
 
-        
+        public ActionResult Profile()
+        {
+            return View();
+        }
 
 
         public ActionResult SignUp()
@@ -86,11 +89,11 @@ namespace WebApplication4.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignUp([Bind(Include = "id,email,password")] UserModel userModel)
+        public ActionResult SignUp([Bind(Include = "id,email,password, name, username")] UserModel userModel)
         {
             try
             {
-                var sql = "INSERT INTO public.users(email,password) VALUES(@email, crypt(@password, gen_salt('bf')))";
+                var sql = "INSERT INTO public.users(email,password, name, username) VALUES(@email, crypt(@password, gen_salt('bf')), @name, @username)";
                 var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -99,6 +102,8 @@ namespace WebApplication4.Controllers
 
                 cmd.Parameters.AddWithValue("email", userModel.email);
                 cmd.Parameters.AddWithValue("password", userModel.password);
+                cmd.Parameters.AddWithValue("name", userModel.name);
+                cmd.Parameters.AddWithValue("username", userModel.username);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
@@ -107,7 +112,8 @@ namespace WebApplication4.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
+                ViewBag.ErrorContent = "<p>Error. Try another email or username!<p>";
+                
             }
 
             return View(userModel);
@@ -117,7 +123,7 @@ namespace WebApplication4.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Login([Bind(Include = "id,email,password")] UserModel userModel)
+        public ActionResult Login([Bind(Include = "id,email,password,name, username")] UserModel userModel)
         {
             ViewBag.loggedIn = "Not Logged in";
             if (ModelState.IsValid)

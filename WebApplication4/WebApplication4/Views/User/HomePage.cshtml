@@ -7,8 +7,10 @@
 }
 
 
-<h1>Hello</h1>
-<h2>@sessionLog</h2>
+<h1></h1>
+<h2></h2>
+<br />
+<br />
 <div id="container">
 
 </div>
@@ -27,11 +29,11 @@
             .then(data => {
                 console.log(data)
                 console.log(data.data.length)
-                
+
                 addData(data);
 
             });
-        
+
 
         function addData(data) {
             var returned = data.data;
@@ -45,6 +47,15 @@
                 div.appendChild(img);
                 div.innerHTML += '<br>' + '<br>' + '<br>' + 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artist + '<br>' + '<br>';
                 container.appendChild(div);
+
+
+                div.onclick = function () {
+                    var value = this.innerHTML;
+                    localStorage.setItem("storageName", value);
+                    window.open('@Url.Action("Song", "User")');
+
+
+                }
             }
         }
 
