@@ -61,6 +61,16 @@
 
             });
 
+        var returnedAlbums = await fetch('https://api.spotify.com/v1/search?q=' + input + "&type=album", trackParams)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.albums.items.length);
+
+                addAlbum(data);
+
+            });
+
         $('#search-value').on('focus', function () {
             document.getElementById("container").innerHTML = "";
         });
@@ -82,26 +92,49 @@
                 div.appendChild(p);
                 container.appendChild(div);
 
-
+            }
 
                 div.onclick = function () {
                     var value = this.innerHTML;
                     localStorage.setItem("storageName", value);
                     window.open('@Url.Action("Song", "User")');
-
-
                 }
 
+        }
+
+        function addAlbum(data) {
+
+            var returned = data.albums.items;
+            var container = document.getElementById("container");
+            for (let i = 0; i < returned.length; i++) {
+                var div = document.createElement("div");
+                var img = document.createElement("img");
+                var p = document.createElement("p");
+                console.log(data);
+                img.src = returned[i].images[1].url;
+                div.style.color = "white";
+                div.id = "albumText";
+                div.appendChild(img);
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                div.appendChild(p);
+                container.appendChild(div);
             }
 
-
-
+                div.onclick = function () {
+                    var value = this.innerHTML;
+                    localStorage.setItem("storageName", value);
+                    window.open('@Url.Action("Album", "User")');
+                    }
         }
-    }
+
+    }    
+        
 
 
 </script>
 <style>
+
+    
     #container {
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
@@ -109,12 +142,26 @@
     }
 
     #textDiv {
+        display: none; 
         text-align: justify;
         width: 180px;
     }
 
         #textDiv img {
+            display: none;
             display: block;
             margin: 0 auto;
         }
+
+
+    #albumText {
+        text-align: justify; 
+        width: 180px;
+    }
+
+    #albumText img {
+        
+        display: block;
+        margin: 0 auto;
+    }
 </style>
