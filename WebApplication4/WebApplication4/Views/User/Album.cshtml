@@ -67,14 +67,15 @@
                 }
             }
 
-            var returnedTracks = fetch('https://api.spotify.com/v1/search?q=' + albumName1 + "&type=album", trackParams)
+            var returnedTracks = fetch('https://api.spotify.com/v1/albums/0ETFjACtuP2ADo6LFhL6HN', trackParams)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    console.log(data.albums.items)
+                    console.log(data.tracks.items);
+                    
 
 
-                    addAlbum(data);
+                    //addAlbum(data);
                 });
 
             
