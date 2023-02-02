@@ -85,7 +85,11 @@ namespace WebApplication4.Controllers
         {
             return View();
         }
-        
+
+        public ActionResult Album()
+        {
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

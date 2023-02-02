@@ -92,13 +92,14 @@
                 div.appendChild(p);
                 container.appendChild(div);
 
-            }
+
 
                 div.onclick = function () {
                     var value = this.innerHTML;
                     localStorage.setItem("storageName", value);
                     window.open('@Url.Action("Song", "User")');
                 }
+            }
 
         }
 
@@ -118,13 +119,14 @@
                 p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
                 div.appendChild(p);
                 container.appendChild(div);
-            }
+
 
                 div.onclick = function () {
                     var value = this.innerHTML;
-                    localStorage.setItem("storageName", value);
+                    localStorage.setItem("albumName", value);
                     window.open('@Url.Action("Album", "User")');
-                    }
+                }
+            }
         }
 
     }    
@@ -142,7 +144,7 @@
     }
 
     #textDiv {
-        display: none; 
+        display: none;
         text-align: justify;
         width: 180px;
     }
