@@ -228,6 +228,7 @@
     <EmbeddedResource Remove="node_modules\**" />
     <None Remove="node_modules\**" />
     <Content Include="Views\User\Album.cshtml" />
+    <Content Include="Views\User\SearchResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -368,6 +369,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
+      <UserProperties scripts_4bootstrap_1min_1js_1map__JsonSchema="https://json.schemastore.org/specif-1.1.json" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

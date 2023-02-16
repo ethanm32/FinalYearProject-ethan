@@ -69,6 +69,11 @@ namespace WebApplication4.Controllers
             return View();
         }
 
+        public ActionResult SearchResults()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         public ActionResult HomePage()
         {

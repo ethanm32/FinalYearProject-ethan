@@ -5,10 +5,12 @@
 }
 
 <h2>Album</h2>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
 <div id="album-container"></div>
+<button onclick="Album()">Show tracks</button>
 <div class="rating">
 
     My Rating
@@ -23,151 +25,152 @@
 <div id="review">
     <h2>Review</h2>
 <textarea id="text-note"></textarea>
-    <button onclick='Album();' id="add">Add Review</button>
+    <button onclick='createNote();' id="add">Add Review</button>
+
 
 </div>
 <script>
-        
-        var accessToken = null;
-        window.onload = function getApiAccess() {
-            const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
-            const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
-            var authParams = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-            }
-
-
-            fetch('https://accounts.spotify.com/api/token', authParams)
-                .then(response => response.json())
-                .then(data => accessToken = data.access_token)
-                .then(() => console.log(accessToken))
-        }
-    
-        var album = localStorage.getItem("albumName");
-        var newAlbum = document.getElementById('album-container');
-        newAlbum.innerHTML = album;
-        
-        var albumName1 = album.substring(album.indexOf("e:") + 2,album.lastIndexOf("<b"));
-        console.log(albumName1);
-        var InnerAlbum = newAlbum.innerHTML;
-        const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
-        console.log(afterp);
-        var rating = document.getElementById("rating");
-
-        function Album() {
-            var trackParams = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            }
-
-            var returnedTracks = fetch('https://api.spotify.com/v1/albums/0ETFjACtuP2ADo6LFhL6HN', trackParams)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    console.log(data.tracks.items);
-                    
-
-
-                    //addAlbum(data);
-                });
-
-            
+    var id = localStorage.getItem("AlbumId");
+    var accessToken = null;
+    window.onload = function getApiAccess() {
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
         }
 
-        function addAlbum(data) {
 
-            var returned = data.albums.items;
-            var container = document.getElementById("album-container");
-            for (let i = 0; i < returned.length; i++) {
-                var div = document.createElement("div");
-                var img = document.createElement("img");
-                var p = document.createElement("p");
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+    }
+
+    var album = localStorage.getItem("albumName");
+    var newAlbum = document.getElementById('album-container');
+    newAlbum.innerHTML = album;
+
+    var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<b"));
+    console.log(albumName1);
+    var InnerAlbum = newAlbum.innerHTML;
+    const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
+    console.log(afterp);
+    var rating = document.getElementById("rating");
+
+    function Album() {
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+
+        var returnedTracks = fetch('https://api.spotify.com/v1/albums/' + id, trackParams)
+            .then(response => response.json())
+            .then(data => {
                 console.log(data);
-                
-                img.src = returned[i].images[1].url;
-                div.style.color = "white";
-                div.id = "albumText";
-                div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
-                div.appendChild(p);
-                container.appendChild(div);
-            }
-        }
+                console.log(data.tracks.items);
 
-        
-        $('.rating').on('click', '.rating_stars', function () {
-            var star = $(this).index();
-            $('.rating_stars').each(function (index) {
-                return index >= star - 1 ? $(this).addClass('selected') :
-                    $(this).removeClass('selected');
+
+
+                addAlbum(data);
             });
 
-        });
-        let counter = 0;
-        function createNote() {
-            counter++;
-            var addBtn = document.getElementById("add");
-            addBtn.style.display = 'none';
-            var divnote = document.createElement('div');
-            var text = document.getElementById("text-note").value;
-            divnote.innerHTML += text;
-            divnote.setAttribute("id", "div" + counter);
-            var review = document.getElementById("review");
-            review.appendChild(divnote);
-            var deleteBtn = document.createElement('button');
-            deleteBtn.setAttribute("id", "div" + counter);
-            deleteBtn.innerHTML = "Delete";
-            var editBtn = document.createElement('button');
-            editBtn.innerHTML = "Edit";
-            editBtn.setAttribute("id", "div" + counter);
-            review.appendChild(deleteBtn);
-            divnote.style.width = "fit-content";
-            review.appendChild(editBtn);
-            divnote.style.whiteSpace = "pre-wrap";
-            divnote.style.wordWrap = "word-break";
 
+    }
 
+    function addAlbum(data) {
 
+        var returned = data.tracks.items;
+        var container = document.getElementById("album-container");
+        for (let i = 0; i < returned.length; i++) {
+            var div = document.createElement("div");
+            var img = document.createElement("img");
+            var p = document.createElement("p");
+            console.log(data);
 
-            divnote.style.border = "1px solid black";
-            divnote.style.borderRadius = "5px";
-
-            deleteBtn.onclick = function () {
-                var id = event.srcElement.id;
-                document.getElementById(id).innerHTML = "";
-                deleteBtn.remove();
-                editBtn.remove();
-                addBtn.style.display = 'inline-block';
-
-            };
-
-            editBtn.onclick = function () {
-                var id = event.srcElement.id;
-                document.getElementById(id).contentEditable = "true";
-                var saveBtn = document.createElement('button');
-                saveBtn.innerHTML = "Save Changes";
-                saveBtn.setAttribute("id", id);
-
-                review.appendChild(saveBtn);
-
-                saveBtn.onclick = function () {
-                    var saveId = event.srcElement.id;
-                    console.log(counter);
-                    document.getElementById(saveId).contentEditable = "false";
-                    saveBtn.remove();
-                }
-            }
-
-            return divnote.id;
+            div.style.color = "white";
+            div.id = "albumText";
+            div.appendChild(img);
+            const duration = new Date(returned[i].duration_ms)
+            p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Length:' + duration.getMinutes() + ':' + duration.getSeconds();
+            div.appendChild(p);
+            container.appendChild(div);
         }
-    
+    }
+
+
+    $('.rating').on('click', '.rating_stars', function () {
+        var star = $(this).index();
+        $('.rating_stars').each(function (index) {
+            return index >= star - 1 ? $(this).addClass('selected') :
+                $(this).removeClass('selected');
+        });
+
+    });
+    let counter = 0;
+    function createNote() {
+        counter++;
+        var addBtn = document.getElementById("add");
+        addBtn.style.display = 'none';
+        var divnote = document.createElement('div');
+        var text = document.getElementById("text-note").value;
+        divnote.innerHTML += text;
+        divnote.setAttribute("id", "div" + counter);
+        var review = document.getElementById("review");
+        review.appendChild(divnote);
+        var deleteBtn = document.createElement('button');
+        deleteBtn.setAttribute("id", "div" + counter);
+        deleteBtn.innerHTML = "Delete";
+        var editBtn = document.createElement('button');
+        editBtn.innerHTML = "Edit";
+        editBtn.setAttribute("id", "div" + counter);
+        review.appendChild(deleteBtn);
+        divnote.style.width = "fit-content";
+        review.appendChild(editBtn);
+        divnote.style.whiteSpace = "pre-wrap";
+        divnote.style.wordWrap = "word-break";
+
+
+
+
+        divnote.style.border = "1px solid black";
+        divnote.style.borderRadius = "5px";
+
+        deleteBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).innerHTML = "";
+            deleteBtn.remove();
+            editBtn.remove();
+            addBtn.style.display = 'inline-block';
+
+        };
+
+        editBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).contentEditable = "true";
+            var saveBtn = document.createElement('button');
+            saveBtn.innerHTML = "Save Changes";
+            saveBtn.setAttribute("id", id);
+
+            review.appendChild(saveBtn);
+
+            saveBtn.onclick = function () {
+                var saveId = event.srcElement.id;
+                console.log(counter);
+                document.getElementById(saveId).contentEditable = "false";
+                saveBtn.remove();
+            }
+        }
+
+        return divnote.id;
+    }
+
 
 
 

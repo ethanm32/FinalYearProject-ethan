@@ -11,12 +11,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <body>
     <h2>Search</h2>
-    <div id="search-div">
-        <input type="search" id="search-value" placeholder="Search a song or album "/>
-        <input type="button" value="Search" onclick="Search()" id="searchButton" />
-    </div>
-           
     
+
+
 
 
     <div id="container"></div>
@@ -25,9 +22,7 @@
 </body>
 
 <script>
-    
-
-        var accessToken = null;
+    var accessToken = null;
         window.onload = function getApiAccess() {
             const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
             const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
@@ -44,12 +39,12 @@
                 .then(data => accessToken = data.access_token)
                 .then(() => console.log(accessToken))
     }
+    
+        var input = localStorage.getItem("searchValue");
 
-    async function Search() {
-        var input = document.getElementById("search-value").value;
-        document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 25px; left: 25px;";
-        //document.getElementById("searchButton").style = "display: none";
-       var trackParams = {
+        console.log("this" + input)
+
+        var trackParams = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +61,7 @@
 
             });
 
-        var returnedAlbums = fetch('https://api.spotify.com/v1/search?q=' + input + "&type=album", trackParams)
+        var returnedAlbums = fetch('https://api.spotify.com/v1/search?q=' + "is this it" + "&type=album", trackParams)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -140,20 +135,16 @@
 
 
 
-    }
 </script>
 <style>
 
-    
-    
-    
-    #container { 
+
+
+
+    #container {
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-gap: 10px;
-        position: relative;
-        top: 200px;
-        left: 2.5em;
     }
 
     #textDiv {
@@ -179,23 +170,5 @@
             margin: 0 auto;
         }
 
-   #search-div {
-       margin: 0 auto;
-       text-align: center;
-       position: relative;
-       top: 250px;
-   }
-
-   #search-value {
-       width: 400px;
-       height: 50px;
-       border-radius: 10px;
-   }
-
-
-   #searchButton {
-       height: 50px;
-   }
-
-
+   
 </style>

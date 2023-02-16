@@ -3,9 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Playback</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -16,27 +18,29 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <div id="head">
                 @Html.ActionLink("PlayBack", "HomePage", "User", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-expand-sm">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "HomePage", "User")</li>
                     <li>@Html.ActionLink("Sign up", "SignUp", "User")</li>
-                    <li>@Html.ActionLink("Search", "Search", "User")</li>
+                    <li>@Html.ActionLink("🔍", "Search", "User")</li>
+                    
                 </ul>
             </div>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
-        
-       
+
+
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
    
-    @RenderSection("scripts", required: false)
 
+    @RenderSection("scripts", required: false)
     <style>
         label, h4 {
             color: white;
@@ -50,9 +54,21 @@
             background-color: #d89898;
             border-color: #d89898;
         }
+
         body {
             background-color: #1E163A;
         }
+
+        a {
+            color: white;
+            text-decoration: none;
+            
+        }
+
+        #head {
+            float: left;
+        }
     </style>
-</body>
-</html>
+   
+    </body>
+    </html>
