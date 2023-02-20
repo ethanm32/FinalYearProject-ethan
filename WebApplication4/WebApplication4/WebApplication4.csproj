@@ -215,6 +215,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RatingController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Data\UserDAO.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\ApplicationDbUsers.cs" />
     <Compile Include="Global.asax.cs">

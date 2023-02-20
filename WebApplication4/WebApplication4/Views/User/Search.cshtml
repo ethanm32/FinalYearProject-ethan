@@ -90,6 +90,7 @@
                 var p = document.createElement("p");
                 console.log(data);
                 img.src = returned[i].album.images[1].url;
+
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
@@ -131,6 +132,7 @@
                     var id = returned[i].id
                     localStorage.setItem("AlbumId", id);
                     localStorage.setItem("albumName", value);
+                    
                     window.open('@Url.Action("Album", "User")');
                 }
             }

@@ -8,27 +8,31 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <h2></h2>
-<div id="album-container"></div>
+<div id="album-container">
+
+</div>
+<br />
+<br />
+<div  class="rating">
+    <div id="rating" class="text-center">
+
+        My Rating
+        </br>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+    </div>
+</div>
+<div id="tracks-container" class="text-center"></div>
 <button onclick="Album()">Show tracks</button>
-<div class="rating">
-
-    My Rating
-    </br>
-    <i class="rating_stars fa fa-star"></i>
-    <i class="rating_stars fa fa-star"></i>
-    <i class="rating_stars fa fa-star"></i>
-    <i class="rating_stars fa fa-star"></i>
-    <i class="rating_stars fa fa-star"></i>
-</div>
-
-<div id="review">
-    <h2>Review</h2>
-<textarea id="text-note"></textarea>
-    <button onclick='createNote();' id="add">Add Review</button>
 
 
-</div>
+
 <script>
     var id = localStorage.getItem("AlbumId");
     var accessToken = null;
@@ -51,14 +55,35 @@
     }
 
     var album = localStorage.getItem("albumName");
+    var img = document.createElement("img");
     var newAlbum = document.getElementById('album-container');
-    newAlbum.innerHTML = album;
+    newAlbum.style.padding = "0px";
+    var p = document.createElement("p");
+    p.setAttribute("id", "newP");
+    console.log("a" + album);
+    ;
+    img.src = album.substring(album.indexOf("c=") + 3, album.lastIndexOf('"><p'));
+    img.setAttribute('class', 'img-responsive center-block img-rounded');
 
+    newAlbum.appendChild(img);
     var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<b"));
+    var rating = document.getElementById("rating");
     console.log(albumName1);
+    p.innerHTML += albumName1;
+    newAlbum.appendChild(p);
+   
+    if (albumName1.length > 20) {
+        document.getElementById("newP").style.fontSize = '1vw';
+    }
+    if (albumName1.length >= 30) {
+        document.getElementById("newP").style.right = '20vw';
+
+    }
+
     var InnerAlbum = newAlbum.innerHTML;
     const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
-    console.log(afterp);
+    console.log("p" + afterp);
+    p.style.float = "right"
     var rating = document.getElementById("rating");
 
     function Album() {
@@ -87,20 +112,16 @@
     function addAlbum(data) {
 
         var returned = data.tracks.items;
-        var container = document.getElementById("album-container");
+        var container = document.getElementById("tracks-container");
         for (let i = 0; i < returned.length; i++) {
             var div = document.createElement("div");
-            var img = document.createElement("img");
             var p = document.createElement("p");
             console.log(data);
-
             div.style.color = "white";
             div.id = "albumText";
-            div.appendChild(img);
             const duration = new Date(returned[i].duration_ms)
             p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Length:' + duration.getMinutes() + ':' + duration.getSeconds();
-            div.appendChild(p);
-            container.appendChild(div);
+            container.appendChild(p);
         }
     }
 
@@ -222,6 +243,23 @@
     button {
         background-color: darkgoldenrod;
         margin-bottom: 60px;
+    }
+
+    img {
+        position: relative;
+        right: 10em;
+    }
+
+    #newP {
+        position: absolute;
+        top:100px;
+        right:30vw;
+        font-size: 2vw;
+    }
+
+    #text-container {
+        position: absolute;
+        right: 20em;
     }
 </style>
 

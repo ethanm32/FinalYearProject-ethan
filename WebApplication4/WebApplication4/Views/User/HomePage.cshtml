@@ -5,12 +5,7 @@
 
     var sessionLog = Session["login"] as string;
 
-    var sql = "select name from public.users where email='ethan@newgmail.com';";
-    var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
-
-    var newConn = new NpgsqlConnection(conn);
-    newConn.Open();
-    var cmd = new NpgsqlCommand(sql, newConn);
+    
 }
 
 

@@ -1,11 +1,10 @@
-﻿using Microsoft.Ajax.Utilities;
-using Npgsql;
+﻿using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Net;
-using System.Web.Helpers;
 using System.Web.Mvc;
+using WebApplication4.Data;
 using WebApplication4.DataContext;
 using WebApplication4.Models;
 namespace WebApplication4.Controllers
@@ -19,25 +18,19 @@ namespace WebApplication4.Controllers
 
         
         // GET: User
-        //public ActionResult Index()
-        //{
-        //    return View(db.UserObj.ToList());
-        //}
+        public ActionResult Index()
+        {
+            List<UserModel> Users = new List<UserModel>();
+
+            UserDAO UserDAO = new UserDAO();
+
+            Users = UserDAO.Fetch();
+
+            return View("Index", Users);
+        }
 
         // GET: User/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            UserModel userModel = db.UserObj.Find(id);
-            if (userModel == null)
-            {
-                return HttpNotFound();
-            }
-            return View(userModel);
-        }
+      
 
         // GET: User/Create
         public ActionResult Create()
@@ -48,7 +41,22 @@ namespace WebApplication4.Controllers
 
         public ActionResult Profile()
         {
-            return View();
+
+            var newSession = Session["login"] as string;
+            if (newSession != "logged in")
+            {
+                return RedirectToAction("SignUp", "User");
+            }
+
+
+            List<UserModel> Users = new List<UserModel>();
+
+            UserDAO UserDAO = new UserDAO();
+
+            Users = UserDAO.Fetch();
+
+            return View("Profile", Users);
+            
         }
 
 
