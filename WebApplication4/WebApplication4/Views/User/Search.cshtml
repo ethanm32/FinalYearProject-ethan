@@ -10,7 +10,6 @@
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <body>
-    <h2>Search</h2>
     <div id="search-div">
         <input type="search" id="search-value" placeholder="Search a song or album "/>
         <input type="button" value="Search" onclick="Search()" id="searchButton" />
@@ -47,7 +46,7 @@
 
     async function Search() {
         var input = document.getElementById("search-value").value;
-        document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 25px; left: 25px;";
+        document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
         //document.getElementById("searchButton").style = "display: none";
        var trackParams = {
             method: 'GET',
