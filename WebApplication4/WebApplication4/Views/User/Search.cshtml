@@ -11,21 +11,30 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <body>
     <div id="search-div">
-        <input type="search" id="search-value" placeholder="Search a song or album "/>
-        <input type="button" value="Search" onclick="Search()" id="searchButton" />
+        <input type="search" id="search-value" placeholder="Search a song or album " />
+        <br />
+        <br />
+        <br />
+        <div id="toggle-button">
+            <button id="album">Album</button>
+            
+            <button id="song-click">Song</button>
+        </div>
     </div>
-           
-    
+    <div id="album-container"></div>
+    <div id="song-container"></div>
 
-
-    <div id="container"></div>
 
 
 </body>
 
 <script>
     
-
+    $("#search-value").on('keypress', function (e) {
+        if (e.which == 13) {
+            Search();
+        }
+    })
         var accessToken = null;
         window.onload = function getApiAccess() {
             const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
@@ -45,8 +54,10 @@
     }
 
     async function Search() {
+        $("#album").css({ display: "inline"})
+        $("#song-click").css({ display: "inline" })
         var input = document.getElementById("search-value").value;
-        document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
+        //document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
         //document.getElementById("searchButton").style = "display: none";
        var trackParams = {
             method: 'GET',
@@ -82,14 +93,15 @@
         function addData(data) {
 
             var returned = data.tracks.items;
-            var container = document.getElementById("container");
+            var container = document.getElementById("song-container");
+            container.innerHTML = "";
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
                 var p = document.createElement("p");
                 console.log(data);
+                img.setAttribute('class', 'img-responsive center-block img-rounded');
                 img.src = returned[i].album.images[1].url;
-
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
@@ -111,12 +123,14 @@
         function addAlbum(data) {
 
             var returned = data.albums.items;
-            var container = document.getElementById("container");
+            var container = document.getElementById("album-container");
+            container.innerHTML = "";
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
                 var p = document.createElement("p");
                 console.log(data);
+                img.setAttribute('class', 'img-responsive center-block img-rounded');
                 img.src = returned[i].images[1].url;
                 div.style.color = "white";
                 div.id = "albumText";
@@ -138,39 +152,73 @@
         }
 
 
+        $("#song-click").click(function () {
+            $("#album-container").each(function () {
+                $(this).css({ display: "none" })
+            });
+            $("#song-container").each(function () {
+                $(this).css({ display: "grid" })
+            });
+        });
+      
 
+        $("#album").click(function () {
+            $("#song-container").each(function () {
+                $(this).css({ display: "none" })
+            });
+            $("#album-container").each(function () {
+                $(this).css({ display: "grid" })
+            });
+            
+        });
 
+        
+        $('#search-value').on('focus', function () {
+            document.getElementById("container").innerHTML = "";
+        });
 
     }
 </script>
 <style>
 
-    
-    
-    
-    #container { 
+
+
+
+    #song-container {
+        display: none;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+        position: relative;
+        top: 200px;
+        left: 2.5em;
+        padding-left: 7vw;
+    }
+
+    #album-container {
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-gap: 10px;
         position: relative;
         top: 200px;
         left: 2.5em;
+        padding-left: 7vw;
     }
 
     #textDiv {
-        display: none;
+        display: block;
         text-align: justify;
         width: 180px;
     }
 
         #textDiv img {
-            display: none;
             display: block;
+            
             margin: 0 auto;
         }
 
 
     #albumText {
+        display: block;
         text-align: justify;
         width: 180px;
     }
@@ -184,7 +232,7 @@
        margin: 0 auto;
        text-align: center;
        position: relative;
-       top: 250px;
+       top: 100px;
    }
 
    #search-value {
@@ -193,10 +241,65 @@
        border-radius: 10px;
    }
 
-
-   #searchButton {
-       height: 50px;
+   #album, #song-click{
+       display: none;
+       text-decoration: none;
+       border: none;
+   }
+   #album {
+       border-right: 2px solid grey;
    }
 
+    #toggle-button {
+        border-radius: 5px;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        background: #E9E9ED;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+
+        #search-div {
+            margin: 0 auto;
+            position: relative;
+            top: 180px;
+            left: 8px;
+        }
+
+        #song-container {
+            
+            grid-template-columns: 8fr;
+            position: absolute;
+            top: 300px;
+            left: 85px;
+        }
+
+        #album-container {
+            grid-template-columns: 8fr;
+            position: absolute;
+            top: 300px;
+            left: 85px;
+        }
+
+        #search-value {
+            width: 200px;
+        }
+
+       #toggle-button {
+           position: absolute;
+           left: 180px;
+       }
+
+        
+       
+        
+    }
+    
 
 </style>

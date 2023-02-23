@@ -1,7 +1,7 @@
 ﻿
 @model WebApplication4.Models.UserModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 
 }
 
@@ -10,39 +10,53 @@
     ViewBag.Title = "Login";
 }
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-<body style="background-color: #1E163A ">
-    <div class="form-horizontal">
+<body>
+    <link rel="stylesheet" href="~/Fonts/webfontkit-20230222-113905/stylesheet.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <div id="logo">
+        <a href="/User/HomePage"><img src="~/logo/Playback-logos_transparent.png"></a>
+    </div>
 
-        <h4>Login</h4>
-       
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div id="login-container">
+
+        <h3>Login</h3>
+        <br />
+        <br />
+        <br />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            @Html.Label("email", "Email", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                <br />
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            @Html.Label("password", "Password", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                <br />
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-10">
+                <br />
                 <input type="submit" value="Login" class="btn btn-default" />
             </div>
-        </div>
-    </div>
-  </body>
-}
+
+        }
+    </div>           
+</body>
+
 <style>
     label,h4 {
         color: white;
@@ -61,8 +75,11 @@
         transform: translate(250px, 300px);
     }
 
-    .btn-default {
-        transform: translateX(100px);
+    #password {
+        width: 100%;
+        height: 35px;
+        border-radius: 5px;
+
     }
 
     h4 {
@@ -72,7 +89,91 @@
     .col-md-10 {
         width: 30em;
     }
-    
+
+    #login-container {
+        border: 5px solid black;
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        transform: translate(50%,-50%);
+        width: 30%;
+        height: 50%;
+        padding-top: 20px;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        overflow-x: auto;
+    }
+
+    body {
+        background-color: #1E163A;
+        font-family: 'circular_stdmedium';
+    }
+
+    .col-md-10 {
+        width: 100%;
+        text-align: center;
+    }
+
+    h3 {
+        text-align: center;
+        color: white;
+    }
+    .btn btn-default {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    img {
+        float: left;
+        width: 200px;
+        height: 200px;
+    }
+    @@media screen and (max-width: 1000px) {
+
+        #login-container {
+            width: 60%;
+            height: 35%;
+        }
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        #login-container {
+            width: 100%;
+            height: 100%;
+            padding-top: 55%;
+        }
+
+        #logo {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @@media screen and (orientation:landscape) and (max-width: 900px) {
+        #login-container {
+            width: 100%;
+            height: 100%;
+            padding-top: 5%;
+           
+        }
+
+        #logo {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    }
+   
+}
+
 </style>
 
 

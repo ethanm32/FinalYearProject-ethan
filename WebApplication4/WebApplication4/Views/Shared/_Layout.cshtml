@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="~/Fonts/webfontkit-20230222-113905/stylesheet.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Playback</title>
-    
+
 </head>
 <body>
 
@@ -51,6 +52,8 @@
 
         body {
             background-color: #1E163A;
+            font-family: 'circular_stdmedium';
+   
         }
 
         a {
@@ -92,6 +95,7 @@
 
         }
 
+      
 
         .nav div.main ul {
             width: 100%;
@@ -129,6 +133,7 @@
         .nav-active {
             background: black;
             height: 60px;
+            border-radius: 5px;
         }
 
 
@@ -138,7 +143,7 @@
        const navbar = document.querySelector('.nav');
 
        window.onscroll = () => {
-           if (window.scrollY > 200) {
+           if (window.scrollY > 100) {
                navbar.classList.add('nav-active')
            } else {
                navbar.classList.remove('nav-active')
