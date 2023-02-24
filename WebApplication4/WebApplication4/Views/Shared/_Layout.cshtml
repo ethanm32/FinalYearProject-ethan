@@ -12,11 +12,12 @@
 </head>
 <body>
 
-    <nav class="navbar-fixed-top">
+    <nav class="navbar-fixed-to">
     <div class="nav">
-    <div class="container">
+    <div class="container" id="container">
         <div class="logo"><a href="#">Playback</a></div>
-        <div class="main">
+        <div id="click-btn"></div>
+        <div id="main" class="main">
             <ul class="nav-link">
                 <li><a href="#">HomePage</a></li>
                 <li><a href="#">Sign Up</a></li>
@@ -136,6 +137,8 @@
             border-radius: 5px;
         }
 
+        
+
 
 
     </style>
@@ -150,6 +153,36 @@
            }
 
        }
+
+       function myFunction(x) {
+           if (x.matches) { // If media query matches
+               document.getElementById("main").style.display = "none";
+               document.getElementById("click-btn").style.display = "block";
+               var button = document.createElement("button");
+               button.setAttribute("id", "button")
+               document.getElementById("click-btn").appendChild(button)
+               button.style.position = "absolute";
+               button.style.top = "25px";
+               button.style.right = "20%";
+               button.style.width = "50px";
+               button.style.height = "50px";
+               button.style.display = "block";
+               $('body').on('click', '#button', function () {
+                   document.getElementById("container").appendChild(div)
+                   $("#div").empty().append('<ul class="nav-link"><li> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ')
+               });
+           } else {
+               document.getElementById("main").style.display = "block";
+               document.getElementById("click-btn").style.display = "none";
+
+
+
+           }
+       }
+
+       var x = window.matchMedia("(max-width: 700px)")
+       myFunction(x) // Call listener function at run time
+       x.addListener(myFunction) // Attach listener function on state changes
    </script>
     </body>
     </html>
