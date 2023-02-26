@@ -5,7 +5,7 @@
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-
+    
 
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -21,8 +21,8 @@
             <button id="song-click">Song</button>
         </div>
     </div>
-    <div id="album-container"></div>
-    <div id="song-container"></div>
+    <div id="album-container" style="z-index: 0;"></div>
+    <div id="song-container" style="z-index: 0;"></div>
 
 
 
@@ -32,6 +32,7 @@
     
     $("#search-value").on('keypress', function (e) {
         if (e.which == 13) {
+
             Search();
         }
     })
@@ -86,9 +87,7 @@
 
             });
 
-        $('#search-value').on('focus', function () {
-            document.getElementById("container").innerHTML = "";
-        });
+       
 
         function addData(data) {
 
@@ -173,9 +172,7 @@
         });
 
         
-        $('#search-value').on('focus', function () {
-            document.getElementById("container").innerHTML = "";
-        });
+        
 
     }
 </script>
@@ -268,22 +265,23 @@
         #search-div {
             margin: 0 auto;
             position: relative;
-            top: 180px;
+            top: 200px;
             left: 8px;
+            z-index: 0;
         }
 
         #song-container {
             
             grid-template-columns: 8fr;
             position: absolute;
-            top: 300px;
+            top: 350px;
             left: 85px;
         }
 
         #album-container {
             grid-template-columns: 8fr;
             position: absolute;
-            top: 300px;
+            top: 350px;
             left: 85px;
         }
 

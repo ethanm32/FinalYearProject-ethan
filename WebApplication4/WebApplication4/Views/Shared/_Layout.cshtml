@@ -12,11 +12,12 @@
 </head>
 <body>
 
-    <nav class="navbar-fixed-to">
+    <nav class="navbar-fixed-top">
     <div class="nav">
     <div class="container" id="container">
         <div class="logo"><a href="#">Playback</a></div>
         <div id="click-btn"></div>
+        <div id="list"></div>
         <div id="main" class="main">
             <ul class="nav-link">
                 <li><a href="#">HomePage</a></li>
@@ -137,8 +138,33 @@
             border-radius: 5px;
         }
 
-        
+        #button {
+            background-color: #1e163a;
+            -webkit-text-fill-color: white;
+           border: none;
+           position: absolute;
+           padding-top: 0;
+           margin: 0;
+           height: 10px;
+        }
 
+        .nav-link {
+            list-style-type: none;
+            width: 200px;
+            padding-left: 0;
+            border-radius: 10px;
+            position: fixed;
+            height: 250px;
+            z-index: 9998!important;
+        }
+
+        #list {
+            position: absolute;
+            top: 58px;
+            height: 300px;
+            left: 2%;
+            z-index: 9998!important;
+        }
 
 
     </style>
@@ -159,17 +185,19 @@
                document.getElementById("main").style.display = "none";
                document.getElementById("click-btn").style.display = "block";
                var button = document.createElement("button");
+               button.innerHTML = '&#9661';
                button.setAttribute("id", "button")
                document.getElementById("click-btn").appendChild(button)
                button.style.position = "absolute";
-               button.style.top = "25px";
-               button.style.right = "20%";
-               button.style.width = "50px";
-               button.style.height = "50px";
+               button.style.left = "17%";
+               button.style.height = "0px";
+               button.style.width = "0px";
+               
                button.style.display = "block";
-               $('body').on('click', '#button', function () {
-                   document.getElementById("container").appendChild(div)
-                   $("#div").empty().append('<ul class="nav-link"><li> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ')
+               $('body').on('click', '#button', function (event) {
+                   event.stopPropagation();
+                  
+                   $("#list").empty().append('<ul class="nav-link" style="background-color: black;position: absolute;z-index: 99999999;"><li style="padding: 0;"> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ').toggle();
                });
            } else {
                document.getElementById("main").style.display = "block";

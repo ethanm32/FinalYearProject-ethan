@@ -269,6 +269,37 @@ namespace WebApplication4.Controllers
         }
 
 
+        public ActionResult TestFunction(string name, string username, PlaylistModel playlistModel)
+        {
+
+            try
+            {
+                var sql = "INSERT INTO public.playlists(name,username) VALUES(@name, @username)";
+                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                cmd.Parameters.AddWithValue("name", playlistModel.name);
+                cmd.Parameters.AddWithValue("username", playlistModel.username);
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
+            }
+
+            return Json(new
+            {
+                result = "ok"
+            });
+
+        }
         public ActionResult Logout()
         {
             Session["Login"] = "not logged in";
@@ -285,4 +316,6 @@ namespace WebApplication4.Controllers
             base.Dispose(disposing);
         }
     }
+
+
 }
