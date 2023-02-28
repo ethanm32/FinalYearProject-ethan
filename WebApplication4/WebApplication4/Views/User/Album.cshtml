@@ -112,27 +112,59 @@
 
     function addAlbum(data) {
         var container = document.getElementById("tracks-container");
-
+        $("#tracks-container").empty().toggle();
         var name = document.createElement("p");
-        name.innerHTML = "Title";
-        name.style.float = "left";
+        var title = document.createElement("p");
+        var duration = document.createElement("p");
+        name.innerHTML = "#" + "<br>" + "<hr>";
+        title.innerHTML = "Title";
+        duration.innerHTML = "Length";
+        title.style.position = "relative";
+        title.style.bottom = "59px";
+        title.style.left = "300px";
+        duration.style.position = "relative";
+        duration.style.bottom = "90px";
+        duration.style.left = "900px";
+        //name.style.float = "left";
         container.appendChild(name);
-       
+        container.appendChild(title);
+        container.appendChild(duration);
         var returned = data.tracks.items;
         for (let i = 0; i < returned.length; i++) {
             var div = document.createElement("div");
             var p = document.createElement("ul");
+            var titleUl = document.createElement("ul");
+            var durationUl = document.createElement("ul");
             var li = document.createElement("li")
+            var titleLi = document.createElement("li")
+            var durationLi = document.createElement("li");
             console.log(data);
             div.style.color = "white";
             div.id = "albumText";
             const duration = new Date(returned[i].duration_ms)
             
-            li.innerHTML += i + returned[i].name + "</br>";
+            li.innerHTML += i + 1 + "</br>";
+            titleLi.innerHTML += returned[i].name;
             p.appendChild(li)
+            titleUl.appendChild(titleLi)
+            durationUl.appendChild(titleUl);
+            p.style.padding = 0;
+            p.style.width = "20px";
             li.style.padding = 0;
-            
+            li.style.margin = 0;
+            li.style.width = "100px"
+            p.style.padding = 0;
+            titleLi.style.position = "relative";
+            p.style.position = "relative";
+            p.style.top = "20px";
+            titleLi.style.left = "260px"
+            titleUl.style.position = "relative";
+            titleUl.style.bottom = "10px"
+            li.style.listStyle = "none";
+            titleLi.style.listStyle = "none";
             container.appendChild(p);
+            container.appendChild(titleUl);
+            container.appendChild(durationUl);
         }
     }
 
@@ -300,6 +332,13 @@
         height: 100px;
         font-size: 36px;
         border-radius: 100px;
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgb(128, 128, 128, 0.75), rgba(128, 128, 128, 0.75), rgba(128, 128, 128, 0));
+    }
     }
 </style>
 

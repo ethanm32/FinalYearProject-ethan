@@ -3,43 +3,68 @@
     ViewBag.Title = "";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h4>Song</h4>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
 <div id="song-container"></div>
 <div class="rating">
 
-    My Rating 
+    My Rating
     </br>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star"></i>
+    <i class="rating_stars fa fa-star"></i>
+    <i class="rating_stars fa fa-star"></i>
+    <i class="rating_stars fa fa-star"></i>
+    <i class="rating_stars fa fa-star"></i>
 </div>
 
 <div id="review">
- <h2>Review</h2>
+    <h2>Review</h2>
 <textarea id="text-note"></textarea>
-<button onclick='createNote()' id="add">Add Review</button>
+    <button onclick='createNote()' id="add">Add Review</button>
 
 </div>
 <script>
     var song = localStorage.getItem("storageName");
+    var img = document.createElement("img");
+    img.setAttribute("id", "song-img");
     var newSong = document.getElementById('song-container');
-    newSong.innerHTML = song;
+    newSong.style.padding = "0px";
+    var p = document.createElement("p");
+    p.setAttribute("id", "newP");
+    console.log("a" + song);
+
+    img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
+    img.setAttribute('class', 'img-responsive center-block img-rounded');
+
+    newSong.appendChild(img);
+    var songName1 = song.substring(song.indexOf("e:") + 2, song.lastIndexOf("<b"));
+    var rating = document.getElementById("rating");
+    console.log(songName1);
+    p.innerHTML += songName1;
+    newSong.appendChild(p);
+
     var InnerSong = newSong.innerHTML;
     const afterp = InnerSong.substring(InnerSong.indexOf('<p'));
-    console.log(afterp);
+    console.log("p" + afterp);
+    p.style.float = "right"
+
     var rating = document.getElementById("rating");
 
     $('.rating').on('click', '.rating_stars', function () {
         var star = $(this).index();
         $('.rating_stars').each(function (index) {
-            return index >= star -1 ? $(this).addClass('selected') :
+            return index >= star - 1 ? $(this).addClass('selected') :
                 $(this).removeClass('selected');
         });
-       
+
     });
 
     let counter = 0;
@@ -64,10 +89,10 @@
         review.appendChild(editBtn);
         divnote.style.whiteSpace = "pre-wrap";
         divnote.style.wordWrap = "word-break";
-        
 
 
-      
+
+
         divnote.style.border = "1px solid black";
         divnote.style.borderRadius = "5px";
 
@@ -137,15 +162,31 @@
     #h2 {
         color: white;
     }
-    
+
     textarea {
         color: black;
-        
     }
 
     button {
         background-color: darkgoldenrod;
         margin-bottom: 60px;
     }
+    h4 {
+        color: white;
+        position: absolute;
+        top: 140px;
+        right: 57.5vw;
+    }
+
+    #text-container {
+        position: absolute;
+        right: 20em;
+    }
+
+    #song-img {
+        position: relative;
+        right: 390px;
+    }
+    
 </style>
 

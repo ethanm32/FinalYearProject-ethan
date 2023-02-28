@@ -106,12 +106,12 @@ namespace WebApplication4.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignUp([Bind(Include = "id,email,password, name, username")] UserModel userModel)
+        public ActionResult SignUp([Bind(Include = "email,password, name, username")] UserModel userModel)
         {
             try
             {
                 var sql = "INSERT INTO public.users(email,password, name, username) VALUES(@email, crypt(@password, gen_salt('bf')), @name, @username)";
-                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
+                var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
@@ -140,13 +140,13 @@ namespace WebApplication4.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Login([Bind(Include = "id,email,password,name, username")] UserModel userModel)
+        public ActionResult Login([Bind(Include = "email,password,name, username")] UserModel userModel)
         {
             ViewBag.loggedIn = "Not Logged in";
             if (ModelState.IsValid)
             {
                 var sql = "select count(*) from public.users where email=@email and password = crypt(@password, password); ";
-                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
+                var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();

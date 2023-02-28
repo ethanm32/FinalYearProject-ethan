@@ -11,6 +11,7 @@
 
 function addData(data) {
     var returned = data.data;
+    var songs = document.getElementById("songs");
     for (let i = 0; i < 10; i++) {
         var div = document.createElement("div");
         var img = document.createElement("img");
@@ -20,7 +21,7 @@ function addData(data) {
 
         div.appendChild(img);
         div.innerHTML += '<br>' + '<br>' + '<br>' + 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artist + '<br>' + '<br>';
-        container.appendChild(div);
+        songs.appendChild(div);
 
 
         div.onclick = function () {
@@ -33,4 +34,3 @@ function addData(data) {
     }
     
 }
-module.exports = addData;

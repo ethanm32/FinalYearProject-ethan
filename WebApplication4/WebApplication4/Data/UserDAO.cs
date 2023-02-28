@@ -27,7 +27,7 @@ namespace WebApplication4.Data
                     
                     UserModel user = new UserModel();
 
-                    user.id = reader.GetInt32(0);
+                    
                     user.email= reader.GetString(1);
                     user.password= reader.GetString(2);
                     user.name= reader.GetString(3);

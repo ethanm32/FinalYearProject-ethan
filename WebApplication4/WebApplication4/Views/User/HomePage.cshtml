@@ -5,53 +5,90 @@
 
     var sessionLog = Session["login"] as string;
 
-    
+
 }
 
-
-<h1></h1>
-<h2></h2>
-<br />
-<br />
-<div id="container">
-
-</div>
-@using (Html.BeginForm())
-{
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="button" value="Logout" class="btn btn-default" onclick="window.location.href='@Url.Action("Logout", "User")'" />
-        </div>
+<body>
+    <div id="songs">
 
     </div>
-    <script src="@Url.Content("~/Scripts/addData.js")" type="text/javascript"></script>
-    
+</body>
 
-    <style>
-        #container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 40px;
-            padding-left: 250px;
-            padding-top: 250px;
+
+
+<style>
+
+    #songs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 40px;
+        padding-left: 200px;
+        padding-top: 250px;
+    }
+
+
+    #textDiv {
+        text-align: justify;
+        width: 242px;
+        
+    }
+        #textDiv p {
+            border: 1px solid grey;
+            background-color: rgb(23,23,23);
+            border-top-color: grey;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 5px;
         }
 
-        #textDiv {
-            text-align: justify;
-            width: 240px;
+        #textDiv img {
+            display: block;
+            transform: scale(1); /* Equal to scaleX(0.7) scaleY(0.7) */
+            border: 1px solid grey;
+            border-bottom-color: transparent;
+            padding: 30px;
+            background-color: rgb(23,23,23);
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
         }
+</style>
+<script>
+    fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        console.log(data.data.length)
 
-            #textDiv img {
-                display: block;
-                transform: scale(1.5); /* Equal to scaleX(0.7) scaleY(0.7) */
-                
-            }
+        addData(data);
+
+    });
 
 
+function addData(data) {
+    var returned = data.data;
+    var songs = document.getElementById("songs");
+    for (let i = 0; i < 10; i++) {
+        var div = document.createElement("div");
+        var p = document.createElement("p");
+        var img = document.createElement("img");
+        div.id = "textDiv";
+        div.style.color = "white";
+        img.src = returned[i].image;
+        div.appendChild(img);
+        p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist + '<br>' + '<br>';
+        div.appendChild(p);
+        songs.appendChild(div);
         
 
-        
+        div.onclick = function () {
+            var value = this.innerHTML;
+            localStorage.setItem("storageName", value);
+            window.open('@Url.Action("Song", "User")');
 
 
-    </style>
+        }
+    }
+
 }
+
+</script>
+
