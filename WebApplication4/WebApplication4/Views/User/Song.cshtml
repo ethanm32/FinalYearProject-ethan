@@ -33,6 +33,8 @@
 </div>
 <script>
     var song = localStorage.getItem("storageName");
+  
+    var genre = localStorage.getItem("genre");
     var img = document.createElement("img");
     img.setAttribute("id", "song-img");
     var newSong = document.getElementById('song-container');
@@ -40,7 +42,7 @@
     var p = document.createElement("p");
     p.setAttribute("id", "newP");
     console.log("a" + song);
-
+    console.log("a" + genre);
     img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
     img.setAttribute('class', 'img-responsive center-block img-rounded');
 

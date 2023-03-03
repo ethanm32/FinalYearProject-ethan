@@ -1,45 +1,50 @@
-﻿using Npgsql;
+﻿using Microsoft.Ajax.Utilities;
+using Npgsql;
+using NpgsqlTypes;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Security.Cryptography;
 using WebApplication4.Models;
 
 namespace WebApplication4.Data
 { 
     internal class UserDAO
     {
+        
+        private string conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
-        private string conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
-
-        public List<UserModel> Fetch()
+        public UserModel Fetch(string username)
         {
-            List<UserModel> returnList = new List<UserModel>();
             var newConn = new NpgsqlConnection(conn);
-            
 
-            string sql = "select * from public.users where username='ethanm324'";
-            var cmd = new NpgsqlCommand(sql, newConn);
+
+
+            string sql = "select * from public.users where username= @username";
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, newConn);
+            cmd.Parameters.AddWithValue("username", username);
             newConn.Open();
+
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
-            if(reader.HasRows)
-            {
-                while(reader.Read()) {
-                    
-                    UserModel user = new UserModel();
+            UserModel user = new UserModel();
 
-                    
-                    user.email= reader.GetString(1);
-                    user.password= reader.GetString(2);
-                    user.name= reader.GetString(3);
-                    user.username= reader.GetString(4);
-                        
-                    returnList.Add(user);
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+
+
+                    user.email = reader.GetString(0);
+                    user.password = reader.GetString(1);
+                    user.name = reader.GetString(2);
+                    user.username = reader.GetString(3);
+
                 }
 
             }
 
 
-            return returnList;
+            return user;
         }
     }
 }

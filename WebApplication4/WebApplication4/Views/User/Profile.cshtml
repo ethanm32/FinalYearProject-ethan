@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication4.Models.UserModel>
+﻿@model WebApplication4.Models.UserModel
 
 @{
     ViewBag.Title = "Index";
@@ -6,16 +6,11 @@
 
 <h2>Index</h2>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-
-
-@foreach (var item in Model)
-{
     <br />
     <br />
-    <h1>Hi @Html.DisplayFor(modelItem => item.name),</h1>
-    <h2>email: @Html.DisplayFor(modelItem => item.email)</h2>
-    <h2>username: @Html.DisplayFor(modelItem => item.username)</h2>
+    <h1>Hi @Html.DisplayFor(model => model.name),</h1>
+    <h2>email: @Html.DisplayFor(model => model.email)</h2>
+    <h2>username: @Html.DisplayFor(model => model.username)</h2>
     <hr>
     <h1>Playlists:</h1>
     <br />
@@ -73,4 +68,4 @@
             color: white;
         }
     </style>
-}
+

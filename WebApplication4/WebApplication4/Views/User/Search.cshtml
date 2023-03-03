@@ -103,13 +103,17 @@
                 div.id = "textDiv";
                 div.appendChild(img);
                 p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                var genre = returned[i].artists[0].id;
+                
                 div.appendChild(p);
                 container.appendChild(div);
-
+                
 
 
                 div.onclick = function () {
-                    var value = this.innerHTML;
+                    value = this.innerHTML;
+                    localStorage.setItem("genre", genre);
+
                     localStorage.setItem("storageName", value);
                     window.open('@Url.Action("Song", "User")');
                 }

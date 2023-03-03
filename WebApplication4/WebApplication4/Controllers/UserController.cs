@@ -20,13 +20,8 @@ namespace WebApplication4.Controllers
         // GET: User
         public ActionResult Index()
         {
-            List<UserModel> Users = new List<UserModel>();
 
-            UserDAO UserDAO = new UserDAO();
-
-            Users = UserDAO.Fetch();
-
-            return View("Index", Users);
+            return View();
         }
 
         // GET: User/Details/5
@@ -48,14 +43,14 @@ namespace WebApplication4.Controllers
                 return RedirectToAction("SignUp", "User");
             }
 
-
-            List<UserModel> Users = new List<UserModel>();
+            string username = Session["username"] as string;
+            
 
             UserDAO UserDAO = new UserDAO();
 
-            Users = UserDAO.Fetch();
+            UserModel user = UserDAO.Fetch(username);
 
-            return View("Profile", Users);
+            return View("Profile", user);
             
         }
 
@@ -140,26 +135,35 @@ namespace WebApplication4.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public ActionResult Login([Bind(Include = "email,password,name, username")] UserModel userModel)
+        public ActionResult Login([Bind(Include = "email,password,name,username")] UserModel userModel)
         {
             ViewBag.loggedIn = "Not Logged in";
             if (ModelState.IsValid)
             {
-                var sql = "select count(*) from public.users where email=@email and password = crypt(@password, password); ";
+                var sql = "select count(*) from public.users where username=@username and password = crypt(@password, password); ";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
                 var cmd = new NpgsqlCommand(sql, newConn);
-                cmd.Parameters.AddWithValue("email", userModel.email);
+                var username = userModel.username;
+                Session["username"] = username;
+                System.Diagnostics.Debug.WriteLine(">>>>>>>>>" + username);
+                cmd.Parameters.AddWithValue("username", userModel.username);
                 cmd.Parameters.AddWithValue("password", userModel.password);
                 Int64 count = (Int64)cmd.ExecuteScalar();
+                
                 if (count > 0)
                 {
+
+                    TempData["username"] = username;
+
                     Session["Login"] = "logged in";
+
                     Console.WriteLine("Logged in");
                     return RedirectToAction("HomePage");
-                    
+
+
                 }
                 else
                 {
@@ -303,6 +307,7 @@ namespace WebApplication4.Controllers
         public ActionResult Logout()
         {
             Session["Login"] = "not logged in";
+            Session["username"] = "";
             return RedirectToAction("SignUp");
 
         }

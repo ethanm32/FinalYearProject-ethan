@@ -1,5 +1,9 @@
-﻿
+﻿@model WebApplication4.Models.UserModel
+
+
 @{
+
+    @TempData["email"];
     ViewBag.Title = "HomePage";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -9,9 +13,11 @@
 }
 
 <body>
+    <h2></h2>
     <div id="songs">
 
     </div>
+    <button onclick="location.href='@Url.Action("User", "Logout")'">LOGOUT</button>
 </body>
 
 
@@ -30,8 +36,8 @@
     #textDiv {
         text-align: justify;
         width: 242px;
-        
     }
+
         #textDiv p {
             border: 1px solid grey;
             background-color: rgb(23,23,23);
@@ -77,7 +83,7 @@ function addData(data) {
         p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist + '<br>' + '<br>';
         div.appendChild(p);
         songs.appendChild(div);
-        
+
 
         div.onclick = function () {
             var value = this.innerHTML;
