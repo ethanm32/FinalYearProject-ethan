@@ -1,4 +1,4 @@
-﻿@model WebApplication4.Models.UserModel
+﻿@model WebApplication4.Models.BigModel
 
 @{
     ViewBag.Title = "Index";
@@ -8,22 +8,61 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <br />
     <br />
-    <h1>Hi @Html.DisplayFor(model => model.name),</h1>
-    <h2>email: @Html.DisplayFor(model => model.email)</h2>
-    <h2>username: @Html.DisplayFor(model => model.username)</h2>
+    <h1>Hi @Html.DisplayFor(o => o.UserModel.name),</h1>
+    <h2>email: @Html.DisplayFor(o => o.UserModel.email)</h2>
+    <h2>username: @Html.DisplayFor(o => o.UserModel.username)</h2>
     <hr>
     <h1>Playlists:</h1>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+    <div id="playlists">
+       
+        @Html.DisplayFor(o => o.PlaylistModel.playlistname)
+        
+        <div id="addNew">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Create playlist</button>
+
+            @using (Html.BeginForm("CreatePlaylist", "User"))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Create Playlist</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="recipient-name" class="col-form-label">Recipient:</label>
+                                <div class="col-md-10" id="recipient-name">
+                                    @Html.EditorFor(o => o.PlaylistModel.playlistname, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(o => o.PlaylistModel.playlistname, "", new { @class = "text-danger" })
+                                    <br />
+                                </div>
+                                <br />
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" onclick="hello()" class="btn btn-primary">Send message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
     <hr />
     <h1>Data</h1>
     <div id="playlist1">
+        <div id="addNew">
 
+        </div>
     </div>
     <div id="playlist2">
 
@@ -54,6 +93,10 @@
         var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
 
         Plotly.newPlot("playlist2", data, layout);
+
+        function hello() {
+            console.log("hello")
+        }
     </script>
 
     <style>
@@ -66,6 +109,13 @@
 
         p, h1, h2 {
             color: white;
+        }
+
+        #addNew {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid white;
         }
     </style>
 

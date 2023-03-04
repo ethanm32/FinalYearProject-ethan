@@ -12,9 +12,14 @@ namespace WebApplication4.Models
     {
         public string username { get; set; }
 
-        public string trackid {get; set;} 
+        public string trackname { get; set; }
 
-        public string name { get; set;}
+        public string playlistname { get; set; }
+        public string genre { get; set; }
+
+        public string artist { get; set; }
 
     }
+
+    
 }

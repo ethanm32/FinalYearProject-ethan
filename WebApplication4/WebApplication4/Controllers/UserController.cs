@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Dynamic;
 using System.Net;
 using System.Web.Mvc;
 using WebApplication4.Data;
@@ -44,15 +45,19 @@ namespace WebApplication4.Controllers
             }
 
             string username = Session["username"] as string;
-            
 
             UserDAO UserDAO = new UserDAO();
+            PlayListDAO playListDAO = new PlayListDAO();
+            BigModel objModel = new BigModel();
+            objModel.UserModel = UserDAO.Fetch(username);
+            objModel.PlaylistModel = new PlaylistModel();
+            objModel.PlaylistModel = playListDAO.PlaylistFetch(username);
+            
 
-            UserModel user = UserDAO.Fetch(username);
-
-            return View("Profile", user);
+            return View("Profile", objModel);
             
         }
+
 
 
         public ActionResult SignUp()
@@ -214,6 +219,36 @@ namespace WebApplication4.Controllers
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreatePlaylist([Bind(Include = "username,trackname,playlistname,genre,artist")] PlaylistModel playlistModel)
+        {
+            try
+            {
+                var sql = "INSERT INTO public.playlists(username, playlistname) VALUES(@username, @playlistname)";
+                var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                string username = Session["username"].ToString();
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("playlistname", playlistModel.playlistname);
+                
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                
+
+            }
+
+            return View(playlistModel);
+        }
 
         // GET: User/Edit/5
         public ActionResult Edit(int? id)
@@ -278,14 +313,14 @@ namespace WebApplication4.Controllers
 
             try
             {
-                var sql = "INSERT INTO public.playlists(name,username) VALUES(@name, @username)";
-                var conn = "Host=localhost;Port=5432;Database=users;User Id=admin;password=secret";
+                var sql = "INSERT INTO public.playlists(playlistname,username) VALUES(@playlistname, @username)";
+                var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
                 var cmd = new NpgsqlCommand(sql, newConn);
 
-                cmd.Parameters.AddWithValue("name", playlistModel.name);
+                cmd.Parameters.AddWithValue("name", playlistModel.playlistname);
                 cmd.Parameters.AddWithValue("username", playlistModel.username);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
