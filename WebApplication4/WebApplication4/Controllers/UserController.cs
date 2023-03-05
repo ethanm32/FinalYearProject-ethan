@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Drawing;
 using System.Dynamic;
 using System.Net;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using WebApplication4.Data;
 using WebApplication4.DataContext;
 using WebApplication4.Models;
@@ -15,7 +17,7 @@ namespace WebApplication4.Controllers
     public class UserController : Controller
     {
         private ApplicationDbUsers db = new ApplicationDbUsers();
-
+        PlaylistContext PCon = new PlaylistContext();
 
         
         // GET: User
@@ -96,10 +98,21 @@ namespace WebApplication4.Controllers
 
         public ActionResult Song()
         {
+            string username = Session["username"].ToString();
+            PlaylistModel PD = new PlaylistModel();
+            PD.PlayListData = new SelectList(PCon.GetPlaylists(username), "playlistname", "playlistname"); 
+            return View(PD);
+        }
+
+        
+        
+
+        public ActionResult Album()
+        {
             return View();
         }
 
-        public ActionResult Album()
+        public ActionResult CreatePlaylist()
         {
             return View();
         }
@@ -225,7 +238,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                var sql = "INSERT INTO public.playlists(username, playlistname) VALUES(@username, @playlistname)";
+                var sql = "INSERT INTO public.playlists(username, playlistname) select @username, @playlistname where not exists (select playlistname from public.playlists where playlistname = @playlistname)";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -240,10 +253,13 @@ namespace WebApplication4.Controllers
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
+                return RedirectToAction("Profile");
+
             }
             catch (Exception ex)
             {
-                
+                ViewBag.ErrorContent = "<p>This is already a playlist.<p>";
+
 
             }
 
@@ -308,26 +324,31 @@ namespace WebApplication4.Controllers
         }
 
 
-        public ActionResult TestFunction(string name, string username, PlaylistModel playlistModel)
+        
+        public ActionResult TestFunction(string playlistname,string trackname, string genre, string artist, string img, PlaylistModel playlistModel)
         {
-
             try
             {
-                var sql = "INSERT INTO public.playlists(playlistname,username) VALUES(@playlistname, @username)";
+                string username = Session["username"].ToString();
+
+                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img)";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
                 newConn.Open();
-                var cmd = new NpgsqlCommand(sql, newConn);
+                        var cmd = new NpgsqlCommand(sql, newConn);
 
-                cmd.Parameters.AddWithValue("name", playlistModel.playlistname);
-                cmd.Parameters.AddWithValue("username", playlistModel.username);
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("trackname", trackname);
+                cmd.Parameters.AddWithValue("playlistname", playlistname);
+                cmd.Parameters.AddWithValue("genre", genre);
+                cmd.Parameters.AddWithValue("artist", artist);
+                cmd.Parameters.AddWithValue("img", img);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
-                cmd.ExecuteNonQuery();
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                        cmd.ExecuteNonQuery();
+                        db.SaveChanges();
+    }
             catch (Exception ex)
             {
                 ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
@@ -338,7 +359,9 @@ namespace WebApplication4.Controllers
                 result = "ok"
             });
 
-        }
+      }
+
+
         public ActionResult Logout()
         {
             Session["Login"] = "not logged in";

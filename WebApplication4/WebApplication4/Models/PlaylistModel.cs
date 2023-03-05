@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WebApplication4.Models
 {
@@ -18,6 +19,13 @@ namespace WebApplication4.Models
         public string genre { get; set; }
 
         public string artist { get; set; }
+        public string img { get; set; }
+
+
+        [NotMapped]
+        public SelectList PlayListData { get; set; }
+
+        public string SelectedPlaylist{ get; set; }
 
     }
 

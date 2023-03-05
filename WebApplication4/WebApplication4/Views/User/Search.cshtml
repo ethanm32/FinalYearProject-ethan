@@ -96,16 +96,21 @@
                 var div = document.createElement("div");
                 var img = document.createElement("img");
                 var p = document.createElement("p");
+                p.setAttribute("id", "hidden");
+                var songDetails = document.createElement("p");
+
                 console.log(data);
                 img.setAttribute('class', 'img-responsive center-block img-rounded');
                 img.src = returned[i].album.images[1].url;
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "<br>" + "Link:" + returned[i].preview_url;
+                songDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name + "<br>";
                 var genre = returned[i].artists[0].id;
-                
+                var name = returned[0].name;
                 div.appendChild(p);
+                div.appendChild(songDetails);
                 container.appendChild(div);
                 
 
@@ -113,7 +118,7 @@
                 div.onclick = function () {
                     value = this.innerHTML;
                     localStorage.setItem("genre", genre);
-
+                    localStorage.setItem("name", name);
                     localStorage.setItem("storageName", value);
                     window.open('@Url.Action("Song", "User")');
                 }
@@ -297,9 +302,11 @@
        }
 
         
-       
         
     }
-    
 
+    #hidden {
+        display: none;
+    }
+       
 </style>

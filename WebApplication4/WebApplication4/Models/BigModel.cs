@@ -12,7 +12,6 @@ namespace WebApplication4.Models
         public UserModel UserModel { get; set; }
         public PlaylistModel PlaylistModel { get; set; }
 
-        public List<PlaylistModel> Playlists { get; set; }
 
     }
 }

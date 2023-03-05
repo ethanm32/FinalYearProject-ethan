@@ -1,4 +1,5 @@
-﻿
+﻿@model WebApplication4.Models.PlaylistModel
+
 @{
     ViewBag.Title = "";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,12 +11,22 @@
 <br />
 <br />
 <h4>Song</h4>
+<audio class="w-100" id="plyr-audio-player" controls>
+    <source id="source" src="https://p.scdn.co/mp3-preview/498b58922c832e083d1868acf127f9eaabdc62cc?cid=13825d1ddbcb4eb98c5265c4f453510e" type="audio/mp3" />
+</audio>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
+
+@using (Html.BeginForm("PlaylistName", "User"))
+{
+    @Html.DropDownListFor(m => m.SelectedPlaylist, Model.PlayListData, "Select Playlist");
+    
+    <button type="submit" id="send">Add</button>
+}
+<button></button>
 <div id="song-container"></div>
 <div class="rating">
-
     My Rating
     </br>
     <i class="rating_stars fa fa-star"></i>
@@ -32,10 +43,21 @@
 
 </div>
 <script>
-    var song = localStorage.getItem("storageName");
-  
+    
+   
+    
+
+        
+
+
+
     var genre = localStorage.getItem("genre");
     var img = document.createElement("img");
+    
+    
+    var song = localStorage.getItem("storageName");
+
+    
     img.setAttribute("id", "song-img");
     var newSong = document.getElementById('song-container');
     newSong.style.padding = "0px";
@@ -45,10 +67,15 @@
     console.log("a" + genre);
     img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
     img.setAttribute('class', 'img-responsive center-block img-rounded');
-
+    var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('</p>'));
+    console.log(artist);
     newSong.appendChild(img);
     var songName1 = song.substring(song.indexOf("e:") + 2, song.lastIndexOf("<b"));
     var rating = document.getElementById("rating");
+    var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
+    var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('</p>'))
+    console.log(snippet);
+    console.log(number);
     console.log(songName1);
     p.innerHTML += songName1;
     newSong.appendChild(p);
@@ -68,6 +95,15 @@
         });
 
     });
+
+
+    
+    var source = document.getElementById("plyr-audio-player");
+    source.setAttribute('src', snippet);
+        
+
+    
+
 
     let counter = 0;
     function createNote() {
@@ -126,9 +162,36 @@
 
         return divnote.id;
     }
+
+    var img = document.getElementById("song-img").src;
+    
+    $("#send").on("click", function (e) {
+
+        var select = $("#SelectedPlaylist")
+        var playlistname = select.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/TestFunction",
+            data: {
+                playlistname: playlistname,
+                trackname:songName1,
+                artist:artist,
+                genre:genre,
+                img:img,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
+
+    
 </script>
 <style>
-
+    
     div {
         color: white;
     }
@@ -173,6 +236,7 @@
         background-color: darkgoldenrod;
         margin-bottom: 60px;
     }
+
     h4 {
         color: white;
         position: absolute;
@@ -189,6 +253,9 @@
         position: relative;
         right: 390px;
     }
+
+
+   
     
 </style>
 

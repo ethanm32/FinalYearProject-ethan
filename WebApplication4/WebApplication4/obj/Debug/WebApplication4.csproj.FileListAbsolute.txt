@@ -299,4 +299,5 @@ C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\
 C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\bin\Microsoft.Extensions.Options.xml
 C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\bin\Microsoft.Extensions.Primitives.xml
 C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\bin\Microsoft.Net.Http.Headers.xml
-C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\obj\Debug\WebApplication4.dll.config
+C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\bin\Dapper.dll
+C:\Users\ethan\OneDrive\Documents\GitHub\FinalYearProject-ethan\WebApplication4\WebApplication4\bin\Dapper.xml

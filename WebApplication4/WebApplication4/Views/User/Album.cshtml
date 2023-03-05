@@ -235,22 +235,7 @@
         return divnote.id;
     }
 
-    $("#send").on("click", function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/TestFunction",
-            data: {
-                name: "Frank",
-                username: "Reynolds",
-            },
-            success: function (data) {
-                console.log(data.message);
-            },
-        });
-    });
+    
 
 
 
