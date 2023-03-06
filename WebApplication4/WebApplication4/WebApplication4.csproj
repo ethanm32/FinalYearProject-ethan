@@ -310,6 +310,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Data\PlaylistContext.cs" />
     <Compile Include="Data\PlayListDAO.cs" />
+    <Compile Include="Data\PlaylistFetchAll.cs" />
     <Compile Include="Data\UserDAO.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\ApplicationDbUsers.cs" />
@@ -333,6 +334,7 @@
     <Content Include="logo\Playback-logos_transparent.png" />
     <Content Include="Views\User\Album.cshtml" />
     <Content Include="Views\User\SearchResults.cshtml" />
+    <Content Include="Views\User\Playlist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

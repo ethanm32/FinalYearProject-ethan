@@ -27,6 +27,7 @@ namespace WebApplication4.Models
 
         public string SelectedPlaylist{ get; set; }
 
+        public List<string> PlaylistNames { get; set; }  
     }
 
     

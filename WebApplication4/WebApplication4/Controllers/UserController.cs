@@ -60,7 +60,7 @@ namespace WebApplication4.Controllers
             
         }
 
-
+       
 
         public ActionResult SignUp()
         {
@@ -104,7 +104,22 @@ namespace WebApplication4.Controllers
             return View(PD);
         }
 
-        
+        public ActionResult Playlist(string playlistname)
+        {
+            string username = Session["username"].ToString();
+            
+            List<PlaylistModel> playlists = new List<PlaylistModel>();
+
+
+            PlaylistFetchAll playlistFetching = new PlaylistFetchAll();
+
+            playlists = playlistFetching.PlaylistAll(username, playlistname);
+           
+
+            return View("Playlist", playlists);
+            
+            
+        }
         
 
         public ActionResult Album()
@@ -114,6 +129,7 @@ namespace WebApplication4.Controllers
 
         public ActionResult CreatePlaylist()
         {
+
             return View();
         }
 
@@ -266,6 +282,8 @@ namespace WebApplication4.Controllers
             return View(playlistModel);
         }
 
+
+        
         // GET: User/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -360,6 +378,9 @@ namespace WebApplication4.Controllers
             });
 
       }
+
+
+       
 
 
         public ActionResult Logout()

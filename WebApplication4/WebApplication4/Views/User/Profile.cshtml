@@ -1,121 +1,145 @@
 ﻿@model WebApplication4.Models.BigModel
-
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Index</h2>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <br />
-    <br />
-    <h1>Hi @Html.DisplayFor(o => o.UserModel.name),</h1>
-    <h2>email: @Html.DisplayFor(o => o.UserModel.email)</h2>
-    <h2>username: @Html.DisplayFor(o => o.UserModel.username)</h2>
-    <hr>
-    <h1>Playlists:</h1>
-    <div id="playlists">
-       
-        @Html.DisplayFor(o => o.PlaylistModel.playlistname)
+<br />
+<br />
+<h1>Hi @Html.DisplayFor(o => o.UserModel.name),</h1>
+<h2>email: @Html.DisplayFor(o => o.UserModel.email)</h2>
+<h2>username: @Html.DisplayFor(o => o.UserModel.username)</h2>
+<hr>
+<h1>Playlists:</h1>
+<div id="playlists">
+    @{
+        List<string> playlists = new List<string>();
+
+        var name = @Html.DisplayFor(o => o.PlaylistModel.playlistname).ToString();
+
+        playlists = name.Split(',').ToList();
+
+
+
+    }
+
+    @for (int i = 0; i < playlists.Count; i++)
+    {
         
-        <div id="addNew">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Create playlist</button>
+        <input type="button" onclick="location.href='@Url.Action("Playlist", "User", new {playlistname = playlists[i].ToString()})'" value=@playlists[i] />
 
-            @using (Html.BeginForm("CreatePlaylist", "User"))
-            {
-                @Html.AntiForgeryToken()
-
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <br />
+    }
 
 
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Create Playlist</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <label for="recipient-name" class="col-form-label">Recipient:</label>
-                                <div class="col-md-10" id="recipient-name">
-                                    @Html.EditorFor(o => o.PlaylistModel.playlistname, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(o => o.PlaylistModel.playlistname, "", new { @class = "text-danger" })
-                                    <br />
-                                </div>
+
+
+
+
+    <div id="addNew">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Create playlist</button>
+
+        @using (Html.BeginForm("CreatePlaylist", "User"))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Create Playlist</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                            <div class="col-md-10" id="recipient-name">
+                                @Html.EditorFor(o => o.PlaylistModel.playlistname, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(o => o.PlaylistModel.playlistname, "", new { @class = "text-danger" })
                                 <br />
+                            </div>
+                            <br />
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" onclick="hello()" class="btn btn-primary">Send message</button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" onclick="hello()" class="btn btn-primary">Send message</button>
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-
+            </div>
+        }
     </div>
-    <hr />
-    <h1>Data</h1>
-    <div id="playlist1">
-        <div id="addNew">
 
-        </div>
-    </div>
-    <div id="playlist2">
+</div>
+<hr />
+<h1>Data</h1>
 
-    </div>
-    <script>
-        var xArray = ["Rock", "Pop", "Indie", "Metal", "Prog"];
-        var yArray = [57, 65, 30, 20, 10];
 
-        var data = [{
-            x: xArray,
-            y: yArray,
-            type: "bar"
-        }];
+</div>
+<script>
+    /*
+    var xArray = ["Rock", "Pop", "Indie", "Metal", "Prog"];
+    var yArray = [57, 65, 30, 20, 10];
 
-        var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
+    var data = [{
+        x: xArray,
+        y: yArray,
+        type: "bar"
+    }];
 
-        Plotly.newPlot("playlist1", data, layout);
+    var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
 
-        var xArray = ["Rap", "Rnb", "Hip Hop", "HyperPop", "Pop"];
-        var yArray = [37, 64, 31, 24, 12];
+    Plotly.newPlot("playlist1", data, layout);
 
-        var data = [{
-            x: xArray,
-            y: yArray,
-            type: "bar"
-        }];
+    var xArray = ["Rap", "Rnb", "Hip Hop", "HyperPop", "Pop"];
+    var yArray = [37, 64, 31, 24, 12];
 
-        var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
+    var data = [{
+        x: xArray,
+        y: yArray,
+        type: "bar"
+    }];
 
-        Plotly.newPlot("playlist2", data, layout);
+    var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
 
-        function hello() {
-            console.log("hello")
-        }
-    </script>
+    Plotly.newPlot("playlist2", data, layout);
+    */
+    function hello() {
+        console.log("hello")
+    }
 
-    <style>
-        #playlist2 {
-            position: absolute;
-            top: 590px;
-            left: 900px;
-            float: right;
-        }
+    
 
-        p, h1, h2 {
-            color: white;
-        }
 
-        #addNew {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border: 1px solid white;
-        }
-    </style>
+    
+</script>
+
+<style>
+    #playlist2 {
+        position: absolute;
+        top: 590px;
+        left: 900px;
+        float: right;
+    }
+
+    p, h1, h2 {
+        color: white;
+    }
+
+    #addNew {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border: 1px solid white;
+    }
+</style>
 

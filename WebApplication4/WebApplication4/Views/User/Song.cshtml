@@ -63,20 +63,23 @@
     newSong.style.padding = "0px";
     var p = document.createElement("p");
     p.setAttribute("id", "newP");
-    console.log("a" + song);
+    console.log("song" + song);
     console.log("a" + genre);
     img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
     img.setAttribute('class', 'img-responsive center-block img-rounded');
-    var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('</p>'));
+    var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('<br>Link:'));
     console.log(artist);
+    var nameSong = song.substring(song.indexOf(">Name:") + 6, song.lastIndexOf('<br>Artist:'));
+    console.log(nameSong);
     newSong.appendChild(img);
-    var songName1 = song.substring(song.indexOf("e:") + 2, song.lastIndexOf("<b"));
     var rating = document.getElementById("rating");
     var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
     var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('</p>'))
+    var songName1 = number.substring(number.indexOf("e:") + 2, song.indexOf("<b"));
+
     console.log(snippet);
     console.log(number);
-    console.log(songName1);
+    console.log("track" + songName1);
     p.innerHTML += songName1;
     newSong.appendChild(p);
 
@@ -177,7 +180,7 @@
             url: "/User/TestFunction",
             data: {
                 playlistname: playlistname,
-                trackname:songName1,
+                trackname: nameSong,
                 artist:artist,
                 genre:genre,
                 img:img,
