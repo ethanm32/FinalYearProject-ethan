@@ -22,15 +22,36 @@
                 <div id="main" class="main">
                     <ul class="nav-link">
                         <li><a href="#">Sign Up</a></li>
-                        <li><a href="#">Search</a></li>
+                        <li>
+    <input type="search" id="search" name="q">
+    <button class="btn btn-outline-success my-2 my-sm-0" onclick="searchValue()" >Search</button></li>
 
                     </ul>
+                    
                 </div>
             </div>
 
 
     </nav>
-   
+    <div id="img-container"></div>
+    </div>
+    <div class="text">
+        <h3>Rate and Review the Music you love</h3>
+        <button id="buttonSignUp">SIGN UP NOW</button>
+    </div>
+    <div id="background">
+
+    </div>
+    <div id="songs">
+        <h4>Top Songs this Week</h4>
+        <br />
+        <div id="containSongs">
+
+        </div>
+        <div>
+            hello
+        </div>
+    </div>
 
     <div class="container body-content">
         @RenderBody()
@@ -232,6 +253,15 @@
         var x = window.matchMedia("(max-width: 700px)")
         myFunction(x) // Call listener function at run time
         x.addListener(myFunction) // Attach listener function on state changes
+
+
+        function searchValue() {
+            var input = document.getElementById("search").value;
+            console.log(input)
+            localStorage.setItem("input", input);
+            window.location.href = '@Url.Action("Search", "User")';
+
+        }
     </script>
 </body>
-    </html>
+</html>

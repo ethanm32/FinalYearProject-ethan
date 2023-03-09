@@ -335,6 +335,7 @@
     <Content Include="Views\User\Album.cshtml" />
     <Content Include="Views\User\SearchResults.cshtml" />
     <Content Include="Views\User\Playlist.cshtml" />
+    <Content Include="Views\Shared\_HPLayoutNL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

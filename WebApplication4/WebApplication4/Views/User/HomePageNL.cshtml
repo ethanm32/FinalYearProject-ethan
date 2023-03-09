@@ -5,7 +5,7 @@
 
     @TempData["email"];
     ViewBag.Title = "HomePage";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_HPLayoutNL.cshtml";
 
     var sessionLog = Session["login"] as string;
 
@@ -46,6 +46,8 @@
         grid-gap: 50px;
         overflow-x: auto;
         white-space: nowrap;
+        border-radius: 5px;
+        padding-bottom: 0px;
     }
 
         
@@ -127,6 +129,8 @@ function addData(data) {
 
         }
     }
+
+   
 
 }
 

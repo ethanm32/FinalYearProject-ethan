@@ -13,6 +13,7 @@
         <br />
         <br />
         <br />
+       
         <div id="toggle-button">
             <button id="album">Album</button>
             
@@ -27,39 +28,41 @@
 </body>
 
 <script>
-    
-    $("#search-value").on('keypress', function (e) {
-        if (e.which == 13) {
 
-            Search();
-        }
-    })
+        
         var accessToken = null;
-        window.onload = function getApiAccess() {
-            const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
-            const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
-            var authParams = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-            }
+    window.onload = function getApiAccess() {
 
-            fetch('https://accounts.spotify.com/api/token', authParams)
-                .then(response => response.json())
-                .then(data => accessToken = data.access_token)
-                .then(() => console.log(accessToken))
-                .then(() => localStorage.setItem("access", accessToken))
-    }
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+        }
 
-    async function Search() {
-        $("#album").css({ display: "inline"})
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+            .then(() => localStorage.setItem("access", accessToken))
+
+
+
+
+        }
+
+    
+
+    var search = setTimeout(function () {
+        var input = localStorage.getItem("input");
+        $("#album").css({ display: "inline" })
         $("#song-click").css({ display: "inline" })
-        var input = document.getElementById("search-value").value;
         //document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
         //document.getElementById("searchButton").style = "display: none";
-       var trackParams = {
+        var trackParams = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +98,7 @@
 
             });
 
-       
+
 
         function addData(data) {
 
@@ -123,7 +126,7 @@
                 div.appendChild(p);
                 div.appendChild(songDetails);
                 container.appendChild(div);
-                
+
 
 
                 div.onclick = function () {
@@ -161,7 +164,7 @@
                     var id = returned[i].id
                     localStorage.setItem("AlbumId", id);
                     localStorage.setItem("albumName", value);
-                    
+
                     window.open('@Url.Action("Album", "User")');
                 }
             }
@@ -176,7 +179,7 @@
                 $(this).css({ display: "grid" })
             });
         });
-      
+
 
         $("#album").click(function () {
             $("#song-container").each(function () {
@@ -185,13 +188,11 @@
             $("#album-container").each(function () {
                 $(this).css({ display: "grid" })
             });
-            
+
         });
 
-        
-        
-
-    }
+    }, 1000);
+    
 </script>
 <style>
 
