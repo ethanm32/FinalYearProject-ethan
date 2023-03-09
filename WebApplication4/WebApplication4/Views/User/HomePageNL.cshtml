@@ -1,0 +1,134 @@
+﻿@model WebApplication4.Models.UserModel
+
+
+@{
+
+    @TempData["email"];
+    ViewBag.Title = "HomePage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var sessionLog = Session["login"] as string;
+
+
+}
+
+<body>
+    <h2></h2>
+   
+    <div id="container"
+>
+        <p>
+            hello
+        </p>
+    </div>    
+    
+</body>
+
+
+
+<style>
+
+    #songs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 40px;
+        padding-left: 200px;
+        padding-top: 250px;
+    }
+
+
+    #containSongs {
+        text-align: justify;
+        width: 1100px;
+        height: 200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-gap: 50px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        
+
+
+
+    #img-container {
+       
+        bottom: 60px;
+        background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+        background-repeat: no-repeat;
+        background-size: 1200px;
+        background-position-x: 50%;
+        background-position-y: 100px;
+        box-shadow: inset -500px 100px 100px 0 #14181C, inset 500px 100px 100px 0 #14181C, 0 500px 100px 100px #14181C;
+        background-attachment: scroll;
+        height: 700px;
+    }
+
+
+    .text {
+        position: absolute;
+        top: 450px;
+        left: 750px;
+        text-align: center;
+        color: white;
+        background-attachment: local;
+    }
+
+   #buttonSignUp {
+       background-color: limegreen;
+       border-radius: 5px;
+       border: none;
+       width: 150px;
+       padding: 5px;
+   }
+
+   #songs {
+       position: absolute;
+       top: 500px;
+       left: 200px;
+       color: white;
+   }
+</style>
+<script>
+    fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        console.log(data.data.length)
+
+        addData(data);
+
+    });
+
+
+function addData(data) {
+    var returned = data.data;
+    var songs = document.getElementById("songs");
+    for (let i = 0; i < 10; i++) {
+        var div = document.getElementById("containSongs");
+        var newdiv = document.createElement("div");
+        var p = document.createElement("p");
+        var img = document.createElement("img");
+        img.src = returned[i].image;
+        img.style.borderRadius = "10px";
+        newdiv.appendChild(img);
+      
+        p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist;
+        newdiv.appendChild(p);
+        div.appendChild(newdiv);
+
+
+        div.onclick = function () {
+            var value = this.innerHTML;
+            localStorage.setItem("storageName", value);
+            window.open('@Url.Action("Song", "User")');
+
+
+        }
+    }
+
+}
+
+</script>
+

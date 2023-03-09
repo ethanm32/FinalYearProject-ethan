@@ -11,9 +11,7 @@
 <br />
 <br />
 <h4>Song</h4>
-<audio class="w-100" id="plyr-audio-player" controls>
-    <source id="source" src="https://p.scdn.co/mp3-preview/498b58922c832e083d1868acf127f9eaabdc62cc?cid=13825d1ddbcb4eb98c5265c4f453510e" type="audio/mp3" />
-</audio>
+<iframe id="iframe" style="border-radius:12px; height: 20%;" src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
@@ -44,14 +42,27 @@
 </div>
 <script>
     
-   
-    
+    var accessToken = null;
 
-        
+    window.onload = function getApiAccess() {
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+        }
+
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+            .then(() => localStorage.setItem("access", accessToken))
+    }
 
 
-
-    var genre = localStorage.getItem("genre");
     var img = document.createElement("img");
     
     
@@ -64,7 +75,6 @@
     var p = document.createElement("p");
     p.setAttribute("id", "newP");
     console.log("song" + song);
-    console.log("a" + genre);
     img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
     img.setAttribute('class', 'img-responsive center-block img-rounded');
     var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('<br>Link:'));
@@ -74,12 +84,15 @@
     newSong.appendChild(img);
     var rating = document.getElementById("rating");
     var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
-    var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('</p>'))
-    var songName1 = number.substring(number.indexOf("e:") + 2, song.indexOf("<b"));
-
-    console.log(snippet);
-    console.log(number);
+    var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('<b'))
+    var songName1 = number.substring(number.indexOf("e:") + 2, number.indexOf("<b"));
+    var genre = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>'));
+    var artists = number.substring(number.indexOf("ts:") + 3, number.lastIndexOf('</p>'));
+    console.log("snipp " + snippet);
+    console.log("n " + number);
+    console.log("genre:  " + genre);
     console.log("track" + songName1);
+    console.log("artistid" + artists);
     p.innerHTML += songName1;
     newSong.appendChild(p);
 
@@ -99,10 +112,10 @@
 
     });
 
-
     
-    var source = document.getElementById("plyr-audio-player");
-    source.setAttribute('src', snippet);
+    
+    var source = document.getElementById("iframe");
+    source.setAttribute('src', "https://open.spotify.com/embed/track/" + genre + "?utm_source=generator");
         
 
     
@@ -131,7 +144,22 @@
         divnote.style.whiteSpace = "pre-wrap";
         divnote.style.wordWrap = "word-break";
 
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
 
+        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + artists, trackParams)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+
+
+
+            });
 
 
         divnote.style.border = "1px solid black";
@@ -195,10 +223,7 @@
 </script>
 <style>
     
-    div {
-        color: white;
-    }
-
+    
     .checked {
         color: orange;
     }
@@ -257,7 +282,7 @@
         right: 390px;
     }
 
-
+    
    
     
 </style>

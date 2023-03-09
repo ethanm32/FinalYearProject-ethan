@@ -13,29 +13,50 @@
 <body>
 
     <nav class="navbar-fixed-top">
-    <div class="nav">
-    <div class="container" id="container">
-        <div class="logo"><a href="#">Playback</a></div>
-        <div id="click-btn"></div>
-        <div id="list"></div>
-        <div id="main" class="main">
-            <ul class="nav-link">
-                <li><a href="#">HomePage</a></li>
-                <li><a href="#">Sign Up</a></li>
-                <li><a href="#">Search</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
+        <div class="nav">
+            <div class="container" id="container">
+
+                <div class="logo"><a href="#">Playback</a></div>
+                <div id="click-btn"></div>
+                <div id="list"></div>
+                <div id="main" class="main">
+                    <ul class="nav-link">
+                        <li><a href="#">Sign Up</a></li>
+                        <li><a href="#">Search</a></li>
+
+                    </ul>
+                </div>
+            </div>
+
+
+    </nav>
+    <div id="img-container"></div>
+    </div>
+    <div class="text">
+        <h3>Rate and Review the Music you love</h3>
+        <button id="buttonSignUp">SIGN UP NOW</button>
+    </div>
+    <div id="background">
+
+    </div>
+    <div id="songs">
+        <h4>Top Songs this Week</h4>
+        <br />
+        <div id="containSongs">
+
+        </div>
+        <div>
+            hello
         </div>
     </div>
-    </div>
-    </nav>
+
     <div class="container body-content">
         @RenderBody()
 
 
     </div>
 
-   
+
 
     @RenderSection("scripts", required: false)
     <style>
@@ -53,15 +74,13 @@
         }
 
         body {
-            background-color: #1E163A;
+            background-color: #14181C;
             font-family: 'circular_stdmedium';
-   
         }
 
         a {
             color: white;
             text-decoration: none;
-            
         }
 
         #head {
@@ -76,54 +95,52 @@
             text-align: center;
         }
 
-        .nav div.logo {
-            float: left;
-            width: auto;
-            height: auto;
-            padding-left: 3rem;
-        }
-
-            .nav div.logo a {
-                text-decoration: none;
-                color: white;
-                font-size: 2rem;
-                position: relative;
-                bottom: 20px;
+            .nav div.logo {
+                float: left;
+                width: auto;
+                height: auto;
+                padding-left: 3rem;
             }
 
-        .nav div.main {
-            height: 50px;
-            float: right;
+                .nav div.logo a {
+                    text-decoration: none;
+                    color: white;
+                    font-size: 2rem;
+                    position: relative;
+                    bottom: 20px;
+                }
 
-        }
+            .nav div.main {
+                height: 50px;
+                float: right;
+            }
 
-      
 
-        .nav div.main ul {
-            width: 100%;
-            height: 50px;
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            position: relative;
-            bottom: 20px;
-        }
 
-        .nav div.main ul li {
-            width: auto;
-            height: 50px;
-            padding: 0;
-            padding-right: 3rem;
-        
-        }
+                .nav div.main ul {
+                    width: 100%;
+                    height: 50px;
+                    display: flex;
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    position: relative;
+                    bottom: 20px;
+                }
 
-        .nav div.main ul li a {
-             text-decoration: none;
-             color: #fff;
-             line-height: 65px;
-             font-size: 2rem;
-        }
+                    .nav div.main ul li {
+                        width: auto;
+                        height: 50px;
+                        padding: 0;
+                        padding-right: 3rem;
+                    }
+
+                        .nav div.main ul li a {
+                            text-decoration: none;
+                            color: #fff;
+                            line-height: 65px;
+                            font-size: 2rem;
+                        }
 
         .nav {
             padding-top: 20px;
@@ -141,11 +158,11 @@
         #button {
             background-color: #1e163a;
             -webkit-text-fill-color: white;
-           border: none;
-           position: absolute;
-           padding-top: 0;
-           margin: 0;
-           height: 10px;
+            border: none;
+            position: absolute;
+            padding-top: 0;
+            margin: 0;
+            height: 10px;
         }
 
         .nav-link {
@@ -155,7 +172,7 @@
             border-radius: 10px;
             position: fixed;
             height: 250px;
-            z-index: 9998!important;
+            z-index: 9998 !important;
         }
 
         #list {
@@ -163,54 +180,77 @@
             top: 58px;
             height: 300px;
             left: 2%;
-            z-index: 9998!important;
+            z-index: 9998 !important;
+        }
+
+        hr {
+            width: 96%;
+            color: #FFFF00;
+            padding: 0px;
+            margin: 0px;
         }
 
 
+        #containSongs {
+            border: 1px solid white;
+            height: 300px;
+            background-attachment: scroll;
+        }
+
+
+        #background {
+            background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+            background-repeat: no-repeat;
+            background-size: 100vw;
+            background-position-x: 100vw;
+            background-position-y: 100px;
+            box-shadow: inset -150px 80px 80px 0 #14181C,inset 10px 80px 80px 0 #14181C, 0 80px 80px 80px #14181C;
+            background-attachment: local;
+        }
     </style>
-   <script>
-       const navbar = document.querySelector('.nav');
+    <script>
+        const navbar = document.querySelector('.nav');
 
-       window.onscroll = () => {
-           if (window.scrollY > 100) {
-               navbar.classList.add('nav-active')
-           } else {
-               navbar.classList.remove('nav-active')
-           }
+        window.onscroll = () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('nav-active')
+            } else {
+                navbar.classList.remove('nav-active')
+            }
 
-       }
+        }
 
-       function myFunction(x) {
-           if (x.matches) { // If media query matches
-               document.getElementById("main").style.display = "none";
-               document.getElementById("click-btn").style.display = "block";
-               var button = document.createElement("button");
-               button.innerHTML = '&#9661';
-               button.setAttribute("id", "button")
-               document.getElementById("click-btn").appendChild(button)
-               button.style.position = "absolute";
-               button.style.left = "17%";
-               button.style.height = "0px";
-               button.style.width = "0px";
-               
-               button.style.display = "block";
-               $('body').on('click', '#button', function (event) {
-                   event.stopPropagation();
-                  
-                   $("#list").empty().append('<ul class="nav-link" style="background-color: black;position: absolute;z-index: 99999999;"><li style="padding: 0;"> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ').toggle();
-               });
-           } else {
-               document.getElementById("main").style.display = "block";
-               document.getElementById("click-btn").style.display = "none";
+        function myFunction(x) {
+            if (x.matches) { // If media query matches
+                document.getElementById("main").style.display = "none";
+                document.getElementById("click-btn").style.display = "block";
+                var button = document.createElement("button");
+                button.innerHTML = '&#9661';
+                button.setAttribute("id", "button")
+                document.getElementById("click-btn").appendChild(button)
+                button.style.position = "absolute";
+                button.style.left = "17%";
+                button.style.height = "0px";
+                button.style.width = "0px";
+
+                button.style.display = "block";
+                $('body').on('click', '#button', function (event) {
+                    event.stopPropagation();
+
+                    $("#list").empty().append('<ul class="nav-link" style="background-color: black;position: absolute;z-index: 99999999;"><li style="padding: 0;"> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ').toggle();
+                });
+            } else {
+                document.getElementById("main").style.display = "block";
+                document.getElementById("click-btn").style.display = "none";
 
 
 
-           }
-       }
+            }
+        }
 
-       var x = window.matchMedia("(max-width: 700px)")
-       myFunction(x) // Call listener function at run time
-       x.addListener(myFunction) // Attach listener function on state changes
-   </script>
-    </body>
+        var x = window.matchMedia("(max-width: 700px)")
+        myFunction(x) // Call listener function at run time
+        x.addListener(myFunction) // Attach listener function on state changes
+    </script>
+</body>
     </html>

@@ -50,6 +50,7 @@
                 .then(response => response.json())
                 .then(data => accessToken = data.access_token)
                 .then(() => console.log(accessToken))
+                .then(() => localStorage.setItem("access", accessToken))
     }
 
     async function Search() {
@@ -85,6 +86,15 @@
 
             });
 
+        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + "0epOFNiUfyON9EYx7Tpr6V", trackParams)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+
+
+
+            });
+
        
 
         function addData(data) {
@@ -105,9 +115,10 @@
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "<br>" + "Link:" + returned[i].preview_url;
+                var genre = returned[i].id;
+
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "<br>" + "Link:" + returned[i].preview_url + "<br>" + "Id:" + genre + "<br>" + "Artists:" + returned[i].artists[0].id;
                 songDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name + "<br>";
-                var genre = returned[i].artists[0].id;
                 var name = returned[0].name;
                 div.appendChild(p);
                 div.appendChild(songDetails);
@@ -117,7 +128,6 @@
 
                 div.onclick = function () {
                     value = this.innerHTML;
-                    localStorage.setItem("genre", genre);
                     localStorage.setItem("name", name);
                     localStorage.setItem("storageName", value);
                     window.open('@Url.Action("Song", "User")');

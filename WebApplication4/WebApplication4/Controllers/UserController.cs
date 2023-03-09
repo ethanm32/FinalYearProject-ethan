@@ -84,13 +84,18 @@ namespace WebApplication4.Controllers
             return View();
         }
 
+        public ActionResult HomePageNL()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         public ActionResult HomePage()
         {
             var newSession = Session["login"] as string;
             if (newSession != "logged in")
             {
-                return RedirectToAction("SignUp", "User");
+                return RedirectToAction("HomePageNL", "User");
             }
 
             return View();
