@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication4.Models.PlaylistModel>
+﻿@model WebApplication4.Models.BigModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,12 +17,13 @@
         <div class="nav">
             <div class="container" id="container">
 
-                <div class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+                <div class="logo"><a href='@Url.Action("User", "HomePage")'>Playback</a></div>
                 <div id="click-btn"></div>
                 <div id="list"></div>
                 <div id="main" class="main">
                     <ul class="nav-link">
-                        <li><a href="'@Url.Action("SignUp", "User")'">Sign Up</a></li>
+                        <li><a href="#">@Html.DisplayFor(o => o.UserModel.username)</a></li>
+
                         <li>
                             <input type="search" id="search" name="q">
                             <button class="btn btn-outline-success my-2 my-sm-0" onclick="searchValue()">Search</button>

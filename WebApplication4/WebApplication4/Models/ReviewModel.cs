@@ -7,15 +7,13 @@ using System.Web;
 
 namespace WebApplication4.Models
 {
-    [Table("rating", Schema = "public")]
-    public class RatingModel
+    [Table("review", Schema = "public")]
+    public class ReviewModel
     {
-
+       
         public string username { get; set; }
         public string trackid { get; set; }
-        public float rating { get; set; }
-
-        public float total { get; set; }
+        public string review_desc { get; set; }
 
     }
 }

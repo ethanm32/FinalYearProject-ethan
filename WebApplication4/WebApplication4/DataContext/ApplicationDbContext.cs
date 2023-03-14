@@ -16,7 +16,7 @@ namespace WebApplication4.DataContext
         }
 
   
-        public virtual DbSet<RatingModel> RatingObj { get; set; }
+        public virtual DbSet<ReviewModel> RatingObj { get; set; }
 
         
     }

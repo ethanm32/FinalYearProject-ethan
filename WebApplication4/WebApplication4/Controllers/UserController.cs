@@ -98,15 +98,39 @@ namespace WebApplication4.Controllers
                 return RedirectToAction("HomePageNL", "User");
             }
 
-            return View();
+            string username = Session["username"] as string;
+
+            UserDAO UserDAO = new UserDAO();
+            PlayListDAO playListDAO = new PlayListDAO();
+            BigModel objModel = new BigModel();
+            objModel.UserModel = UserDAO.Fetch(username);
+            objModel.PlaylistModel = new PlaylistModel();
+            objModel.PlaylistModel = playListDAO.PlaylistFetch(username);
+
+
+            return View("HomePage", objModel);
         }
 
         public ActionResult Song()
         {
+            var newSession = Session["login"] as string;
+            var track = Session["track"] as string;
+            if (newSession != "logged in")
+            {
+                return RedirectToAction("HomePageNL", "User");
+            }
+
+
+
             string username = Session["username"].ToString();
-            PlaylistModel PD = new PlaylistModel();
-            PD.PlayListData = new SelectList(PCon.GetPlaylists(username), "playlistname", "playlistname"); 
-            return View(PD);
+            ReviewDAO reviewDAO = new ReviewDAO();
+            BigModel objModel = new BigModel();
+            RatingDAO ratingDAO = new RatingDAO();
+            objModel.PlaylistModel = new PlaylistModel();
+            objModel.PlaylistModel.PlayListData = new SelectList(PCon.GetPlaylists(username), "playlistname", "playlistname");
+            objModel.ReviewModel = reviewDAO.ReviewAll(track);
+            objModel.RatingModel = ratingDAO.RatingFetch(track);
+            return View("Song", objModel);
         }
 
         public ActionResult Playlist(string playlistname)
@@ -129,7 +153,23 @@ namespace WebApplication4.Controllers
 
         public ActionResult Album()
         {
-            return View();
+            var newSession = Session["login"] as string;
+            var track = Session["track"] as string;
+            if (newSession != "logged in")
+            {
+                return RedirectToAction("HomePageNL", "User");
+            }
+
+
+
+            ReviewDAO reviewDAO = new ReviewDAO();
+            RatingDAO ratingDAO = new RatingDAO();
+
+            BigModel objModel = new BigModel();
+            objModel.ReviewModel = reviewDAO.ReviewAll(track);
+            objModel.RatingModel = ratingDAO.RatingFetch(track);
+            return View("Album", objModel);
+            
         }
 
         public ActionResult CreatePlaylist()
@@ -353,7 +393,7 @@ namespace WebApplication4.Controllers
             try
             {
                 string username = Session["username"].ToString();
-
+                
                 var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img)";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
@@ -371,7 +411,7 @@ namespace WebApplication4.Controllers
                 cmd.Prepare();
                         cmd.ExecuteNonQuery();
                         db.SaveChanges();
-    }
+            }
             catch (Exception ex)
             {
                 ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
@@ -385,8 +425,93 @@ namespace WebApplication4.Controllers
       }
 
 
-       
+        public ActionResult TrackId(string genre)
+        {
+            try
+            {
+                Session["track"] = genre;
+                
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
+            }
 
+            return Json(new
+            {
+                result = "ok"
+            });
+
+        }
+
+        public ActionResult AddToReview(string track, string review)
+        {
+            try
+            {
+                string username = Session["username"].ToString();
+
+                var sql = "Insert into public.reviews VALUES(@username, @trackid, @review_desc)";
+                var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("trackid", track);
+                cmd.Parameters.AddWithValue("review_desc", review);
+               
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>This cannot be added at the moment<p>";
+            }
+
+            return Json(new
+            {
+                result = "ok"
+            });
+
+        }
+
+
+        public ActionResult AddToRating(string track, string rating)
+        {
+            try
+            {
+                string username = Session["username"].ToString();
+
+                var sql = "Insert into public.ratings VALUES(@username, @trackid, @rating)";
+                var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("trackid", track);
+                cmd.Parameters.AddWithValue("rating", rating);
+
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>This cannot be added at the moment<p>";
+            }
+
+            return Json(new
+            {
+                result = "ok"
+            });
+
+        }
 
         public ActionResult Logout()
         {

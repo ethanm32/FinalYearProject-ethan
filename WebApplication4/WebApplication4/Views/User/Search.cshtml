@@ -29,7 +29,7 @@
 
 <script>
 
-        
+
         var accessToken = null;
     window.onload = function getApiAccess() {
 
@@ -54,7 +54,7 @@
 
         }
 
-    
+
 
     var search = setTimeout(function () {
         var input = localStorage.getItem("input");
@@ -128,13 +128,30 @@
                 container.appendChild(div);
 
 
-
-                div.onclick = function () {
+                $(div).on("click", function (e) {
+                    e.preventDefault();
                     value = this.innerHTML;
                     localStorage.setItem("name", name);
                     localStorage.setItem("storageName", value);
-                    window.open('@Url.Action("Song", "User")');
-                }
+                    console.log(value);
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('<br>A'));
+
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/User/TrackId",
+                        data: {
+                            genre: genre,
+                        },
+                        success: function (data) {
+                            console.log(data.message);
+                            window.open('@Url.Action("Song", "User")');
+                        },
+                    });
+
+
+                });
+
             }
 
         }
@@ -148,25 +165,44 @@
                 var div = document.createElement("div");
                 var img = document.createElement("img");
                 var p = document.createElement("p");
+                p.setAttribute("id", "hidden");
                 console.log(data);
+                var albumDetails = document.createElement("p");
                 img.setAttribute('class', 'img-responsive center-block img-rounded');
                 img.src = returned[i].images[1].url;
                 div.style.color = "white";
                 div.id = "albumText";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id;
+                albumDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name;
                 div.appendChild(p);
+                div.appendChild(albumDetails)
                 container.appendChild(div);
 
 
-                div.onclick = function () {
+                $(div).on("click", function (e) {
                     var value = this.innerHTML;
-                    var id = returned[i].id
-                    localStorage.setItem("AlbumId", id);
                     localStorage.setItem("albumName", value);
-
+                    console.log(value)
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('</p><p>'));
+                    console.log(genre)
                     window.open('@Url.Action("Album", "User")');
-                }
+
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/User/TrackId",
+                        data: {
+                            genre: genre,
+                        },
+                        success: function (data) {
+                            console.log(data.message);
+                            window.open('@Url.Action("Album", "User")');
+                        },
+                    });
+
+                });
+
             }
         }
 
@@ -192,7 +228,7 @@
         });
 
     }, 1000);
-    
+
 </script>
 <style>
 

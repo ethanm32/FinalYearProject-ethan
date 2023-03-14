@@ -306,11 +306,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RatingController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Data\PlaylistContext.cs" />
     <Compile Include="Data\PlayListDAO.cs" />
     <Compile Include="Data\PlaylistFetchAll.cs" />
+    <Compile Include="Data\RatingDAO.cs" />
+    <Compile Include="Data\ReviewDAO.cs" />
     <Compile Include="Data\UserDAO.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\ApplicationDbUsers.cs" />
@@ -321,6 +322,7 @@
     <Compile Include="Models\ClickModel.cs" />
     <Compile Include="Models\PlaylistModel.cs" />
     <Compile Include="Models\RatingModel.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Remove="node_modules\**" />
@@ -336,6 +338,8 @@
     <Content Include="Views\User\SearchResults.cshtml" />
     <Content Include="Views\User\Playlist.cshtml" />
     <Content Include="Views\Shared\_HPLayoutNL.cshtml" />
+    <Content Include="Views\Shared\_HPLayout.cshtml" />
+    <Content Include="Views\User\HomePage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

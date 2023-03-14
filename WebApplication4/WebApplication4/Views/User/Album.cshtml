@@ -1,4 +1,4 @@
-﻿
+﻿@model WebApplication4.Models.BigModel
 @{
     ViewBag.Title = "Album";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -16,13 +16,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
+<div id="review">
+    <h2>Review</h2>
+<textarea id="text-note"></textarea>
+    <button onclick='createNote()' id="add">Add Review</button>
+</div>
 <div id="album-container">
     <button id="play-btn" onclick="Album()">▶</button>
 </div>
 <hr />
 <br />
 <br />
+
 <div class="rating">
     <div id="rating" class="text-center">
 
@@ -34,6 +39,21 @@
         <i class="rating_stars fa fa-star"></i>
         <i class="rating_stars fa fa-star"></i>
     </div>
+</div>
+<div style="float: right">
+    @{
+        foreach (var item in Model.ReviewModel)
+        {
+            <p>@item.username</p>
+            <p>@item.review_desc</p>
+
+        }
+        @Html.DisplayFor(o => o.RatingModel.total).ToString()
+
+    }
+
+
+
 </div>
 <div id="tracks-container"></div>
 
@@ -73,6 +93,8 @@
 
     newAlbum.appendChild(img);
     var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<b"));
+    var genre = album.substring(album.indexOf("d:") + 2, album.lastIndexOf("</p><p>"));
+    console.log(genre);
     var rating = document.getElementById("rating");
     console.log(albumName1);
     p.innerHTML += albumName1;
@@ -87,7 +109,7 @@
     var rating = document.getElementById("rating");
 
     function Album() {
-        
+
         var trackParams = {
             method: 'GET',
             headers: {
@@ -142,7 +164,7 @@
             div.style.color = "white";
             div.id = "albumText";
             const duration = new Date(returned[i].duration_ms)
-            
+
             li.innerHTML += i + 1 + "</br>";
             titleLi.innerHTML += returned[i].name;
             p.appendChild(li)
@@ -235,8 +257,26 @@
         return divnote.id;
     }
 
-    
 
+    $("#add").on("click", function (e) {
+
+        var text = $("#text-note");
+        var review = text.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToReview",
+            data: {
+                track: genre,
+                review: review
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
 
 
 

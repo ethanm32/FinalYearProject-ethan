@@ -1,11 +1,11 @@
-﻿@model WebApplication4.Models.UserModel
+﻿@model WebApplication4.Models.BigModel
 
 
 @{
 
     @TempData["email"];
     ViewBag.Title = "HomePage";
-    Layout = "~/Views/Shared/_HPLayoutNL.cshtml";
+    Layout = "~/Views/Shared/_HPLayout.cshtml";
 
     var sessionLog = Session["login"] as string;
 
@@ -14,14 +14,12 @@
 
 <body>
     <h2></h2>
-   
-    <div id="container"
->
+
+    <div id="container">
         <p>
-            hello
         </p>
-    </div>    
-    
+    </div>
+
 </body>
 
 
@@ -50,12 +48,11 @@
         padding-bottom: 0px;
     }
 
-        
+
 
 
 
     #img-container {
-       
         bottom: 60px;
         background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
         background-repeat: no-repeat;
@@ -71,26 +68,26 @@
     .text {
         position: absolute;
         top: 450px;
-        left: 550px;
+        left: 750px;
         text-align: center;
         color: white;
         background-attachment: local;
     }
 
-   #buttonSignUp {
-       background-color: limegreen;
-       border-radius: 5px;
-       border: none;
-       width: 150px;
-       padding: 5px;
-   }
+    #buttonSignUp {
+        background-color: limegreen;
+        border-radius: 5px;
+        border: none;
+        width: 150px;
+        padding: 5px;
+    }
 
-   #songs {
-       position: absolute;
-       top: 500px;
-       left: 100px;
-       color: white;
-   }
+    #songs {
+        position: absolute;
+        top: 500px;
+        left: 200px;
+        color: white;
+    }
 </style>
 <script>
     fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
@@ -115,7 +112,7 @@ function addData(data) {
         img.src = returned[i].image;
         img.style.borderRadius = "10px";
         newdiv.appendChild(img);
-      
+
         p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist;
         newdiv.appendChild(p);
         div.appendChild(newdiv);
@@ -130,7 +127,7 @@ function addData(data) {
         }
     }
 
-   
+
 
 }
 

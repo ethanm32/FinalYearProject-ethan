@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using WebApplication4.Data;
 
 namespace WebApplication4.Models
 {
@@ -11,7 +12,9 @@ namespace WebApplication4.Models
     {
         public UserModel UserModel { get; set; }
         public PlaylistModel PlaylistModel { get; set; }
-
+        public List<ReviewModel>  ReviewModel{ get; set; }
+        
+        public RatingModel RatingModel { get; set; }
 
     }
 }
