@@ -29,7 +29,7 @@
 <button></button>
 <input type="hidden" id="rating" name="rating" value="0">
 
-<div class="rating">
+<div class="rating" style="float:right;">
     My Rating
     </br>
     <i class="rating_stars fa fa-star" data-rating="1"></i>
@@ -128,6 +128,31 @@
         $('.rating_stars').each(function (index) {
             return index >= star - 1 ? $(this).addClass('selected') :
                 $(this).removeClass('selected');
+        });
+
+        if (star == 1) {
+            star += 4;
+        }
+        else if (star == 2) {
+            star += 2;
+        }
+        else if (star == 5) {
+            star -= 4;
+        }
+        else if (star == 4) {
+            star -= 2;
+        }
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToRating",
+            data: {
+                track: genre,
+                rating: star,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
         });
 
     });
@@ -279,27 +304,7 @@
     });
 
 
-    $('.ratings_star').click(function () {
-        $('.ratings_star').removeClass('selected'); 
-        $(this).addClass('selected');
-
-        var rating = $(this).data('rating');
-        $('#rating').val(rating);
-
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/AddToRating",
-            data: {
-                track: genre,
-                rating: rating
-            },
-            success: function (data) {
-                console.log(data.message);
-            },
-        });
-    });
-
+   
 </script>
 <style>
 

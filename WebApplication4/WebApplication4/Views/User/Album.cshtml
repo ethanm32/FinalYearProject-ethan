@@ -198,6 +198,31 @@
                 $(this).removeClass('selected');
         });
 
+        if (star == 1) {
+            star += 4;
+        }
+        else if (star == 2) {
+            star += 2;
+        }
+        else if (star == 5) {
+            star -= 4;
+        }
+        else if (star == 4) {
+            star -= 2;
+        }
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToRating",
+            data: {
+                track: genre,
+                rating: star,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+
     });
     let counter = 0;
     function createNote() {

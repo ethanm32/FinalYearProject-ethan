@@ -479,7 +479,7 @@ namespace WebApplication4.Controllers
         }
 
 
-        public ActionResult AddToRating(string track, string rating)
+        public ActionResult AddToRating(string track, int rating)
         {
             try
             {

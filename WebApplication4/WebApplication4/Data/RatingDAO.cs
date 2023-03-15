@@ -1,10 +1,12 @@
 ﻿using Microsoft.Ajax.Utilities;
 using Npgsql;
 using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using WebApplication4.Models;
 
 namespace WebApplication4.Data
@@ -29,25 +31,28 @@ namespace WebApplication4.Data
             RatingModel total = new RatingModel();
 
 
-            try 
-            if (reader.HasRows)
+            try
             {
-                while (reader.Read())
+                if (reader.HasRows)
                 {
+                    while (reader.Read())
+                    {
 
-                    total.total = reader.GetFloat(0);
+                        total.total = reader.GetFloat(0);
 
+
+                    }
 
                 }
 
+
+
+                return total;
             }
-            else
+            catch (Exception ex)
             {
-                total.total = 0;
+                return new RatingModel();
             }
-
-
-            return total;
         }
     }
 }
