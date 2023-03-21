@@ -20,7 +20,7 @@ namespace WebApplication4.Data
 
 
 
-            string sql = "SELECT @username,array_to_string(array_agg(distinct playlistname), ',') as playlistname FROM playlists GROUP BY @username; ";
+            string sql = "SELECT username,array_to_string(array_agg(distinct playlistname), ',') as playlistname FROM playlists where username=@username GROUP BY username; ";
             NpgsqlCommand cmd = new NpgsqlCommand(sql, newConn);
             cmd.Parameters.AddWithValue("username", username);
             newConn.Open();

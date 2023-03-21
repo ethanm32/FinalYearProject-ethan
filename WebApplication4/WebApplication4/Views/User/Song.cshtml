@@ -14,7 +14,14 @@
 <h4>Song</h4>
 <div id="songname"></div>
 <div id="song-container"></div>
-<iframe id="iframe" style="border-radius:12px; height: 10%; position: absolute; left: 12%;top : 60%" src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator" width="25%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+<iframe id="iframe" style="border-radius:12px; height: 10%; position: absolute; left: 12%;top : 60%" 
+        src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator" width="25%" height="100" 
+        frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; 
+        fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
@@ -43,6 +50,8 @@
     <h2>Review</h2>
 <textarea id="text-note"></textarea>
     <button onclick='createNote()' id="add">Add Review</button>
+    <p contenteditable="true" id="edited">@Html.DisplayFor(o => o.YourReviewModel.review_desc)</p>
+    <button id="deleteReview">Delete</button>
 </div>
 <div style="float: right">
     @{
@@ -52,8 +61,9 @@
             <p>@item.review_desc</p>
 
         }
-        var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
+        var rating = @Html.DisplayFor(o => Math.Round(o.RatingModel.total,1)).ToString();
         <p>@rating</p>
+        
     }
 
 
@@ -105,11 +115,11 @@
     var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
     var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('<b'))
     var songName1 = number.substring(number.indexOf("e:") + 2, number.indexOf("<b"));
-    var genre = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>'));
+    var trackid = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>')).replace(/\s/g, '');
     var artists = number.substring(number.indexOf("ts:") + 3, number.lastIndexOf('</p>'));
     console.log("snipp " + snippet);
     console.log("n " + number);
-    console.log("genre:  " + genre);
+    console.log("genre:  " + trackid);
     console.log("track" + songName1);
     console.log("artistid" + artists);
     p.innerHTML += songName1 + "</br>" + "</br>" + artist;
@@ -147,7 +157,7 @@
             dataType: "json",
             url: "/User/AddToRating",
             data: {
-                track: genre,
+                track: trackid,
                 rating: star,
             },
             success: function (data) {
@@ -160,7 +170,7 @@
 
 
     var source = document.getElementById("iframe");
-    source.setAttribute('src', "https://open.spotify.com/embed/track/" + genre + "?utm_source=generator");
+    source.setAttribute('src', "https://open.spotify.com/embed/track/" + trackid + "?utm_source=generator");
 
 
 
@@ -169,21 +179,13 @@
     let counter = 0;
     function createNote() {
         counter++;
-        var addBtn = document.getElementById("add");
-        addBtn.style.display = 'none';
+        
         var divnote = document.createElement('div');
         var text = document.getElementById("text-note").value;
         divnote.innerHTML += text;
         divnote.setAttribute("id", "div" + counter);
         var review = document.getElementById("review");
         review.appendChild(divnote);
-        var deleteBtn = document.createElement('button');
-        deleteBtn.setAttribute("id", "div" + counter);
-        deleteBtn.innerHTML = "Delete";
-        var editBtn = document.createElement('button');
-        editBtn.innerHTML = "Edit";
-        editBtn.setAttribute("id", "div" + counter);
-        review.appendChild(deleteBtn);
         divnote.style.width = "fit-content";
         review.appendChild(editBtn);
         divnote.style.whiteSpace = "pre-wrap";
@@ -210,31 +212,9 @@
         divnote.style.border = "1px solid black";
         divnote.style.borderRadius = "5px";
 
-        deleteBtn.onclick = function () {
-            var id = event.srcElement.id;
-            document.getElementById(id).innerHTML = "";
-            deleteBtn.remove();
-            editBtn.remove();
-            addBtn.style.display = 'inline-block';
+        
 
-        };
-
-        editBtn.onclick = function () {
-            var id = event.srcElement.id;
-            document.getElementById(id).contentEditable = "true";
-            var saveBtn = document.createElement('button');
-            saveBtn.innerHTML = "Save Changes";
-            saveBtn.setAttribute("id", id);
-
-            review.appendChild(saveBtn);
-
-            saveBtn.onclick = function () {
-                var saveId = event.srcElement.id;
-                console.log(counter);
-                document.getElementById(saveId).contentEditable = "false";
-                saveBtn.remove();
-            }
-        }
+ 
 
         return divnote.id;
     }
@@ -245,18 +225,45 @@
 
     $(window).on("load", function (e) {
         e.preventDefault();
-
+        var text = $("#edited");
+        var value = text.text();
+        if (value == "") {
+            $("#deleteReview").css("display", "none")
+        }
+        else {
+            $("#deleteReview").css("display", "block")
+        }
         $.ajax({
             type: "post",
             dataType: "json",
             url: "/User/TrackId",
             data: {
-                genre: genre,
+                genre: trackid,
             },
             success: function (data) {
                 console.log(data.message);
             },
         });
+    });
+
+    $("#deleteReview").on("click", function (e) {
+        e.preventDefault();
+        $("deleteReview").css("display", "none");
+        
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/DeleteReview",
+            data: {
+                track: trackid,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+
+        window.location.reload();
     });
 
 
@@ -274,19 +281,30 @@
                 playlistname: playlistname,
                 trackname: nameSong,
                 artist: artist,
-                genre: genre,
+                genre: artists,
                 img: img,
             },
             success: function (data) {
                 console.log(data.message);
+                window.location.reload();
             },
         });
     });
 
     $("#add").on("click", function (e) {
 
+        $("deleteReview").css("display", "block");
         var text = $("#text-note");
         var review = text.val();
+        var newText = $("#edited");
+        var reviewNew = newText.text();
+        if (review != "") {
+            reviewTrue = review;
+        }
+        if (reviewNew != "") {
+            reviewTrue = reviewNew;
+        }
+
         e.preventDefault();
 
         $.ajax({
@@ -294,11 +312,12 @@
             dataType: "json",
             url: "/User/AddToReview",
             data: {
-                track: genre,
-                review: review
+                track: trackid,
+                review: reviewTrue
             },
             success: function (data) {
                 console.log(data.message);
+                window.location.reload();
             },
         });
     });

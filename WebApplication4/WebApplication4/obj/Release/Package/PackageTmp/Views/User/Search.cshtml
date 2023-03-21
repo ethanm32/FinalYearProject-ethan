@@ -5,24 +5,34 @@
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-
-
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <body>
-    <h2>Search</h2>
+    <div id="search-div">
+        <input type="search" id="search-value" placeholder="Search a song or album " />
+        <br />
+        <br />
+        <br />
+       
+        <div id="toggle-button">
+            <button id="album">Album</button>
+            
+            <button id="song-click">Song</button>
+        </div>
+    </div>
+    <div id="album-container" style="z-index: 0;"></div>
+    <div id="song-container" style="z-index: 0;"></div>
 
-    <input type="search" id="search-value" />
-    <input type="button" value="Search" onclick="Search()" />
-
-    <div id="container"></div>
 
 
 </body>
 
 <script>
-    var accessToken = null;
+
+
+        var accessToken = null;
     window.onload = function getApiAccess() {
+
         const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
         const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
         var authParams = {
@@ -37,13 +47,21 @@
             .then(response => response.json())
             .then(data => accessToken = data.access_token)
             .then(() => console.log(accessToken))
-    }
+            .then(() => localStorage.setItem("access", accessToken))
 
-    async function Search() {
 
-        var input = document.getElementById("search-value").value;
-        console.log(input)
 
+
+        }
+
+
+
+    var search = setTimeout(function () {
+        var input = localStorage.getItem("input");
+        $("#album").css({ display: "inline" })
+        $("#song-click").css({ display: "inline" })
+        //document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
+        //document.getElementById("searchButton").style = "display: none";
         var trackParams = {
             method: 'GET',
             headers: {
@@ -51,7 +69,7 @@
                 'Authorization': 'Bearer ' + accessToken
             }
         }
-        var returnedTracks = await fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
+        var returnedTracks = fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -61,60 +79,281 @@
 
             });
 
-        $('#search-value').on('focus', function () {
-            document.getElementById("container").innerHTML = "";
-        });
+        var returnedAlbums = fetch('https://api.spotify.com/v1/search?q=' + input + "&type=album", trackParams)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.albums.items.length);
+
+                addAlbum(data);
+
+            });
+
+        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + "0epOFNiUfyON9EYx7Tpr6V", trackParams)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+
+
+
+            });
+
+
 
         function addData(data) {
 
             var returned = data.tracks.items;
-            var container = document.getElementById("container");
+            var container = document.getElementById("song-container");
+            container.innerHTML = "";
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
                 var p = document.createElement("p");
+                p.setAttribute("id", "hidden");
+                var songDetails = document.createElement("p");
+
                 console.log(data);
+                img.setAttribute('class', 'img-responsive center-block img-rounded');
                 img.src = returned[i].album.images[1].url;
                 div.style.color = "white";
                 div.id = "textDiv";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name;
+                var genre = returned[i].id;
+
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "<br>" + "Link:" + returned[i].preview_url + "<br>" + "Id:" + genre + "<br>" + "Artists:" + returned[i].artists[0].id;
+                songDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name + "<br>";
+                var name = returned[0].name;
                 div.appendChild(p);
+                div.appendChild(songDetails);
                 container.appendChild(div);
 
 
-
-                div.onclick = function () {
-                    var value = this.innerHTML;
+                $(div).on("click", function (e) {
+                    e.preventDefault();
+                    value = this.innerHTML;
+                    localStorage.setItem("name", name);
                     localStorage.setItem("storageName", value);
-                    window.open('@Url.Action("Song", "User")');
+                    console.log(value);
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('<br>A'));
+
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/User/TrackId",
+                        data: {
+                            genre: genre,
+                        },
+                        success: function (data) {
+                            console.log(data.message);
+                            window.open('@Url.Action("Song", "User")');
+                        },
+                    });
 
 
-                }
+                });
 
             }
 
-
-
         }
-    }
 
+        function addAlbum(data) {
+
+            var returned = data.albums.items;
+            var container = document.getElementById("album-container");
+            container.innerHTML = "";
+            for (let i = 0; i < returned.length; i++) {
+                var div = document.createElement("div");
+                var img = document.createElement("img");
+                var p = document.createElement("p");
+                p.setAttribute("id", "hidden");
+                console.log(data);
+                var albumDetails = document.createElement("p");
+                img.setAttribute('class', 'img-responsive center-block img-rounded');
+                img.src = returned[i].images[1].url;
+                div.style.color = "white";
+                div.id = "albumText";
+                div.appendChild(img);
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id;
+                albumDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name;
+                div.appendChild(p);
+                div.appendChild(albumDetails)
+                container.appendChild(div);
+
+
+                $(div).on("click", function (e) {
+                    var value = this.innerHTML;
+                    localStorage.setItem("albumName", value);
+                    console.log(value)
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('</p><p>'));
+                    console.log(genre)
+                    window.open('@Url.Action("Album", "User")');
+
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/User/TrackId",
+                        data: {
+                            genre: genre,
+                        },
+                        success: function (data) {
+                            console.log(data.message);
+                            window.open('@Url.Action("Album", "User")');
+                        },
+                    });
+
+                });
+
+            }
+        }
+
+
+        $("#song-click").click(function () {
+            $("#album-container").each(function () {
+                $(this).css({ display: "none" })
+            });
+            $("#song-container").each(function () {
+                $(this).css({ display: "grid" })
+            });
+        });
+
+
+        $("#album").click(function () {
+            $("#song-container").each(function () {
+                $(this).css({ display: "none" })
+            });
+            $("#album-container").each(function () {
+                $(this).css({ display: "grid" })
+            });
+
+        });
+
+    }, 1000);
 
 </script>
 <style>
-    #container {
+
+
+
+
+    #song-container {
+        display: none;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+        position: relative;
+        top: 200px;
+        left: 2.5em;
+        padding-left: 7vw;
+    }
+
+    #album-container {
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-gap: 10px;
+        position: relative;
+        top: 200px;
+        left: 2.5em;
+        padding-left: 7vw;
     }
 
     #textDiv {
+        display: block;
         text-align: justify;
         width: 180px;
     }
 
         #textDiv img {
             display: block;
+            
             margin: 0 auto;
         }
+
+
+    #albumText {
+        display: block;
+        text-align: justify;
+        width: 180px;
+    }
+
+        #albumText img {
+            display: block;
+            margin: 0 auto;
+        }
+
+   #search-div {
+       margin: 0 auto;
+       text-align: center;
+       position: relative;
+       top: 100px;
+   }
+
+   #search-value {
+       width: 400px;
+       height: 50px;
+       border-radius: 10px;
+   }
+
+   #album, #song-click{
+       display: none;
+       text-decoration: none;
+       border: none;
+   }
+   #album {
+       border-right: 2px solid grey;
+   }
+
+    #toggle-button {
+        border-radius: 5px;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        background: #E9E9ED;
+    }
+
+    @@media screen and (max-width: 600px) {
+
+
+        #search-div {
+            margin: 0 auto;
+            position: relative;
+            top: 200px;
+            left: 8px;
+            z-index: 0;
+        }
+
+        #song-container {
+            
+            grid-template-columns: 8fr;
+            position: absolute;
+            top: 350px;
+            left: 85px;
+        }
+
+        #album-container {
+            grid-template-columns: 8fr;
+            position: absolute;
+            top: 350px;
+            left: 85px;
+        }
+
+        #search-value {
+            width: 200px;
+        }
+
+       #toggle-button {
+           position: absolute;
+           left: 180px;
+       }
+
+        
+        
+    }
+
+    #hidden {
+        display: none;
+    }
+       
 </style>

@@ -1,73 +1,99 @@
 ﻿
 @model WebApplication4.Models.UserModel
+
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
 
-@{
-    ViewBag.Title = "SignUp";
-}
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-<body style="background-color: #1E163A ">
-    <div class="form-horizontal">
+<body>
+    <link rel="stylesheet" href="~/Fonts/webfontkit-20230222-113905/stylesheet.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <div id="logo">
+       <a href="/User/HomePage"><img src="~/logo/Playback-logos_transparent.png"></a>
+    </div>
+    
+    <div id="signup-container">
 
-        <h4>Sign Up</h4>
+        <h3>Sign Up</h3>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
+            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                <br />
+            </div>
+
+            @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                <br />
+            </div>
+
             @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                <br />
             </div>
-        </div>
 
-        <div class="form-group">
             @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+                <br />
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-10">
                 <input type="submit" value="Sign Up" class="btn btn-default" />
+                @Html.Raw(@ViewBag.ErrorContent)
             </div>
-        </div>
+
+
+            <div class="col-md-10">
+                @Html.ActionLink("Already have an account? Log in here", "Login")
+            </div>
+
+        }
+
     </div>
-    <div id="error">
-        @Html.Raw(@ViewBag.ErrorContent)
-    </div>
-    <div id="login">@Html.ActionLink("Already have an account? Log in here", "Login")</div>
+    <p id="hello">Hello</p>
 </body>
-}
+
 <style>
     label, h4, div, #login {
         color: white;
     }
 
-    div.navbar-collapse collapse {
-        color: #000000;
-    }
+        div.navbar-collapse collapse {
+            color: #000000;
+        }
 
     input.btn {
         background-color: #d89898;
         border-color: #d89898;
     }
 
-    
-    .form-group{
+    body {
+        background-color: #1E163A;
+    }
+
+    .form-group {
         transform: translate(250px, 300px);
-        
     }
-    .btn-default {
-        transform: translateX(100px);
-    }
+
     h4 {
         transform: translate(550px, 250px);
     }
@@ -78,6 +104,92 @@
 
     #login {
         transform: translate(450px, 300px);
+    }
+
+    .col-md-10 {
+        width: 30em;
+    }
+
+
+    #signup-container {
+        border: 5px solid black;
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        transform: translate(50%,-50%);
+        width: 30%;
+        height: 55%;
+        padding-top: 20px;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+        font-family: 'circular_stdmedium';
+    }
+
+    .col-md-10 {
+        width: 100%;
+        text-align: center;
+    }
+
+    
+
+    h3 {
+        text-align: center;
+    }
+
+    .btn btn-default {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    img {
+        float: left;
+        width: 200px;
+        height: 200px;
+    }
+
+    @@media screen and (max-width: 1000px) {
+
+        #signup-container {
+            width: 60%;
+            height: 40%;
+        }
+    }
+
+    @@media screen and (max-width: 600px) {
+
+        #signup-container {
+            width: 100%;
+            height: 100%;
+            padding-top: 55%;
+        }
+
+        #logo {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @@media screen and (orientation:landscape) and (max-width: 900px) {
+        #signup-container {
+            width: 100%;
+            height: 100%;
+            padding-top: 20%;
+        }
+
+        #logo {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
 </style>
 

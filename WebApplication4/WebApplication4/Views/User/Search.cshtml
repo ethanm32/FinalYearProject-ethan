@@ -134,7 +134,7 @@
                     localStorage.setItem("name", name);
                     localStorage.setItem("storageName", value);
                     console.log(value);
-                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('<br>A'));
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('<br>Artists:'));
 
                     $.ajax({
                         type: "post",

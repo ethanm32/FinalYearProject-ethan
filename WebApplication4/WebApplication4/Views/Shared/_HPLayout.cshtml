@@ -239,7 +239,7 @@
                 button.style.width = "0px";
 
                 button.style.display = "block";
-                $('body').on('click', '#button', function (event) {
+                $('body').on('click touchstart', '#button', function (event) {
                     event.stopPropagation();
 
                     $("#list").empty().append('<ul class="nav-link" style="background-color: black;position: absolute;z-index: 99999999;"><li style="padding: 0;"> <a href="#">HomePage</a></li ><li><a href="#">Sign Up</a></li><li><a href="#">Search</a></li><li><a href="#">Profile</a></li></ul> ').toggle();
@@ -253,7 +253,7 @@
             }
         }
 
-        var x = window.matchMedia("(max-width: 700px)")
+        var x = window.matchMedia("(@@media only screen and (max-width: 700px))")
         myFunction(x) // Call listener function at run time
         x.addListener(myFunction) // Attach listener function on state changes
 

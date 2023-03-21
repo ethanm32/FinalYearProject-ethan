@@ -315,6 +315,7 @@
     <Compile Include="Data\UserDAO.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\ApplicationDbUsers.cs" />
+    <Compile Include="Data\YourReviewDAO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -324,6 +325,7 @@
     <Compile Include="Models\RatingModel.cs" />
     <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\YourReviewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Remove="node_modules\**" />
     <EmbeddedResource Remove="node_modules\**" />

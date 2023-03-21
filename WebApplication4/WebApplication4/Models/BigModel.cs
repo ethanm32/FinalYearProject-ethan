@@ -16,5 +16,7 @@ namespace WebApplication4.Models
         
         public RatingModel RatingModel { get; set; }
 
+        public YourReviewModel YourReviewModel { get; set; }
+
     }
 }

@@ -1,73 +1,135 @@
-﻿
+﻿@model WebApplication4.Models.BigModel
+
+
 @{
+
+    @TempData["email"];
     ViewBag.Title = "HomePage";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_HPLayout.cshtml";
 
     var sessionLog = Session["login"] as string;
+
+
 }
 
+<body>
+    <h2></h2>
 
-<h1>Hello</h1>
-<h2>@sessionLog</h2>
-<div id="container">
-
-</div>
-@using (Html.BeginForm())
-{
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="button" value="Logout" class="btn btn-default" onclick="window.location.href='@Url.Action("Logout", "User")'" />
-        </div>
-        
+    <div id="container">
+        <p>
+        </p>
     </div>
 
-    <script>
-        fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                console.log(data.data.length)
-                
-                addData(data);
+</body>
 
-            });
-        
 
-        function addData(data) {
-            var returned = data.data;
-            for (let i = 0; i < 10; i++) {
-                var div = document.createElement("div");
-                var img = document.createElement("img");
-                div.id = "textDiv";
-                div.style.color = "white";
-                img.src = returned[i].image;
 
-                div.appendChild(img);
-                div.innerHTML += '<br>' + '<br>' + '<br>' + 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artist + '<br>' + '<br>';
-                container.appendChild(div);
-            }
+<style>
+
+    #songs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 40px;
+        padding-left: 200px;
+        padding-top: 250px;
+    }
+
+
+    #containSongs {
+        text-align: justify;
+        width: 1100px;
+        height: 200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-gap: 50px;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-radius: 5px;
+        padding-bottom: 0px;
+    }
+
+
+
+
+
+    #img-container {
+        bottom: 60px;
+        background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+        background-repeat: no-repeat;
+        background-size: 1200px;
+        background-position-x: 50%;
+        background-position-y: 100px;
+        box-shadow: inset -500px 100px 100px 0 #14181C, inset 500px 100px 100px 0 #14181C, 0 500px 100px 100px #14181C;
+        background-attachment: scroll;
+        height: 700px;
+    }
+
+
+    .text {
+        position: absolute;
+        top: 450px;
+        left: 750px;
+        text-align: center;
+        color: white;
+        background-attachment: local;
+    }
+
+    #buttonSignUp {
+        background-color: limegreen;
+        border-radius: 5px;
+        border: none;
+        width: 150px;
+        padding: 5px;
+    }
+
+    #songs {
+        position: absolute;
+        top: 500px;
+        left: 200px;
+        color: white;
+    }
+</style>
+<script>
+    fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        console.log(data.data.length)
+
+        addData(data);
+
+    });
+
+
+function addData(data) {
+    var returned = data.data;
+    var songs = document.getElementById("songs");
+    for (let i = 0; i < 10; i++) {
+        var div = document.getElementById("containSongs");
+        var newdiv = document.createElement("div");
+        var p = document.createElement("p");
+        var img = document.createElement("img");
+        img.src = returned[i].image;
+        img.style.borderRadius = "10px";
+        newdiv.appendChild(img);
+
+        p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist;
+        newdiv.appendChild(p);
+        div.appendChild(newdiv);
+
+
+        div.onclick = function () {
+            var value = this.innerHTML;
+            localStorage.setItem("storageName", value);
+            window.open('@Url.Action("Song", "User")');
+
+
         }
+    }
 
-    </script>
-    <style>
-        #container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 40px;
-            padding-left: 250px;
-            
-        }
 
-        #textDiv {
-            text-align: justify;
-            width: 240px;
-            
-        }
 
-            #textDiv img {
-                display: block;
-                
-                transform: scale(1.5); /* Equal to scaleX(0.7) scaleY(0.7) */
-            }
-    </style>
 }
+
+</script>
+

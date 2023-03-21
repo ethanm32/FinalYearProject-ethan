@@ -1,46 +1,170 @@
-﻿
+﻿@model WebApplication4.Models.BigModel
+
 @{
     ViewBag.Title = "";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<h4>Song</h4>
+<div id="songname"></div>
+<div id="song-container"></div>
+<iframe id="iframe" style="border-radius:12px; height: 10%; position: absolute; left: 12%;top : 60%" src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator" width="25%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <h2></h2>
-<div id="song-container"></div>
-<div class="rating">
 
-    My Rating 
+
+@using (Html.BeginForm("PlaylistName", "User"))
+{
+    <div id="playlist"><p style="float:left;">Add to Playlist: </p> @Html.DropDownListFor(o => o.PlaylistModel.SelectedPlaylist, Model.PlaylistModel.PlayListData, "Select Playlist", new { @id = "SelectedPlaylist" });<button type="submit" id="send">Add</button></div>
+
+
+}
+<button></button>
+<input type="hidden" id="rating" name="rating" value="0">
+
+<div class="rating" style="float:right;">
+    My Rating
     </br>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
-    <i class="rating_stars fa fa-star" ></i>
+    <i class="rating_stars fa fa-star" data-rating="1"></i>
+    <i class="rating_stars fa fa-star" data-rating="2"></i>
+    <i class="rating_stars fa fa-star" data-rating="3"></i>
+    <i class="rating_stars fa fa-star" data-rating="4"></i>
+    <i class="rating_stars fa fa-star" data-rating="5"></i>
 </div>
 
 <div id="review">
- <h2>Review</h2>
+    <h2>Review</h2>
 <textarea id="text-note"></textarea>
-<button onclick='createNote()' id="add">Add Review</button>
+    <button onclick='createNote()' id="add">Add Review</button>
+</div>
+<div style="float: right">
+    @{
+        foreach (var item in Model.ReviewModel)
+        {
+            <p>@item.username</p>
+            <p>@item.review_desc</p>
+
+        }
+        var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
+        <p>@rating</p>
+    }
+
 
 </div>
+
 <script>
+
+    var accessToken = null;
+
+    window.onload = function getApiAccess() {
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+        }
+
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+            .then(() => localStorage.setItem("access", accessToken))
+    }
+
+
+    var img = document.createElement("img");
+
+
     var song = localStorage.getItem("storageName");
+
+
+    img.setAttribute("id", "song-img");
     var newSong = document.getElementById('song-container');
-    newSong.innerHTML = song;
+    newSong.style.padding = "0px";
+    var p = document.createElement("p");
+    p.setAttribute("id", "newP");
+    console.log("song" + song);
+    img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
+    img.setAttribute('class', 'img-responsive center-block img-rounded');
+    var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('<br>Link:'));
+    console.log(artist);
+    var nameSong = song.substring(song.indexOf(">Name:") + 6, song.lastIndexOf('<br>Artist:'));
+    console.log(nameSong);
+    newSong.appendChild(img);
+    var rating = document.getElementById("rating");
+    var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
+    var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('<b'))
+    var songName1 = number.substring(number.indexOf("e:") + 2, number.indexOf("<b"));
+    var genre = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>'));
+    var artists = number.substring(number.indexOf("ts:") + 3, number.lastIndexOf('</p>'));
+    console.log("snipp " + snippet);
+    console.log("n " + number);
+    console.log("genre:  " + genre);
+    console.log("track" + songName1);
+    console.log("artistid" + artists);
+    p.innerHTML += songName1 + "</br>" + "</br>" + artist;
+
+    newSong.appendChild(p);
+
     var InnerSong = newSong.innerHTML;
     const afterp = InnerSong.substring(InnerSong.indexOf('<p'));
-    console.log(afterp);
+    console.log("p" + afterp);
+    p.style.float = "right"
+
     var rating = document.getElementById("rating");
 
     $('.rating').on('click', '.rating_stars', function () {
         var star = $(this).index();
         $('.rating_stars').each(function (index) {
-            return index >= star -1 ? $(this).addClass('selected') :
+            return index >= star - 1 ? $(this).addClass('selected') :
                 $(this).removeClass('selected');
         });
-       
+
+        if (star == 1) {
+            star += 4;
+        }
+        else if (star == 2) {
+            star += 2;
+        }
+        else if (star == 5) {
+            star -= 4;
+        }
+        else if (star == 4) {
+            star -= 2;
+        }
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToRating",
+            data: {
+                track: genre,
+                rating: star,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+
     });
+
+
+
+    var source = document.getElementById("iframe");
+    source.setAttribute('src', "https://open.spotify.com/embed/track/" + genre + "?utm_source=generator");
+
+
+
+
 
     let counter = 0;
     function createNote() {
@@ -64,10 +188,25 @@
         review.appendChild(editBtn);
         divnote.style.whiteSpace = "pre-wrap";
         divnote.style.wordWrap = "word-break";
-        
+
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+
+        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + artists, trackParams)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
 
 
-      
+
+            });
+
+
         divnote.style.border = "1px solid black";
         divnote.style.borderRadius = "5px";
 
@@ -99,12 +238,76 @@
 
         return divnote.id;
     }
+
+    var img = document.getElementById("song-img").src;
+
+
+
+    $(window).on("load", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/TrackId",
+            data: {
+                genre: genre,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
+
+
+    $("#send").on("click", function (e) {
+
+        var select = $("#SelectedPlaylist")
+        var playlistname = select.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/TestFunction",
+            data: {
+                playlistname: playlistname,
+                trackname: nameSong,
+                artist: artist,
+                genre: genre,
+                img: img,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
+
+    $("#add").on("click", function (e) {
+
+        var text = $("#text-note");
+        var review = text.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToReview",
+            data: {
+                track: genre,
+                review: review
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
+
+
+   
 </script>
 <style>
 
-    div {
-        color: white;
-    }
 
     .checked {
         color: orange;
@@ -137,15 +340,42 @@
     #h2 {
         color: white;
     }
-    
+
     textarea {
         color: black;
-        
     }
 
     button {
         background-color: darkgoldenrod;
         margin-bottom: 60px;
+    }
+
+    h4 {
+        color: white;
+        position: absolute;
+        top: 140px;
+        right: 57.5vw;
+    }
+
+    #text-container {
+        position: absolute;
+        right: 20em;
+    }
+
+    #song-img {
+        position: relative;
+        right: 390px;
+    }
+
+    #song-container p {
+        position: fixed;
+        left: 610px;
+        top: 200px;
+    }
+
+    #playlist {
+        position: absolute;
+        left: 240px;
     }
 </style>
 

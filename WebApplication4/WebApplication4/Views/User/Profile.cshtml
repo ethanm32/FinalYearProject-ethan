@@ -41,7 +41,7 @@
 
 
     <div id="addNew">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Create playlist</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#playlistModal">Create playlist</button>
 
         @using (Html.BeginForm("CreatePlaylist", "User"))
         {
@@ -50,11 +50,11 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="playlistModal" tabindex="-1" role="dialog" aria-labelledby="playlistModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Create Playlist</h5>
+                            <h5 class="modal-title" id="playlistModalLabel">Create Playlist</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" onclick="hello()" class="btn btn-primary">Send message</button>
+                            <button type="submit" class="btn btn-primary">Send message</button>
                         </div>
                     </div>
                 </div>
@@ -86,33 +86,7 @@
 
 </div>
 <script>
-    /*
-    var xArray = ["Rock", "Pop", "Indie", "Metal", "Prog"];
-    var yArray = [57, 65, 30, 20, 10];
-
-    var data = [{
-        x: xArray,
-        y: yArray,
-        type: "bar"
-    }];
-
-    var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
-
-    Plotly.newPlot("playlist1", data, layout);
-
-    var xArray = ["Rap", "Rnb", "Hip Hop", "HyperPop", "Pop"];
-    var yArray = [37, 64, 31, 24, 12];
-
-    var data = [{
-        x: xArray,
-        y: yArray,
-        type: "bar"
-    }];
-
-    var layout = { autosize: false, width: 500, height: 300, title: "Most listened to genres in Playlist 1." };
-
-    Plotly.newPlot("playlist2", data, layout);
-    */
+   
     function hello() {
         console.log("hello")
     }

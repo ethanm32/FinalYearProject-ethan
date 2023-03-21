@@ -1,0 +1,395 @@
+﻿@model WebApplication4.Models.BigModel
+@{
+    ViewBag.Title = "Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<h4>Album</h4>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div id="review">
+    <h2>Review</h2>
+<textarea id="text-note"></textarea>
+    <button onclick='createNote()' id="add">Add Review</button>
+</div>
+<div id="album-container">
+    <button id="play-btn" onclick="Album()">▶</button>
+</div>
+<hr />
+<br />
+<br />
+
+<div class="rating">
+    <div id="rating" class="text-center">
+
+        My Rating
+        </br>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+        <i class="rating_stars fa fa-star"></i>
+    </div>
+</div>
+<div style="float: right">
+    @{
+        foreach (var item in Model.ReviewModel)
+        {
+            <p>@item.username</p>
+            <p>@item.review_desc</p>
+
+        }
+        @Html.DisplayFor(o => o.RatingModel.total).ToString()
+
+    }
+
+
+
+</div>
+<div id="tracks-container"></div>
+
+<a href="#" id="send">Add</a>
+
+<script>
+    var id = localStorage.getItem("AlbumId");
+    var accessToken = null;
+    window.onload = function getApiAccess() {
+        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+        var authParams = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+        }
+
+
+        fetch('https://accounts.spotify.com/api/token', authParams)
+            .then(response => response.json())
+            .then(data => accessToken = data.access_token)
+            .then(() => console.log(accessToken))
+    }
+
+    var album = localStorage.getItem("albumName");
+    var img = document.createElement("img");
+    var newAlbum = document.getElementById('album-container');
+    newAlbum.style.padding = "0px";
+    var p = document.createElement("p");
+    p.setAttribute("id", "newP");
+    console.log("a" + album);
+
+    img.src = album.substring(album.indexOf("c=") + 3, album.lastIndexOf('"><p'));
+    img.setAttribute('class', 'img-responsive center-block img-rounded');
+
+    newAlbum.appendChild(img);
+    var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<b"));
+    var genre = album.substring(album.indexOf("d:") + 2, album.lastIndexOf("</p><p>"));
+    console.log(genre);
+    var rating = document.getElementById("rating");
+    console.log(albumName1);
+    p.innerHTML += albumName1;
+    newAlbum.appendChild(p);
+
+
+
+    var InnerAlbum = newAlbum.innerHTML;
+    const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
+    console.log("p" + afterp);
+    p.style.float = "right"
+    var rating = document.getElementById("rating");
+
+    function Album() {
+
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+
+        var returnedTracks = fetch('https://api.spotify.com/v1/albums/' + id, trackParams)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.tracks.items);
+
+
+
+                addAlbum(data);
+            });
+
+
+    }
+
+    function addAlbum(data) {
+        var container = document.getElementById("tracks-container");
+        $("#tracks-container").empty().toggle();
+        var name = document.createElement("p");
+        var title = document.createElement("p");
+        var duration = document.createElement("p");
+        name.innerHTML = "#" + "<br>" + "<hr>";
+        title.innerHTML = "Title";
+        duration.innerHTML = "Length";
+        title.style.position = "relative";
+        title.style.bottom = "59px";
+        title.style.left = "300px";
+        duration.style.position = "relative";
+        duration.style.bottom = "90px";
+        duration.style.left = "900px";
+        //name.style.float = "left";
+        container.appendChild(name);
+        container.appendChild(title);
+        container.appendChild(duration);
+        var returned = data.tracks.items;
+        for (let i = 0; i < returned.length; i++) {
+            var div = document.createElement("div");
+            var p = document.createElement("ul");
+            var titleUl = document.createElement("ul");
+            var durationUl = document.createElement("ul");
+            var li = document.createElement("li")
+            var titleLi = document.createElement("li")
+            var durationLi = document.createElement("li");
+            console.log(data);
+            div.style.color = "white";
+            div.id = "albumText";
+            const duration = new Date(returned[i].duration_ms)
+
+            li.innerHTML += i + 1 + "</br>";
+            titleLi.innerHTML += returned[i].name;
+            p.appendChild(li)
+            titleUl.appendChild(titleLi)
+            durationUl.appendChild(titleUl);
+            p.style.padding = 0;
+            p.style.width = "20px";
+            li.style.padding = 0;
+            li.style.margin = 0;
+            li.style.width = "100px"
+            p.style.padding = 0;
+            titleLi.style.position = "relative";
+            p.style.position = "relative";
+            p.style.top = "20px";
+            titleLi.style.left = "260px"
+            titleUl.style.position = "relative";
+            titleUl.style.bottom = "10px"
+            li.style.listStyle = "none";
+            titleLi.style.listStyle = "none";
+            container.appendChild(p);
+            container.appendChild(titleUl);
+            container.appendChild(durationUl);
+        }
+    }
+
+
+    $('.rating').on('click', '.rating_stars', function () {
+        var star = $(this).index();
+        $('.rating_stars').each(function (index) {
+            return index >= star - 1 ? $(this).addClass('selected') :
+                $(this).removeClass('selected');
+        });
+
+        if (star == 1) {
+            star += 4;
+        }
+        else if (star == 2) {
+            star += 2;
+        }
+        else if (star == 5) {
+            star -= 4;
+        }
+        else if (star == 4) {
+            star -= 2;
+        }
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToRating",
+            data: {
+                track: genre,
+                rating: star,
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+
+    });
+    let counter = 0;
+    function createNote() {
+        counter++;
+        var addBtn = document.getElementById("add");
+        addBtn.style.display = 'none';
+        var divnote = document.createElement('div');
+        var text = document.getElementById("text-note").value;
+        divnote.innerHTML += text;
+        divnote.setAttribute("id", "div" + counter);
+        var review = document.getElementById("review");
+        review.appendChild(divnote);
+        var deleteBtn = document.createElement('button');
+        deleteBtn.setAttribute("id", "div" + counter);
+        deleteBtn.innerHTML = "Delete";
+        var editBtn = document.createElement('button');
+        editBtn.innerHTML = "Edit";
+        editBtn.setAttribute("id", "div" + counter);
+        review.appendChild(deleteBtn);
+        divnote.style.width = "fit-content";
+        review.appendChild(editBtn);
+        divnote.style.whiteSpace = "pre-wrap";
+        divnote.style.wordWrap = "word-break";
+
+
+
+
+        divnote.style.border = "1px solid black";
+        divnote.style.borderRadius = "5px";
+
+        deleteBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).innerHTML = "";
+            deleteBtn.remove();
+            editBtn.remove();
+            addBtn.style.display = 'inline-block';
+
+        };
+
+        editBtn.onclick = function () {
+            var id = event.srcElement.id;
+            document.getElementById(id).contentEditable = "true";
+            var saveBtn = document.createElement('button');
+            saveBtn.innerHTML = "Save Changes";
+            saveBtn.setAttribute("id", id);
+
+            review.appendChild(saveBtn);
+
+            saveBtn.onclick = function () {
+                var saveId = event.srcElement.id;
+                console.log(counter);
+                document.getElementById(saveId).contentEditable = "false";
+                saveBtn.remove();
+            }
+        }
+
+        return divnote.id;
+    }
+
+
+    $("#add").on("click", function (e) {
+
+        var text = $("#text-note");
+        var review = text.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToReview",
+            data: {
+                track: genre,
+                review: review
+            },
+            success: function (data) {
+                console.log(data.message);
+            },
+        });
+    });
+
+
+
+
+</script>
+<style>
+
+    div {
+        color: white;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .rating_stars.selected {
+        color: orange;
+    }
+
+    i {
+        display: inline-block;
+    }
+
+    .rating {
+        text-align: left;
+        direction: rtl;
+    }
+
+    i:hover ~ i,
+    i:hover {
+        color: orange;
+    }
+
+    #review {
+        position: absolute;
+        left: 50%;
+        top: 100px;
+    }
+
+    h4 {
+        color: white;
+        position: absolute;
+        top: 140px;
+        right: 57.5vw;
+    }
+
+    textarea {
+        color: black;
+    }
+
+    button {
+        background-color: darkgoldenrod;
+        margin-bottom: 60px;
+    }
+
+    img {
+        position: relative;
+        right: 28em;
+    }
+
+    #newP {
+        position: absolute;
+        top: 180px;
+        right: 35vw;
+        font-size: 40px;
+    }
+
+    #text-container {
+        position: absolute;
+        right: 20em;
+    }
+
+    #play-btn {
+        position: absolute;
+        top: 270px;
+        right: 54vw;
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        border-radius: 100px;
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgb(128, 128, 128, 0.75), rgba(128, 128, 128, 0.75), rgba(128, 128, 128, 0));
+    }
+    }
+</style>
+
+

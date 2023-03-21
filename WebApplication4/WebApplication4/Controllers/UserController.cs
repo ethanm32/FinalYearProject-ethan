@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Dynamic;
 using System.Net;
 using System.Web.Mvc;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebApplication4.Data;
 using WebApplication4.DataContext;
@@ -54,7 +55,6 @@ namespace WebApplication4.Controllers
             objModel.UserModel = UserDAO.Fetch(username);
             objModel.PlaylistModel = new PlaylistModel();
             objModel.PlaylistModel = playListDAO.PlaylistFetch(username);
-            
 
             return View("Profile", objModel);
             
@@ -126,10 +126,12 @@ namespace WebApplication4.Controllers
             ReviewDAO reviewDAO = new ReviewDAO();
             BigModel objModel = new BigModel();
             RatingDAO ratingDAO = new RatingDAO();
+            YourReviewDAO yourReview = new YourReviewDAO();
             objModel.PlaylistModel = new PlaylistModel();
             objModel.PlaylistModel.PlayListData = new SelectList(PCon.GetPlaylists(username), "playlistname", "playlistname");
             objModel.ReviewModel = reviewDAO.ReviewAll(track);
             objModel.RatingModel = ratingDAO.RatingFetch(track);
+            objModel.YourReviewModel = yourReview.ReviewFetch(username, track);
             return View("Song", objModel);
         }
 
@@ -450,7 +452,7 @@ namespace WebApplication4.Controllers
             {
                 string username = Session["username"].ToString();
 
-                var sql = "Insert into public.reviews VALUES(@username, @trackid, @review_desc)";
+                var sql = "UPDATE public.reviews SET review_desc=@review_desc WHERE trackid=@trackid AND username = @username;INSERT INTO public.reviews (username, trackid, review_desc) SELECT @username, @trackid, @review_desc WHERE NOT EXISTS (SELECT 1 FROM public.reviews WHERE trackid=@trackid);";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -465,6 +467,7 @@ namespace WebApplication4.Controllers
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
+
             }
             catch (Exception ex)
             {
@@ -478,7 +481,40 @@ namespace WebApplication4.Controllers
 
         }
 
+        public ActionResult DeleteReview(string track)
+        {
+            try
+            {
+                string username = Session["username"].ToString();
 
+                var sql = "DELETE from public.reviews where trackid=@track and username=@username;";
+                var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("track", track);
+                
+
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                db.SaveChanges();
+                Response.Redirect(Request.RawUrl);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>This cannot be deleted at the moment<p>";
+            }
+
+            return Json(new
+            {
+                result = "ok"
+            });
+
+        }
         public ActionResult AddToRating(string track, int rating)
         {
             try
