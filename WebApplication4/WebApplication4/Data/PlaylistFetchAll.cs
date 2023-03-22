@@ -22,7 +22,8 @@ namespace WebApplication4.Data
 
 
 
-            string sql = "select * from public.playlists where username=@username and playlistname=@playlistname and trackname IS NOT NULL AND genre IS NOT NULL AND artist IS NOT NULL AND img IS NOT NULL;";
+            string sql = "select * from public.playlists where username=@username and playlistname=@playlistname and trackname " +
+                "IS NOT NULL AND genre IS NOT NULL AND artist IS NOT NULL AND img IS NOT NULL;";
             NpgsqlCommand cmd = new NpgsqlCommand(sql, newConn);
             cmd.Parameters.AddWithValue("playlistname", playlistname);
             cmd.Parameters.AddWithValue("username", username);
