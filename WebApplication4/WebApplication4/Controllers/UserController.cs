@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Drawing;
 using System.Dynamic;
+using System.IO;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -297,26 +299,45 @@ namespace WebApplication4.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreatePlaylist([Bind(Include = "username,trackname,playlistname,genre,artist")] PlaylistModel playlistModel)
+        public ActionResult CreatePlaylist([Bind(Include = "username,trackname,playlistname,genre,artist, picture")] PlaylistModel playlistModel)
         {
             try
             {
-                var sql = "INSERT INTO public.playlists(username, playlistname) select @username, @playlistname where not exists (select playlistname from public.playlists where playlistname = @playlistname)";
-                var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
+               
+                    var sql = "INSERT INTO public.playlists(username, playlistname, picture) select @username, @playlistname, @picture where not exists (select playlistname from public.playlists where playlistname = @playlistname)";
+                    var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
-                var newConn = new NpgsqlConnection(conn);
-                newConn.Open();
-                var cmd = new NpgsqlCommand(sql, newConn);
+                    var newConn = new NpgsqlConnection(conn);
+                    newConn.Open();
+                    var cmd = new NpgsqlCommand(sql, newConn);
 
-                string username = Session["username"].ToString();
-                cmd.Parameters.AddWithValue("username", username);
-                cmd.Parameters.AddWithValue("playlistname", playlistModel.playlistname);
-                
+                    string username = Session["username"].ToString();
+                    cmd.Parameters.AddWithValue("username", username);
+                    cmd.Parameters.AddWithValue("playlistname", playlistModel.playlistname);
+
+                    if (Request.Files.Count > 0)
+                    {
+                        var file = Request.Files[0];
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            byte[] imageData = null;
+                            using (var binaryReader = new BinaryReader(file.InputStream))
+                            {
+                                imageData = binaryReader.ReadBytes(file.ContentLength);
+                            }
+                            cmd.Parameters.AddWithValue("picture", imageData);
+                        }
+                    }
+
+
+
+
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
-                cmd.ExecuteNonQuery();
-                db.SaveChanges();
-                return RedirectToAction("Profile");
+                    cmd.ExecuteNonQuery();
+                    db.SaveChanges();
+                    return RedirectToAction("Profile");
+                
 
             }
             catch (Exception ex)
@@ -396,7 +417,7 @@ namespace WebApplication4.Controllers
             {
                 string username = Session["username"].ToString();
                 
-                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img)";
+                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img, picture) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img,(SELECT distinct picture FROM public.playlists WHERE playlistname = @playlistname))";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);

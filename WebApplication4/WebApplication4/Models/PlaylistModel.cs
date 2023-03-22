@@ -21,6 +21,8 @@ namespace WebApplication4.Models
         public string artist { get; set; }
         public string img { get; set; }
 
+        public byte[] picture { get; set; }
+
 
         [NotMapped]
         public SelectList PlayListData { get; set; }

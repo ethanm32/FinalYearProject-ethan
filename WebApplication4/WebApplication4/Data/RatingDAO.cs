@@ -38,11 +38,13 @@ namespace WebApplication4.Data
                     while (reader.Read())
                     {
 
-                        total.total = reader.GetFloat(0);
-
+                        total.total = float.Parse(string.Format("{0:0.0}", reader.GetFloat(0)));
 
                     }
 
+                } else
+                {
+                    //do nothing
                 }
 
 

@@ -43,7 +43,7 @@
     <div id="addNew">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#playlistModal">Create playlist</button>
 
-        @using (Html.BeginForm("CreatePlaylist", "User"))
+        @using (Html.BeginForm("CreatePlaylist", "User",FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
 
@@ -65,6 +65,10 @@
                                 @Html.EditorFor(o => o.PlaylistModel.playlistname, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(o => o.PlaylistModel.playlistname, "", new { @class = "text-danger" })
                                 <br />
+                            </div>
+                            <div class="col-md-10" id="recipient-name">
+                                <label for="picture">Add Image for Playlist</label>
+                                <input type="file" class="form-control-file" id="picture" name="picture" accept="image/*">
                             </div>
                             <br />
 

@@ -61,9 +61,9 @@
             <p>@item.review_desc</p>
 
         }
-        var rating = @Html.DisplayFor(o => Math.Round(o.RatingModel.total,1)).ToString();
+        var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
         <p>@rating</p>
-        
+
     }
 
 

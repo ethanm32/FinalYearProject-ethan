@@ -15,16 +15,36 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    @{
+        var title = Model.FirstOrDefault()?.playlistname;
+    }
+    <title>@title</title>
+
 </head>
+
+
+
+
+
 <body>
     <h1></h1>
+    @for (int i = 0; i < 1; i++)
+    {
+        var playlist = Model.FirstOrDefault();
+        if (playlist?.picture != null && playlist.picture.Length > 0)
+        {
+            <img src="data:image/png;base64,@Convert.ToBase64String(playlist.picture)" />
+        }
+    }
 
     <div id="playlist">
         @foreach (var item in Model)
         {
             <div class="playlistItem">
-                <img class="img-responsive center-block img-rounded" src=@item.img><p id="hidden">Name:@item.trackname<br>Artist:@item.artist<br>Link:https://p.scdn.co/mp3-preview/241189aa54503d502d3e06cf6996a87a27f73a81?cid=13825d1ddbcb4eb98c5265c4f453510e<br><p class="genres">Id:@item.genre</p><br>Artists:0epOFNiUfyON9EYx7Tpr6V</p><p>@item.trackname</p><p class="artist">@item.artist<br></p>
+                <img class="img-responsive center-block img-rounded" src=@item.img><p id="hidden">
+                    Name:@item.trackname<br>Artist:@item.artist
+                    <br>Link:https://p.scdn.co/mp3-preview/241189aa54503d502d3e06cf6996a87a27f73a81?cid=13825d1ddbcb4eb98c5265c4f453510e<br>
+                <p class="genres">Id:@item.genre</p><br>Artists:0epOFNiUfyON9EYx7Tpr6V</p><p>@item.trackname</p><p class="artist">@item.artist<br></p>
             </div>
         }
     </div>
@@ -107,11 +127,6 @@
                     });
                 promises.push(promise)
             }
-
-
-
-
-
 
             Promise.all(promises)
                 .then(() => {
