@@ -19,5 +19,10 @@ namespace WebApplication4.Models
         
         public string username { get; set; }
 
+        public byte[] picture { get; set; }
+
+        public byte[] logo { get; set; }
+
+
     }
 }

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<WebApplication4.Models.RatingModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+       
+
+@foreach (var item in Model) {
+    
+    if(item.songname == ViewBag.Name)
+    {
+  
+            <h1>@Html.DisplayFor(modelItem => item.songname)</h1>
+            
+            
+            @Html.DisplayFor(modelItem => item.rating)
+        
+            @Html.DisplayFor(modelItem => item.review)
+        
+           
+
+    }
+        
+}

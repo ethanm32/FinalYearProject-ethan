@@ -1,400 +1,550 @@
 ﻿@model WebApplication4.Models.BigModel
-
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-
-<h4>Song</h4>
-<div id="songname"></div>
-<div id="song-container"></div>
-
-<iframe id="iframe" style="border-radius:12px; height: 10%; position: absolute; left: 12%;top : 60%" 
-        src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator" width="25%" height="100" 
-        frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; 
-        fullscreen; picture-in-picture" loading="lazy"></iframe>
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<h2></h2>
-
-
-@using (Html.BeginForm("PlaylistName", "User"))
-{
-    <div id="playlist"><p style="float:left;">Add to Playlist: </p> @Html.DropDownListFor(o => o.PlaylistModel.SelectedPlaylist, Model.PlaylistModel.PlayListData, "Select Playlist", new { @id = "SelectedPlaylist" });<button type="submit" id="send">Add</button></div>
-
 
 }
-<button></button>
-<input type="hidden" id="rating" name="rating" value="0">
-
-<div class="rating" style="float:right;">
-    My Rating
-    </br>
-    <i class="rating_stars fa fa-star" data-rating="1"></i>
-    <i class="rating_stars fa fa-star" data-rating="2"></i>
-    <i class="rating_stars fa fa-star" data-rating="3"></i>
-    <i class="rating_stars fa fa-star" data-rating="4"></i>
-    <i class="rating_stars fa fa-star" data-rating="5"></i>
-</div>
-
-<div id="review">
-    <h2>Review</h2>
-<textarea id="text-note"></textarea>
-    <button onclick='createNote()' id="add">Add Review</button>
-    <p contenteditable="true" id="edited">@Html.DisplayFor(o => o.YourReviewModel.review_desc)</p>
-    <button id="deleteReview">Delete</button>
-</div>
-<div style="float: right">
-    @{
-        foreach (var item in Model.ReviewModel)
-        {
-            <p>@item.username</p>
-            <p>@item.review_desc</p>
-
-        }
-        var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
-        <p>@rating</p>
-
-    }
-
-
-</div>
-
-<script>
-
-    var accessToken = null;
-
-    window.onload = function getApiAccess() {
-        const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
-        const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
-        var authParams = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-        }
-
-        fetch('https://accounts.spotify.com/api/token', authParams)
-            .then(response => response.json())
-            .then(data => accessToken = data.access_token)
-            .then(() => console.log(accessToken))
-            .then(() => localStorage.setItem("access", accessToken))
-    }
-
-
-    var img = document.createElement("img");
-
-
-    var song = localStorage.getItem("storageName");
-
-
-    img.setAttribute("id", "song-img");
-    var newSong = document.getElementById('song-container');
-    newSong.style.padding = "0px";
-    var p = document.createElement("p");
-    p.setAttribute("id", "newP");
-    console.log("song" + song);
-    img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
-    img.setAttribute('class', 'img-responsive center-block img-rounded');
-    var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('<br>Link:'));
-    console.log(artist);
-    var nameSong = song.substring(song.indexOf(">Name:") + 6, song.lastIndexOf('<br>Artist:'));
-    console.log(nameSong);
-    newSong.appendChild(img);
-    var rating = document.getElementById("rating");
-    var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
-    var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('<b'))
-    var songName1 = number.substring(number.indexOf("e:") + 2, number.indexOf("<b"));
-    var trackid = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>')).replace(/\s/g, '');
-    var artists = number.substring(number.indexOf("ts:") + 3, number.lastIndexOf('</p>'));
-    console.log("snipp " + snippet);
-    console.log("n " + number);
-    console.log("genre:  " + trackid);
-    console.log("track" + songName1);
-    console.log("artistid" + artists);
-    p.innerHTML += songName1 + "</br>" + "</br>" + artist;
-
-    newSong.appendChild(p);
-
-    var InnerSong = newSong.innerHTML;
-    const afterp = InnerSong.substring(InnerSong.indexOf('<p'));
-    console.log("p" + afterp);
-    p.style.float = "right"
-
-    var rating = document.getElementById("rating");
-
-    $('.rating').on('click', '.rating_stars', function () {
-        var star = $(this).index();
-        $('.rating_stars').each(function (index) {
-            return index >= star - 1 ? $(this).addClass('selected') :
-                $(this).removeClass('selected');
-        });
-
-        if (star == 1) {
-            star += 4;
-        }
-        else if (star == 2) {
-            star += 2;
-        }
-        else if (star == 5) {
-            star -= 4;
-        }
-        else if (star == 4) {
-            star -= 2;
-        }
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/AddToRating",
-            data: {
-                track: trackid,
-                rating: star,
-            },
-            success: function (data) {
-                console.log(data.message);
-            },
-        });
-
-    });
-
-
-
-    var source = document.getElementById("iframe");
-    source.setAttribute('src', "https://open.spotify.com/embed/track/" + trackid + "?utm_source=generator");
-
-
-
-
-
-    let counter = 0;
-    function createNote() {
-        counter++;
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<nav class="navbar navbar-fixed-top">
+    <div class="container" id="container">
         
-        var divnote = document.createElement('div');
-        var text = document.getElementById("text-note").value;
-        divnote.innerHTML += text;
-        divnote.setAttribute("id", "div" + counter);
-        var review = document.getElementById("review");
-        review.appendChild(divnote);
-        divnote.style.width = "fit-content";
-        review.appendChild(editBtn);
-        divnote.style.whiteSpace = "pre-wrap";
-        divnote.style.wordWrap = "word-break";
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+        </div>
+        <div id="navbar-collapse" class="main collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="profile"><a href='@Url.Action("Profile", "User")'><img style="border-radius: 50%; border: none; width: 20px; height: 20px;background-size:cover" src="data:image/png;base64,@Convert.ToBase64String(Model.UserModel.picture)" /> @Html.DisplayFor(o => o.UserModel.username)</a></li>
 
-        var trackParams = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="top">
+        <img id="artist-image" src="https://i.scdn.co/image/ab6761610000e5ebe926dd683e1700a6d65bd835" />
+        <div id="title"></div>
+    </div>
+    <div class="bottom">
+        <div class="left">
+            <br />
+            <br />
+            <br />
+            <br />
+            <div id="song-player" style="display: grid; grid-template-rows: auto 1fr 1fr;">
+                <div id="song-container">
+                </div>
+                    <iiframe style="position: relative; left: 5vw; width: 100%; max-width: 300px; height: 10vh; " id="iframe"
+                            src="https://open.spotify.com/embed/track/6IjI1wt0hzuAf1dZTd6Ju8?utm_source=generator"
+                            frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media;
+          fullscreen; picture-in-picture" loading="lazy"></iiframe>
+                    @using (Html.BeginForm("PlaylistName", "User"))
+                    {
+                        <div style="position: relative; left: 5vw;" id="playlist"><p style="float:left;"></p> @Html.DropDownListFor(o => o.PlaylistModel.SelectedPlaylist, Model.PlaylistModel.PlayListData, "Select Playlist", new { @id = "SelectedPlaylist" });<button type="submit" id="send">Add</button></div>
+
+
+                    }
+                </div>
+
+                </div>
+            </div>
+        <div class="right">
+
+
+            <input type="hidden" id="rating" name="rating" value="0">
+            
+            <div class="rating">
+                @{
+                    var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
+                    <div id="rate"> <p style="font-size: 20px;">@rating <i class="rating_stars fa fa-star" data-rating="1"></i></p></div>
+
+                }
+                My Rating
+                <br />
+                <i class="rating_stars fa fa-star" data-rating="1"></i>
+                <i class="rating_stars fa fa-star" data-rating="2"></i>
+                <i class="rating_stars fa fa-star" data-rating="3"></i>
+                <i class="rating_stars fa fa-star" data-rating="4"></i>
+                <i class="rating_stars fa fa-star" data-rating="5"></i>
+            </div>
+
+            <div id="review">
+                <h2>Review</h2>
+                <div id="createReview">
+                    <textarea id="text-note"></textarea>
+                    <button onclick='createNote()' id="add" style="color: white;">Add Review</button>
+                    <p style="color: white;" contenteditable="true" id="edited">@Html.DisplayFor(o => o.YourReviewModel.review_desc)</p>
+                    <button id="deleteReview">Delete</button>
+
+                </div>
+                @{
+                    <p>User Reviews:</p>
+                    foreach (var item in Model.ReviewModel)
+                    {
+                        <div id="userReviews" style="color: white;">
+                            
+                            <p>@item.username</p>
+                            <p>@item.review_desc</p>
+                        </div>
+
+                    }
+                }
+            </div>
+            <div>
+
+
+
+            </div>
+
+        </div>
+        </div>
+        </div>
+
+
+    <script>
+
+        var accessToken = null;
+
+        window.onload = function getApiAccess() {
+            const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+            const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+            var authParams = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
             }
+
+            fetch('https://accounts.spotify.com/api/token', authParams)
+                .then(response => response.json())
+                .then(data => accessToken = data.access_token)
+                .then(() => console.log(accessToken))
+                .then(() => localStorage.setItem("access", accessToken))
         }
 
-        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + artists, trackParams)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result);
 
 
 
+        var img = document.createElement("img");
+
+
+        var song = localStorage.getItem("storageName");
+
+
+        img.setAttribute("id", "song-img");
+        var newSong = document.getElementById('song-container');
+        newSong.style.padding = "0px";
+
+        var p = document.createElement("p");
+        p.setAttribute("id", "newP");
+        console.log("song" + song);
+        img.src = song.substring(song.indexOf("c=") + 3, song.lastIndexOf('"><p'));
+        img.setAttribute('class', 'img-responsive center-block img-rounded');
+        var artist = song.substring(song.indexOf("t:") + 2, song.lastIndexOf('<br>Link:'));
+        console.log(artist);
+        var nameSong = song.substring(song.indexOf(">Name:") + 6, song.lastIndexOf('<br>Artist:'));
+        console.log(nameSong);
+        newSong.appendChild(img);
+        var rating = document.getElementById("rating");
+        var number = song.substring(song.indexOf("p>") + 2, song.lastIndexOf("Na"));
+        var snippet = song.substring(song.indexOf("k:") + 2, song.lastIndexOf('<b'))
+        var songName1 = number.substring(number.indexOf("e:") + 2, number.indexOf("<b"));
+        var trackid = number.substring(number.indexOf("d:") + 2, number.lastIndexOf('<br>')).replace(/\s/g, '');
+        var artists = number.substring(number.indexOf("ts:") + 3, number.lastIndexOf('</p>'));
+        console.log("snipp " + snippet);
+        console.log("n " + number);
+        console.log("genre:  " + trackid);
+        console.log("track" + songName1);
+        console.log("artistid" + artists);
+        p.innerHTML += songName1 + "-" + artist;
+
+        var songTitle = document.getElementById("title");
+        songTitle.appendChild(p);
+        var InnerSong = newSong.innerHTML;
+        const afterp = InnerSong.substring(InnerSong.indexOf('<p'));
+        console.log("p" + afterp);
+        p.style.float = "right"
+
+        var rating = document.getElementById("rating");
+
+        $('.rating').on('click', '.rating_stars', function () {
+            var star = $(this).index();
+            $('.rating_stars').each(function (index) {
+                return index >= star - 1 ? $(this).addClass('selected') :
+                    $(this).removeClass('selected');
             });
 
+            if (star == 1) {
+                star += 4;
+            }
+            else if (star == 2) {
+                star += 2;
+            }
+            else if (star == 5) {
+                star -= 4;
+            }
+            else if (star == 4) {
+                star -= 2;
+            }
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/User/AddToRating",
+                data: {
+                    track: trackid,
+                    rating: star,
+                },
+                success: function (data) {
+                    console.log(data.message);
+                    alert("rating added");
 
-        divnote.style.border = "1px solid black";
-        divnote.style.borderRadius = "5px";
+                },
+            });
+
+        });
+
+        var artistSearch = setTimeout(function () {
+            var trackParams = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            }
+
+            var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + artists, trackParams)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result.images[0].url);
+                    addImage(result.images[0].url);
+
+
+
+                });
+
+        }, 1000);
+
+        var source = document.getElementById("iframe");
+        source.setAttribute('src', "https://open.spotify.com/embed/track/" + trackid + "?utm_source=generator");
+
+
+
+
+
+        let counter = 0;
+        function createNote() {
+            counter++;
+
+            var divnote = document.createElement('div');
+            var text = document.getElementById("text-note").value;
+            divnote.innerHTML += text;
+            divnote.setAttribute("id", "div" + counter);
+            var review = document.getElementById("review");
+            review.appendChild(divnote);
+            divnote.style.width = "fit-content";
+            review.appendChild(editBtn);
+            divnote.style.whiteSpace = "pre-wrap";
+            divnote.style.wordWrap = "word-break";
+
+
+
+            divnote.style.border = "1px solid black";
+            divnote.style.borderRadius = "5px";
+
+
+
+
+
+            return divnote.id;
+        }
+
+        var img = document.getElementById("song-img").src;
+
+
+
+        $(window).on("load", function (e) {
+            e.preventDefault();
+            var text = $("#edited");
+            var value = text.text();
+            if (value == "") {
+                $("#deleteReview").css("display", "none")
+            }
+            else {
+                $("#deleteReview").css("display", "block")
+            }
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/User/TrackId",
+                data: {
+                    track: trackid,
+                },
+                success: function (data) {
+                    console.log(data.message);
+                },
+            });
+        });
+
+        $("#deleteReview").on("click", function (e) {
+            e.preventDefault();
+            $("deleteReview").css("display", "none");
+
+
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/User/DeleteReview",
+                data: {
+                    track: trackid,
+                },
+                success: function (data) {
+                    console.log(data.message);
+                    alert("review deleted");
+                },
+            });
+
+            window.location.reload();
+        });
+
+
+        $("#send").on("click", function (e) {
+
+            var select = $("#SelectedPlaylist")
+            var playlistname = select.val();
+            e.preventDefault();
+
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/User/TestFunction",
+                data: {
+                    playlistname: playlistname,
+                    trackname: nameSong,
+                    artist: artist,
+                    genre: artists,
+                    img: img,
+                    track: trackid,
+                },
+                success: function (data) {
+                    console.log(data.message);
+                    alert("added to playlist");
+                    window.location.reload();
+                },
+            });
+        });
+
+        $("#add").on("click", function (e) {
+
+            $("deleteReview").css("display", "block");
+            var text = $("#text-note");
+            var review = text.val();
+            
+
+            e.preventDefault();
+
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/User/AddToReview",
+                data: {
+                    track: trackid,
+                    review: review
+                },
+                success: function (data) {
+                    console.log(data.message);
+                    alert("review added");
+                    window.location.reload();
+                },
+            });
+        });
+
+        function addImage(data) {
+            console.log(data);
+            $("#artist-image").attr("src", data);
+        }
+
+
+
+    </script>
+    <style>
+
+
+        #rate {
+            color: orange;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #song-img {
+            position: relative;
+            left: 5vw;
+        }
+
+        .top {
+            height: 300px; /* set the height of the top div */
+        }
+
+        .bottom {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .left, .right {
+            flex-basis: 50%; /* set the width of the bottom divs */
+            height: 500px;
+            min-width: 50px;
+        }
+
+        .right {
+            margin-top: 40px;
+        }
+
+        #artist-image {
+            width: 100%; /* make the image fill the top div */
+            height: 100%;
+            object-fit: cover; /* scale and crop the image to fill the container */
+            filter: blur(2px);
+            border-radius: 10px;
+            margin-top: 60px;
+        }
 
         
-
- 
-
-        return divnote.id;
-    }
-
-    var img = document.getElementById("song-img").src;
-
-
-
-    $(window).on("load", function (e) {
-        e.preventDefault();
-        var text = $("#edited");
-        var value = text.text();
-        if (value == "") {
-            $("#deleteReview").css("display", "none")
+        #rating {
+            margin-top: 10px;
         }
-        else {
-            $("#deleteReview").css("display", "block")
-        }
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/TrackId",
-            data: {
-                genre: trackid,
-            },
-            success: function (data) {
-                console.log(data.message);
-            },
-        });
-    });
-
-    $("#deleteReview").on("click", function (e) {
-        e.preventDefault();
-        $("deleteReview").css("display", "none");
-        
-
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/DeleteReview",
-            data: {
-                track: trackid,
-            },
-            success: function (data) {
-                console.log(data.message);
-            },
-        });
-
-        window.location.reload();
-    });
-
-
-    $("#send").on("click", function (e) {
-
-        var select = $("#SelectedPlaylist")
-        var playlistname = select.val();
-        e.preventDefault();
-
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/TestFunction",
-            data: {
-                playlistname: playlistname,
-                trackname: nameSong,
-                artist: artist,
-                genre: artists,
-                img: img,
-            },
-            success: function (data) {
-                console.log(data.message);
-                window.location.reload();
-            },
-        });
-    });
-
-    $("#add").on("click", function (e) {
-
-        $("deleteReview").css("display", "block");
-        var text = $("#text-note");
-        var review = text.val();
-        var newText = $("#edited");
-        var reviewNew = newText.text();
-        if (review != "") {
-            reviewTrue = review;
-        }
-        if (reviewNew != "") {
-            reviewTrue = reviewNew;
+        .checked {
+            color: orange;
         }
 
-        e.preventDefault();
+        .rating_stars.selected {
+            color: orange;
+        }
 
-        $.ajax({
-            type: "post",
-            dataType: "json",
-            url: "/User/AddToReview",
-            data: {
-                track: trackid,
-                review: reviewTrue
-            },
-            success: function (data) {
-                console.log(data.message);
-                window.location.reload();
-            },
-        });
-    });
+        i {
+            display: inline-block;
+        }
 
+        .rating {
+            text-align: left;
+            direction: rtl;
+        }
 
-   
-</script>
-<style>
+        i:hover ~ i,
+        i:hover {
+            color: orange;
+        }
 
+        .flex-container {
+            flex-direction: row;
+        }
 
-    .checked {
-        color: orange;
-    }
+        #newP {
+            color: white;
+            margin-top: 10px;
+            margin-left: 60px;
+            font-size: 2rem;
+        }
 
-    .rating_stars.selected {
-        color: orange;
-    }
+        #edited {
+            width: fit-content;
+        }
 
-    i {
-        display: inline-block;
-    }
+        #h2 {
+            color: white;
+        }
 
-    .rating {
-        text-align: left;
-        direction: rtl;
-    }
+        textarea {
+            color: black;
+        }
 
-    i:hover ~ i,
-    i:hover {
-        color: orange;
-    }
+        button {
+            background-color: darkgoldenrod;
+            margin-bottom: 60px;
+        }
 
-    #review {
-        position: absolute;
-        left: 50%;
-        top: 100px;
-    }
+        h4 {
+            color: white;
+            position: absolute;
+            top: 140px;
+            right: 57.5vw;
+        }
 
-    #h2 {
-        color: white;
-    }
+        #text-container {
+            position: absolute;
+            right: 20em;
+        }
 
-    textarea {
-        color: black;
-    }
+        #song-img {
+            float: left;
+        }
 
-    button {
-        background-color: darkgoldenrod;
-        margin-bottom: 60px;
-    }
+        #createReview {
+            float: left;
+            width: 50%;
+        }
 
-    h4 {
-        color: white;
-        position: absolute;
-        top: 140px;
-        right: 57.5vw;
-    }
+        #userReviews {
+            float: left;
+            width: 50%;
+        }
 
-    #text-container {
-        position: absolute;
-        right: 20em;
-    }
+        .clear {
+            clear: both;
+        }
 
-    #song-img {
-        position: relative;
-        right: 390px;
-    }
+        #playlist {
+            position: absolute;
+            left: 240px;
+        }
+        .rating {
+            margin-top: 100px;
+        }
+        #title {
+            margin-top: 30px;
+            position: absolute;
+            left: 48%;
+            transform: translate(-50%, -50%);
+        }
 
-    #song-container p {
-        position: fixed;
-        left: 610px;
-        top: 200px;
-    }
+        #song-container {
+            margin-top: 40px;
+        }
+        @@media screen and (max-width: 787px) {
+          .bottom {
+            flex-direction: column;
+          }
+          .left {
+            width: 100%;
+          }
+          .right {
+            width: 100%;
+          }
+            .left, .right {
+                flex-basis: 100%;
+            }
 
-    #playlist {
-        position: absolute;
-        left: 240px;
-    }
-</style>
+            #artist-image {
+                width: 130%;
+                position: relative;
+                left: -50px;
+            }
+            div#song-player {
+                height: 400px;
+            }
+
+        }
+    </style>
 

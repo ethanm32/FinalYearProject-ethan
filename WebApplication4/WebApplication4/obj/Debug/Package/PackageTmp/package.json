@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "jest-editor-support": "28.1.0"
+  },
+  "dependencies": {
+    "jest-editor-support": "28.1.0"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

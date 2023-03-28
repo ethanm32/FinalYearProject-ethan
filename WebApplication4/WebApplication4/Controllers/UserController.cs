@@ -22,7 +22,17 @@ namespace WebApplication4.Controllers
         private ApplicationDbUsers db = new ApplicationDbUsers();
         PlaylistContext PCon = new PlaylistContext();
 
+        private readonly MockDatabaseConnection _connection;
         
+        public UserController()
+        {
+            var connectionString = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??;";
+            _connection = new NpgsqlDatabaseConnection(connectionString);
+        }
+        public UserController(MockDatabaseConnection connection)
+        {
+            _connection = connection;
+        }
         // GET: User
         public ActionResult Index()
         {
@@ -58,6 +68,9 @@ namespace WebApplication4.Controllers
             objModel.PlaylistModel = new PlaylistModel();
             objModel.PlaylistModel = playListDAO.PlaylistFetch(username);
 
+            
+              
+
             return View("Profile", objModel);
             
         }
@@ -71,7 +84,20 @@ namespace WebApplication4.Controllers
 
         public ActionResult Search()
         {
-            return View();
+
+
+            var newSession = Session["login"] as string;
+            if (newSession != "logged in")
+            {
+                return RedirectToAction("SignUp", "User");
+            }
+
+            string username = Session["username"] as string;
+
+            UserDAO UserDAO = new UserDAO();
+            BigModel objModel = new BigModel();
+            objModel.UserModel = UserDAO.Fetch(username);
+            return View(objModel);
         }
 
 
@@ -119,13 +145,14 @@ namespace WebApplication4.Controllers
             var track = Session["track"] as string;
             if (newSession != "logged in")
             {
-                return RedirectToAction("HomePageNL", "User");
+                return RedirectToAction("SignUp", "User");
             }
 
 
 
             string username = Session["username"].ToString();
             ReviewDAO reviewDAO = new ReviewDAO();
+            UserDAO UserDAO = new UserDAO();
             BigModel objModel = new BigModel();
             RatingDAO ratingDAO = new RatingDAO();
             YourReviewDAO yourReview = new YourReviewDAO();
@@ -134,6 +161,7 @@ namespace WebApplication4.Controllers
             objModel.ReviewModel = reviewDAO.ReviewAll(track);
             objModel.RatingModel = ratingDAO.RatingFetch(track);
             objModel.YourReviewModel = yourReview.ReviewFetch(username, track);
+            objModel.UserModel = UserDAO.Fetch(username);
             return View("Song", objModel);
         }
 
@@ -166,12 +194,19 @@ namespace WebApplication4.Controllers
 
 
 
+            
+            string username = Session["username"].ToString();
             ReviewDAO reviewDAO = new ReviewDAO();
-            RatingDAO ratingDAO = new RatingDAO();
-
+            UserDAO UserDAO = new UserDAO();
             BigModel objModel = new BigModel();
+            RatingDAO ratingDAO = new RatingDAO();
+            YourReviewDAO yourReview = new YourReviewDAO();
+            objModel.PlaylistModel = new PlaylistModel();
+            objModel.PlaylistModel.PlayListData = new SelectList(PCon.GetPlaylists(username), "playlistname", "playlistname");
             objModel.ReviewModel = reviewDAO.ReviewAll(track);
             objModel.RatingModel = ratingDAO.RatingFetch(track);
+            objModel.YourReviewModel = yourReview.ReviewFetch(username, track);
+            objModel.UserModel = UserDAO.Fetch(username);
             return View("Album", objModel);
             
         }
@@ -182,12 +217,21 @@ namespace WebApplication4.Controllers
             return View();
         }
 
+        public ActionResult AddImage()
+        {
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SignUp([Bind(Include = "email,password, name, username")] UserModel userModel)
+        public ActionResult SignUp([Bind(Include = "email,password, name, username, picture")] UserModel userModel)
         {
+
+       
             try
             {
+
                 var sql = "INSERT INTO public.users(email,password, name, username) VALUES(@email, crypt(@password, gen_salt('bf')), @name, @username)";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
@@ -199,11 +243,13 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("password", userModel.password);
                 cmd.Parameters.AddWithValue("name", userModel.name);
                 cmd.Parameters.AddWithValue("username", userModel.username);
+               
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
-                return RedirectToAction("HomePage");
+               
+                return RedirectToAction("Login");
             }
             catch (Exception ex)
             {
@@ -252,6 +298,8 @@ namespace WebApplication4.Controllers
                 {
                     Console.WriteLine("Not logged in");
                     Session["Login"] = "not logged in";
+                    ViewBag.ErrorContent = "<p>Error. Try another email or username!<p>";
+
 
                 }
 
@@ -284,7 +332,11 @@ namespace WebApplication4.Controllers
                     // db.UserObj.Add(userModel);
                     cmd.Prepare();
                     cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    newConn.Close();
+                    newConn.Dispose();
                     db.SaveChanges();
+
                     return RedirectToAction("Index");
                 } catch(Exception ex)
                 {
@@ -329,29 +381,34 @@ namespace WebApplication4.Controllers
                         }
                     }
 
-
+                
 
 
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                     cmd.ExecuteNonQuery();
-                    db.SaveChanges();
-                    return RedirectToAction("Profile");
-                
+                cmd.Dispose();
+                newConn.Close();
+                newConn.Dispose();
+                db.SaveChanges();
+                TempData["ErrorMessage"] = "PlaylistCreated";
+                return RedirectToAction("Profile");
 
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>This is already a playlist.<p>";
-
+                TempData["ErrorMessage"] = "Can't create playlist right now";
+                return RedirectToAction("Profile");
 
             }
 
             return View(playlistModel);
+
+
         }
 
 
-        
+
         // GET: User/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -411,13 +468,13 @@ namespace WebApplication4.Controllers
 
 
         
-        public ActionResult TestFunction(string playlistname,string trackname, string genre, string artist, string img, PlaylistModel playlistModel)
+        public ActionResult TestFunction(string playlistname,string trackname, string genre, string artist, string img, string track, PlaylistModel playlistModel)
         {
             try
             {
                 string username = Session["username"].ToString();
                 
-                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img, picture) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img,(SELECT distinct picture FROM public.playlists WHERE playlistname = @playlistname))";
+                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img, picture, trackid) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img,(SELECT distinct picture FROM public.playlists WHERE playlistname = @playlistname), @trackid)";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -430,9 +487,11 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("genre", genre);
                 cmd.Parameters.AddWithValue("artist", artist);
                 cmd.Parameters.AddWithValue("img", img);
+                cmd.Parameters.AddWithValue("trackid", track);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
-                        cmd.ExecuteNonQuery();
+                
+                cmd.ExecuteNonQuery();
                         db.SaveChanges();
             }
             catch (Exception ex)
@@ -448,11 +507,11 @@ namespace WebApplication4.Controllers
       }
 
 
-        public ActionResult TrackId(string genre)
+        public ActionResult TrackId(string track)
         {
             try
             {
-                Session["track"] = genre;
+                Session["track"] = track;
                 
             }
             catch (Exception ex)
@@ -473,7 +532,7 @@ namespace WebApplication4.Controllers
             {
                 string username = Session["username"].ToString();
 
-                var sql = "UPDATE public.reviews SET review_desc=@review_desc WHERE trackid=@trackid AND username = @username;INSERT INTO public.reviews (username, trackid, review_desc) SELECT @username, @trackid, @review_desc WHERE NOT EXISTS (SELECT 1 FROM public.reviews WHERE trackid=@trackid);";
+                var sql = "UPDATE reviews SET trackid=@trackid, review_desc = @review_desc WHERE username = @username;INSERT INTO reviews (username, trackid, review_desc) SELECT @username, @trackid, @review_desc WHERE NOT EXISTS (SELECT 1 FROM reviews WHERE username = @username and trackid=@trackid);";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -483,10 +542,12 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("trackid", track);
                 cmd.Parameters.AddWithValue("review_desc", review);
-               
+
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
+                
+                
                 db.SaveChanges();
 
             }
@@ -523,6 +584,7 @@ namespace WebApplication4.Controllers
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
+
                 Response.Redirect(Request.RawUrl);
             }
             catch (Exception ex)
@@ -556,6 +618,8 @@ namespace WebApplication4.Controllers
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
+                
+
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -568,6 +632,59 @@ namespace WebApplication4.Controllers
                 result = "ok"
             });
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public ActionResult AddImage([Bind(Include = "email,password,name,username, picture")] UserModel userModel)
+        {
+            try
+            {
+
+                var sql = "UPDATE public.users set picture=@picture where username=@username";
+                var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
+
+                var newConn = new NpgsqlConnection(conn);
+                newConn.Open();
+                var cmd = new NpgsqlCommand(sql, newConn);
+
+                string username = Session["username"].ToString();
+                cmd.Parameters.AddWithValue("username", username);
+
+                if (Request.Files.Count > 0)
+                {
+                    var file = Request.Files[0];
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        byte[] imageData = null;
+                        using (var binaryReader = new BinaryReader(file.InputStream))
+                        {
+                            imageData = binaryReader.ReadBytes(file.ContentLength);
+                        }
+                        cmd.Parameters.AddWithValue("picture", imageData);
+                    }
+                }
+
+
+                // db.UserObj.Add(userModel);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                
+                db.SaveChanges();
+                return RedirectToAction("Profile");
+
+
+             }
+                    
+                catch (Exception ex)
+            {
+                ViewBag.ErrorContent = "<p>Can't add this.<p>";
+
+
+            }
+
+            return View(userModel);
         }
 
         public ActionResult Logout()

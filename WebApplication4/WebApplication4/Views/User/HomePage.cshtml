@@ -25,12 +25,23 @@
 
 
 <style>
+    .icon-bar {
+        background-color: white;
+    }
 
+    ::-webkit-scrollbar {
+        width: 10px; /* width of the scrollbar */
+        height: 10px; /* height of the scrollbar */
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #f5f5f5; /* color of the track */
+    }
     #songs {
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-gap: 40px;
-        padding-left: 200px;
+        padding-left: 8vw;
         padding-top: 250px;
     }
 
@@ -40,7 +51,7 @@
         width: 1100px;
         height: 200px;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-gap: 50px;
         overflow-x: auto;
         white-space: nowrap;
@@ -48,7 +59,10 @@
         padding-bottom: 0px;
     }
 
-
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
 
 
 
@@ -88,6 +102,141 @@
         left: 200px;
         color: white;
     }
+
+    @@media only screen and (max-width: 1600px) {
+        #songs {
+            position: absolute;
+            top: 500px;
+            left: 30px;
+            color: white;
+        }
+
+        .text {
+            position: absolute;
+            top: 50%;
+            left: 48%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @@media only screen and (max-width: 1200px) {
+        #containSongs {
+            text-align: justify;
+            width: 190%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-gap: 20px;
+            border-radius: 5px;
+            padding-bottom: 0px;
+            padding-left: 0;
+        }
+
+        #songs {
+            position: absolute;
+            width: 1000px;
+            padding-left: 0;
+            left: 100px;
+        }
+
+        #containSongs img {
+            width: 200px;
+        }
+    }
+
+    @@media only screen and (max-width: 850px) {
+
+
+        #img-container {
+            bottom: 60px;
+            background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+            background-repeat: no-repeat;
+            background-size: 1200px;
+            background-position-x: 50%;
+            background-position-y: 100px;
+            box-shadow: inset -300px 100px 100px 0 #14181C, inset 300px 100px 100px 0 #14181C, 0 300px 100px 100px #14181C;
+            background-attachment: scroll;
+            height: 700px;
+        }
+
+        #containSongs {
+            text-align: justify;
+            width: 145%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-gap: 20px;
+            border-radius: 5px;
+            padding-bottom: 0px;
+            padding-left: 0;
+        }
+
+        #songs {
+            position: absolute;
+            width: 1000px;
+            padding-left: 0;
+            left: 60px;
+        }
+
+        #containSongs img {
+            width: 200px;
+        }
+
+        css {
+            overflow-x: hidden;
+        }
+
+        body {
+            position: relative;
+        }
+
+    }
+
+    
+
+    @@media only screen and (max-width: 600px) {
+        #containSongs {
+            text-align: justify;
+            width: 80%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-gap: 5px;
+            border-radius: 5px;
+            padding-bottom: 0px;
+            padding-left: 0;
+        }
+        #img-container {
+            position: relative;
+            bottom: 60px;
+            background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            height: 500px;
+            top: 30px;
+            box-shadow: none !important; /* add this */
+        }
+        #songs {
+            position: absolute;
+            width: 1000px;
+            padding-left: 0;
+            left: 3vw;
+            top: 280px;
+        }
+
+        #containSongs img {
+            width: 100px;
+        }
+
+        css {
+            overflow-x: hidden;
+        }
+
+        body {
+            position: relative;
+        }
+    }
+
+
+
 </style>
 <script>
     fetch('https://raw.githubusercontent.com/KoreanThinker/billboard-json/main/billboard-hot-100/recent.json')
@@ -104,16 +253,17 @@
 function addData(data) {
     var returned = data.data;
     var songs = document.getElementById("songs");
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
         var div = document.getElementById("containSongs");
         var newdiv = document.createElement("div");
+        newdiv.setAttribute("id", "songId");
         var p = document.createElement("p");
         var img = document.createElement("img");
         img.src = returned[i].image;
         img.style.borderRadius = "10px";
         newdiv.appendChild(img);
 
-        p.innerHTML += "<br>" + '<b>' + returned[i].name + '</b>' + '<br>' + '<br>'+ returned[i].artist;
+        p.innerHTML += "<br>" + '<b>' + returned[i].name.slice(0, 10) + '...' + '</b>' + '<br>' + '<br>' + returned[i].artist.slice(0, 10) + '...';
         newdiv.appendChild(p);
         div.appendChild(newdiv);
 

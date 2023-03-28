@@ -1,22 +1,44 @@
-﻿@model WebApplication4.Models.ClickModel
-@Html.HiddenFor(m => m.HtmlSong, new { id = "song" })
-
+﻿@model WebApplication4.Models.BigModel
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
 @{
-    ViewBag.Title = "Search";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<!--[if Webkit]>
+<hr style="border-color: grey; border-width: 2px;">
+<![endif]-->
 <body>
+    <nav class="navbar navbar-fixed-top">
+        <div class="container" id="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div style="position:relative; top: 20px;" class="
+                     "><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+            </div>
+            <div id="navbar-collapse" class="main collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="profile"><a href='@Url.Action("Profile", "User")'><img style="border-radius: 50%; border: none; width: 20px; height: 20px;background-size:cover" src="data:image/png;base64,@Convert.ToBase64String(Model.UserModel.picture)" /> @Html.DisplayFor(o => o.UserModel.username)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div id="search-div">
         <input type="search" id="search-value" placeholder="Search a song or album " />
         <br />
         <br />
         <br />
-       
+
         <div id="toggle-button">
             <button id="album">Album</button>
-            
             <button id="song-click">Song</button>
         </div>
     </div>
@@ -27,10 +49,171 @@
 
 </body>
 
+<style>
+    .icon-bar {
+        background-color: white;
+    }
+    #song-container {
+        display: none;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+        position: relative;
+        top: 200px;
+        left: 2.5em;
+        padding-left: 7vw;
+    }
+
+    #album-container {
+        display: grid;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 10px;
+        position: relative;
+        top: 200px;
+        left: 2.5em;
+        padding-left: 7vw;
+    }
+
+    #textDiv {
+        display: block;
+        text-align: justify;
+        width: 180px;
+    }
+
+        #textDiv img {
+            display: block;
+            margin: 0 auto;
+        }
+
+
+    #albumText {
+        display: block;
+        text-align: justify;
+        width: 180px;
+    }
+
+        #albumText img {
+            display: block;
+            margin: 0 auto;
+        }
+
+    #search-div {
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        top: 100px;
+    }
+
+    #search-value {
+        width: 400px;
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    #album, #song-click {
+        display: none;
+        text-decoration: none;
+        border: none;
+    }
+
+    #album {
+        display: inline-block;
+        position: relative;
+        width:100%;
+        border-radius: 5px;
+    }
+
+        #album::after {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            border-bottom: 2px solid grey;
+        }
+    #toggle-button {
+        border-radius: 5px;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        width: 100px;
+        background: #E9E9ED;
+    }
+
+    @@media screen and (-webkit-min-device-pixel-ratio:0) {
+        hr {
+          border-color: grey;
+          border-width: 2px;
+        }
+
+        #album: {
+            border-right: none;
+        }
+      }
+
+    
+  @@media screen and (max-width: 767px) {
+        hr {
+          display: none;
+        }
+      }
+
+    @@media screen and (max-width: 600px) {
+
+
+        #search-div {
+            margin: 0 auto;
+            position: relative;
+            top: 200px;
+            left: 8px;
+            z-index: 0;
+        }
+
+        #song-container {
+            grid-template-columns: 8fr;
+            top: 350px;
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
+        }
+
+        #album-container {
+            grid-template-columns: 8fr;
+            top: 350px;
+           
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
+        }
+
+        #search-value {
+            width: 200px;
+        }
+
+        #toggle-button {
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
+        }
+
+
+    }
+
+    #hidden {
+        display: none;
+    }
+</style>
 <script>
 
 
-        var accessToken = null;
+
+    var accessToken = null;
+
     window.onload = function getApiAccess() {
 
         const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
@@ -52,16 +235,20 @@
 
 
 
-        }
+    }
 
 
 
-    var search = setTimeout(function () {
+    var TrackSearch = setTimeout(function () {
         var input = localStorage.getItem("input");
+
         $("#album").css({ display: "inline" })
         $("#song-click").css({ display: "inline" })
         //document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
         //document.getElementById("searchButton").style = "display: none";
+
+
+
         var trackParams = {
             method: 'GET',
             headers: {
@@ -104,7 +291,6 @@
 
             var returned = data.tracks.items;
             var container = document.getElementById("song-container");
-            container.innerHTML = "";
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
@@ -141,11 +327,11 @@
                         dataType: "json",
                         url: "/User/TrackId",
                         data: {
-                            genre: genre,
+                            track: genre,
                         },
                         success: function (data) {
                             console.log(data.message);
-                            window.open('@Url.Action("Song", "User")');
+                            window.location.assign('@Url.Action("Song", "User")');
                         },
                     });
 
@@ -160,7 +346,6 @@
 
             var returned = data.albums.items;
             var container = document.getElementById("album-container");
-            container.innerHTML = "";
             for (let i = 0; i < returned.length; i++) {
                 var div = document.createElement("div");
                 var img = document.createElement("img");
@@ -173,7 +358,7 @@
                 div.style.color = "white";
                 div.id = "albumText";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id;
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id + 'place' + '<br>' + "Artists:" + returned[i].artists[0].id + '<br>';
                 albumDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name;
                 div.appendChild(p);
                 div.appendChild(albumDetails)
@@ -184,20 +369,19 @@
                     var value = this.innerHTML;
                     localStorage.setItem("albumName", value);
                     console.log(value)
-                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('</p><p>'));
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('place'));
                     console.log(genre)
-                    window.open('@Url.Action("Album", "User")');
 
                     $.ajax({
                         type: "post",
                         dataType: "json",
                         url: "/User/TrackId",
                         data: {
-                            genre: genre,
+                            track: genre,
                         },
                         success: function (data) {
                             console.log(data.message);
-                            window.open('@Url.Action("Album", "User")');
+                            window.location.assign('@Url.Action("Album", "User")');
                         },
                     });
 
@@ -227,133 +411,18 @@
 
         });
 
+
+
     }, 1000);
 
+
+
+    $("#search-value").on('keyup', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            var input = document.getElementById("search-value").value;
+            console.log(input)
+            localStorage.setItem("input", input);
+            window.location.href = '@Url.Action("Search", "User")';
+        }
+    });
 </script>
-<style>
-
-
-
-
-    #song-container {
-        display: none;
-        grid-template-columns: 2fr 2fr 2fr;
-        grid-gap: 10px;
-        position: relative;
-        top: 200px;
-        left: 2.5em;
-        padding-left: 7vw;
-    }
-
-    #album-container {
-        display: grid;
-        grid-template-columns: 2fr 2fr 2fr;
-        grid-gap: 10px;
-        position: relative;
-        top: 200px;
-        left: 2.5em;
-        padding-left: 7vw;
-    }
-
-    #textDiv {
-        display: block;
-        text-align: justify;
-        width: 180px;
-    }
-
-        #textDiv img {
-            display: block;
-            
-            margin: 0 auto;
-        }
-
-
-    #albumText {
-        display: block;
-        text-align: justify;
-        width: 180px;
-    }
-
-        #albumText img {
-            display: block;
-            margin: 0 auto;
-        }
-
-   #search-div {
-       margin: 0 auto;
-       text-align: center;
-       position: relative;
-       top: 100px;
-   }
-
-   #search-value {
-       width: 400px;
-       height: 50px;
-       border-radius: 10px;
-   }
-
-   #album, #song-click{
-       display: none;
-       text-decoration: none;
-       border: none;
-   }
-   #album {
-       border-right: 2px solid grey;
-   }
-
-    #toggle-button {
-        border-radius: 5px;
-        margin: 0;
-        padding: 0;
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100px;
-        background: #E9E9ED;
-    }
-
-    @@media screen and (max-width: 600px) {
-
-
-        #search-div {
-            margin: 0 auto;
-            position: relative;
-            top: 200px;
-            left: 8px;
-            z-index: 0;
-        }
-
-        #song-container {
-            
-            grid-template-columns: 8fr;
-            position: absolute;
-            top: 350px;
-            left: 85px;
-        }
-
-        #album-container {
-            grid-template-columns: 8fr;
-            position: absolute;
-            top: 350px;
-            left: 85px;
-        }
-
-        #search-value {
-            width: 200px;
-        }
-
-       #toggle-button {
-           position: absolute;
-           left: 180px;
-       }
-
-        
-        
-    }
-
-    #hidden {
-        display: none;
-    }
-       
-</style>

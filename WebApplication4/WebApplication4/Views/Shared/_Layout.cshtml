@@ -7,29 +7,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://fonts.cdnfonts.com/css/circular-std" rel="stylesheet">
+
 
 </head>
 <body>
 
-    <nav class="navbar-fixed-top">
-        <div class="nav">
-            <div class="container" id="container">
+    
 
-                <div class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
-                <div id="click-btn"></div>
-                <div id="list"></div>
-                <div id="main" class="main">
-                    <ul class="nav-link">
-                        <li><a href="'@Url.Action("SignUp", "User")'">Sign Up</a></li>
-                        
-
-                    </ul>
-                </div>
-            </div>
-
-
-    </nav>
-   
 
     <div class="container body-content">
         @RenderBody()
@@ -40,7 +25,9 @@
 
 
     @RenderSection("scripts", required: false)
-    <style>
+<style>
+
+        
         label, h4 {
             color: white;
         }
@@ -56,7 +43,7 @@
 
         body {
             background-color: #14181C;
-            font-family: 'circular_stdmedium';
+            font-family: 'Circular Std';
         }
 
         a {
@@ -68,126 +55,8 @@
             float: left;
         }
 
-        .nav {
-            width: 100%;
-            height: 50px;
-            position: fixed;
-            line-height: 65px;
-            text-align: center;
-        }
 
-            .nav div.logo {
-                float: left;
-                width: auto;
-                height: auto;
-                padding-left: 3rem;
-            }
-
-                .nav div.logo a {
-                    text-decoration: none;
-                    color: white;
-                    font-size: 2rem;
-                    position: relative;
-                    bottom: 20px;
-                }
-
-            .nav div.main {
-                height: 50px;
-                float: right;
-            }
-
-
-
-                .nav div.main ul {
-                    width: 100%;
-                    height: 50px;
-                    display: flex;
-                    list-style: none;
-                    margin: 0;
-                    padding: 0;
-                    position: relative;
-                    bottom: 20px;
-                }
-
-                    .nav div.main ul li {
-                        width: auto;
-                        height: 50px;
-                        padding: 0;
-                        padding-right: 3rem;
-                    }
-
-                        .nav div.main ul li a {
-                            text-decoration: none;
-                            color: #fff;
-                            line-height: 65px;
-                            font-size: 2rem;
-                        }
-
-        .nav {
-            padding-top: 20px;
-            padding-bottom: 20px;
-            -webkit-transition: all 0.4s ease;
-            transition: all 0.4s ease;
-        }
-
-        .nav-active {
-            background: black;
-            height: 60px;
-            border-radius: 5px;
-        }
-
-        #button {
-            background-color: #1e163a;
-            -webkit-text-fill-color: white;
-            border: none;
-            position: absolute;
-            padding-top: 0;
-            margin: 0;
-            height: 10px;
-        }
-
-        .nav-link {
-            list-style-type: none;
-            width: 200px;
-            padding-left: 0;
-            border-radius: 10px;
-            position: fixed;
-            height: 250px;
-            z-index: 9998 !important;
-        }
-
-        #list {
-            position: absolute;
-            top: 58px;
-            height: 300px;
-            left: 2%;
-            z-index: 9998 !important;
-        }
-
-        hr {
-            width: 96%;
-            color: #FFFF00;
-            padding: 0px;
-            margin: 0px;
-        }
-
-
-        #containSongs {
-            height: 300px;
-            background-attachment: scroll;
-        }
-
-
-        #background {
-            background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
-            background-repeat: no-repeat;
-            background-size: 100vw;
-            background-position-x: 100vw;
-            background-position-y: 100px;
-            box-shadow: inset -150px 80px 80px 0 #14181C,inset 10px 80px 80px 0 #14181C, 0 80px 80px 80px #14181C;
-            background-attachment: local;
-        }
-    </style>
+</style>
     <script>
         const navbar = document.querySelector('.nav');
 
@@ -233,4 +102,4 @@
         x.addListener(myFunction) // Attach listener function on state changes
     </script>
 </body>
-    </html>
+</html>

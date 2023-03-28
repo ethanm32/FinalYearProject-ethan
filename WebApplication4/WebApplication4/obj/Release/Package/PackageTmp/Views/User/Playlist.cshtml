@@ -11,28 +11,253 @@
 
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    @{
+        var title = Model.FirstOrDefault()?.playlistname;
+    }
+    <title>@title</title>
+
 </head>
+
+
+
+
+
 <body>
     <h1></h1>
-    <div>
-        @foreach (var item in Model)
-            {
-                <img src='@Url.Content(item.img)'> 
-                <br />
-                <p>@item.trackname</p>
-                <br />
-                <p>@item.artist </p>
-                <p>@item.genre</p>
-            }
-    </div>
+    @for (int i = 0; i < 1; i++)
+    {
+        var playlist = Model.FirstOrDefault();
+        if (playlist?.picture != null && playlist.picture.Length > 0)
+        {
+            <div id="playlistImageDiv">
+                <img class="img-responsive center-block img-rounded" id="playlistImage" src="data:image/png;base64,@Convert.ToBase64String(playlist.picture)" />
+            </div>
+           
 
+        }
+    }
+
+    <div id="playlist">
+        @foreach (var item in Model)
+        {
+            <div class="playlistItem">
+                <img class="img-responsive center-block img-rounded" src=@item.img><p class="hidden">
+                    Name:@item.trackname<br>Artist:@item.artist
+                    <br>Link:https://p.scdn.co/mp3-preview/241189aa54503d502d3e06cf6996a87a27f73a81?cid=13825d1ddbcb4eb98c5265c4f453510e<br>
+                    Id:@item.trackid<br>
+                <p class="genres">Artists:@item.genre</p>
+                <p>@item.trackname</p><p class="artist">@item.artist<br></p>
+            </div>
+        }
+    </div>
+    <div id="plots">
+        <div id="myPlot" style="width:100%;max-width:700px"></div>
+        <div id="myPlot2" style="width:100%;max-width:700px"></div>
+    </div>
+    <button id="yourdata"onclick="dataShow()">Your data</button>
+    <button id="yourtrack" onclick="playlistShow()">Your tracks</button>
     <script>
+        var genreList = []
+        var accessToken = null;
+        window.onload = function getApiAccess() {
+
+            const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
+            const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
+            var authParams = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+            }
+
+            fetch('https://accounts.spotify.com/api/token', authParams)
+                .then(response => response.json())
+                .then(data => accessToken = data.access_token)
+                .then(() => console.log(accessToken))
+                .then(() => localStorage.setItem("access", accessToken))
+        }
+
         var playlist = localStorage.getItem("playlist");
 
+        $(document).ready(function () {
+            $('.playlistItem').click(function () {
+                var value = $(this).get(0).outerHTML;
+                console.log(value);
+
+                localStorage.setItem("storageName", value);
+                var startIndex = value.indexOf("Id:");
+
+                // If the substring is found
+                if (startIndex !== -1) {
+                    // Add the length of "Id:" to get the index of the start of the trackid value
+                    startIndex += 3;
+
+                    // Find the index of the next "<br>" tag after the trackid value
+                    var endIndex = value.indexOf("<br>", startIndex);
+
+                    // Extract the trackid value using the start and end indices
+                    var trackid = value.substring(startIndex, endIndex);
+                }
+
+                console.log(trackid);
+
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/User/TrackId",
+                        data: {
+                            track: trackid,
+                        },
+                        success: function (data) {
+                            console.log(data.message);
+                            window.open('@Url.Action("Song", "User")');
+                        },
+                    });
+
+
+                });
+            });
+
+        var search = setTimeout(function () {
+            var trackParams = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            }
+
+            var genres = $('.genres').map(function () {
+                return $(this).text().substr(8, this.length)
+            }).get();
+
+            console.log(genres);
+           var promises = []
+
+            for (var i = 0; i < genres.length; i++) {
+                var promise = fetch('https://api.spotify.com/v1/artists/' + genres[i], trackParams)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result.genres);
+                        genreList.push(...result.genres);
+                    });
+                promises.push(promise)
+            }
+
+            Promise.all(promises)
+                .then(() => {
+                    addGenre(genreList)
+            });
+        }, 500);
+
+
+        function addGenre(genreList) {
+            for (var i = 0; i < genreList.length; i++) {
+                var genre = genreList[i];
+                if (genreOccurences[genre]) {
+                    genreOccurences[genre]++
+                } else {
+                    genreOccurences[genre] = 1
+                }
+            }
+
+            var uniqueGenres = Object.keys(genreOccurences)
+            var countGenres = Object.values(genreOccurences);
+
+            console.log(uniqueGenres);
+            console.log(countGenres);
+
+            var xGenre = uniqueGenres
+            var yGenre = countGenres
+
+            var layout = { plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: '#14181C', title: "Most listened to Genres" };
+
+            var data = [{ labels: xGenre, values: yGenre, type: "pie" }];
+
+            Plotly.newPlot("myPlot2", data, layout);
+        }
+
+        var artists = $('.artist').toArray();
+
+        var occurences = {}
+
+        var genreOccurences = {}
+
+        for (var i = 0; i < artists.length; i++) {
+            var artist = artists[i].textContent;
+            if (occurences[artist]) {
+                occurences[artist]++
+            } else {
+                occurences[artist] = 1
+            }
+        }
+
+        var uniqueArtists = Object.keys(occurences)
+        var count = Object.values(occurences);
+
+        console.log(uniqueArtists)
+        console.log(count)
+
+
+
+
+        var xArray = uniqueArtists
+        var yArray = count
+
+        var layout = { plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: '#14181C', title: "Most listened to Artists" };
+
+        var data = [{ labels: xArray, values: yArray, type: "pie" }];
+
+        Plotly.newPlot("myPlot", data, layout);
+
+
+        function dataShow() {
+            document.getElementById("plots").style.display = "block";
+            document.getElementById("playlist").style.display = "none";
+        }
+
+        function playlistShow() {
+            document.getElementById("plots").style.display = "none";
+            document.getElementById("playlist").style.display = "block";
+        }
     </script>
+
+    <style>
+        #plots {
+            display: none;
+        }
+
+        #playlistImageDiv {
+            position:absolute;
+            top: 100px;
+        }
+        #playlistImage {
+            position: relative;
+            height: 200px;
+            width: 200px;
+        }
+        
+
+        #playlist {
+            position: absolute;
+            top: 400px;
+        }
+
+        #yourdata {
+            position: absolute;
+            top: 300px;
+        }
+
+        #yourtrack {
+            position: absolute;
+            top: 300px;
+            left: 100px;
+        }
+    </style>
 </body>
 </html>

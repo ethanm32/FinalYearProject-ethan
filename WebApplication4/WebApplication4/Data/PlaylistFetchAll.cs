@@ -41,9 +41,9 @@ namespace WebApplication4.Data
                     playlists.trackname = reader.GetString(1);
                     playlists.genre= reader.GetString(3);
                     playlists.artist= reader.GetString(4);
-                    playlists.img= reader.GetString(5);
+                    playlists.img = reader.GetString(5);
                     playlists.picture = reader.GetFieldValue<byte[]>(6);
-
+                    playlists.trackid = reader.GetString(7);
                     returnList.Add(playlists);
 
                 }

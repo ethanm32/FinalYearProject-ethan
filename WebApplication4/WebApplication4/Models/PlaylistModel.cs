@@ -23,7 +23,7 @@ namespace WebApplication4.Models
 
         public byte[] picture { get; set; }
 
-
+        public string trackid { get; set; }
         [NotMapped]
         public SelectList PlayListData { get; set; }
 
