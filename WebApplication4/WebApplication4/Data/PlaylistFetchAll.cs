@@ -21,7 +21,7 @@ namespace WebApplication4.Data
             var newConn = new NpgsqlConnection(conn);
 
 
-
+            //gets all the playlists with the logged in username
             string sql = "select * from public.playlists where username=@username and playlistname=@playlistname and trackname " +
                 "IS NOT NULL AND genre IS NOT NULL AND artist IS NOT NULL AND img IS NOT NULL;";
             NpgsqlCommand cmd = new NpgsqlCommand(sql, newConn);
@@ -32,6 +32,8 @@ namespace WebApplication4.Data
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
 
+
+            //adds to reader so these can be displayed.
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -39,6 +41,7 @@ namespace WebApplication4.Data
                     PlaylistModel playlists = new PlaylistModel();
 
                     playlists.trackname = reader.GetString(1);
+                    playlists.playlistname = reader.GetString(2);
                     playlists.genre= reader.GetString(3);
                     playlists.artist= reader.GetString(4);
                     playlists.img = reader.GetString(5);

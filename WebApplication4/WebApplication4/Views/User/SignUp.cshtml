@@ -28,35 +28,36 @@
 
 
 
-            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("name", "Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("username", "Username", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("email", "Email", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("password", "Password", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
                 <br />
             </div>
 
             <div class="col-md-10">
+                <br />
                 <input type="submit" value="Sign Up" class="btn btn-default" />
                 @Html.Raw(@ViewBag.ErrorContent)
             </div>
@@ -72,13 +73,26 @@
 </body>
 
 <style>
+    @@font-face {
+        font-family: myFont;
+        src: url(/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff)
+    }
+
+    #password {
+        width: 100%;
+        height: 35px;
+        border-radius: 5px;
+        color: black;
+    }
+
+
     label, h4, div, #login {
         color: white;
     }
 
     body {
         background-color: #14181C;
-        font-family: 'Circular Std';
+        font-family: 'Circular Std', sans-serif;
         font-weight: bold;
     }
 
@@ -197,7 +211,6 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
 
 }
 

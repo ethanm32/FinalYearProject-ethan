@@ -123,7 +123,7 @@ namespace WebApplication4.Controllers
             var newSession = Session["login"] as string;
             if (newSession != "logged in")
             {
-                return RedirectToAction("HomePageNL", "User");
+                return RedirectToAction("SignUp", "User");
             }
 
             string username = Session["username"] as string;
@@ -167,6 +167,12 @@ namespace WebApplication4.Controllers
 
         public ActionResult Playlist(string playlistname)
         {
+
+            var newSession = Session["login"] as string;
+            if (newSession != "logged in")
+            {
+                return RedirectToAction("SignUp", "User");
+            }
             string username = Session["username"].ToString();
             
             List<PlaylistModel> playlists = new List<PlaylistModel>();
@@ -189,7 +195,7 @@ namespace WebApplication4.Controllers
             var track = Session["track"] as string;
             if (newSession != "logged in")
             {
-                return RedirectToAction("HomePageNL", "User");
+                return RedirectToAction("SignUp", "User");
             }
 
 
@@ -231,8 +237,17 @@ namespace WebApplication4.Controllers
        
             try
             {
+                if (userModel.picture == null || userModel.picture.Length == 0)
+                {
+                    byte[] defaultImageData;
+                    using (var client = new WebClient())
+                    {
+                        defaultImageData = client.DownloadData("https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png");
+                    }
+                    userModel.picture = defaultImageData;
+                }
 
-                var sql = "INSERT INTO public.users(email,password, name, username) VALUES(@email, crypt(@password, gen_salt('bf')), @name, @username)";
+                var sql = "INSERT INTO public.users(email,password, name, username, picture) VALUES(@email, crypt(@password, gen_salt('bf')), @name, @username, @picture)";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -243,7 +258,8 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("password", userModel.password);
                 cmd.Parameters.AddWithValue("name", userModel.name);
                 cmd.Parameters.AddWithValue("username", userModel.username);
-               
+                cmd.Parameters.AddWithValue("picture", userModel.picture);
+
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
@@ -269,6 +285,7 @@ namespace WebApplication4.Controllers
             ViewBag.loggedIn = "Not Logged in";
             if (ModelState.IsValid)
             {
+                //selects all from database to ensure the user exists
                 var sql = "select count(*) from public.users where username=@username and password = crypt(@password, password); ";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
@@ -284,7 +301,7 @@ namespace WebApplication4.Controllers
                 
                 if (count > 0)
                 {
-
+                    //makes sure they are logged in
                     TempData["username"] = username;
 
                     Session["Login"] = "logged in";
@@ -355,8 +372,9 @@ namespace WebApplication4.Controllers
         {
             try
             {
-               
-                    var sql = "INSERT INTO public.playlists(username, playlistname, picture) select @username, @playlistname, @picture where not exists (select playlistname from public.playlists where playlistname = @playlistname)";
+                    //inserts into the playlist database as long as the playlist doesnt exist  
+                    var sql = "INSERT INTO public.playlists(username, playlistname, picture) select @username, @playlistname, " +
+                    "@picture where not exists (select playlistname from public.playlists where playlistname = @playlistname and username = @username)";
                     var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 
                     var newConn = new NpgsqlConnection(conn);
@@ -381,17 +399,11 @@ namespace WebApplication4.Controllers
                         }
                     }
 
-                
-
-
-                // db.UserObj.Add(userModel);
+               
                 cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                cmd.Dispose();
-                newConn.Close();
-                newConn.Dispose();
+                cmd.ExecuteNonQuery();
                 db.SaveChanges();
-                TempData["ErrorMessage"] = "PlaylistCreated";
+                TempData["ErrorMessage"] = "Playlist Created";
                 return RedirectToAction("Profile");
 
             }
@@ -468,13 +480,14 @@ namespace WebApplication4.Controllers
 
 
         
-        public ActionResult TestFunction(string playlistname,string trackname, string genre, string artist, string img, string track, PlaylistModel playlistModel)
+        public ActionResult AddToPlaylist(string playlistname,string trackname, string genre, string artist, string img, string track, PlaylistModel playlistModel)
         {
             try
             {
                 string username = Session["username"].ToString();
+                //adds to playlist
                 
-                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img, picture, trackid) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img,(SELECT distinct picture FROM public.playlists WHERE playlistname = @playlistname), @trackid)";
+                var sql = "Insert into public.playlists (username, trackname,playlistname,genre,artist,img, picture, trackid) VALUES(@username, @trackname, @playlistname, @genre, @artist, @img,(SELECT distinct picture FROM public.playlists WHERE playlistname = @playlistname and username=@username), @trackid)";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -490,13 +503,15 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("trackid", track);
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
-                
                 cmd.ExecuteNonQuery();
-                        db.SaveChanges();
+                db.SaveChanges();
+                TempData["ErrorMessage"] = "Added to Playlist";
+
             }
+            //prints out a message if theres an exception.
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>Error. Try another email!<p>";
+                TempData["ErrorMessage"] = "Can't be added to the playlist";
             }
 
             return Json(new
@@ -532,6 +547,7 @@ namespace WebApplication4.Controllers
             {
                 string username = Session["username"].ToString();
 
+                //updates the review if it exists otherwise inserts a new one
                 var sql = "UPDATE reviews SET trackid=@trackid, review_desc = @review_desc WHERE username = @username;INSERT INTO reviews (username, trackid, review_desc) SELECT @username, @trackid, @review_desc WHERE NOT EXISTS (SELECT 1 FROM reviews WHERE username = @username and trackid=@trackid);";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
@@ -546,14 +562,14 @@ namespace WebApplication4.Controllers
                 // db.UserObj.Add(userModel);
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
-                
-                
                 db.SaveChanges();
+                TempData["ErrorMessage"] = "Review Added";
 
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>This cannot be added at the moment<p>";
+                TempData["ErrorMessage"] = "Cant add Review";
+
             }
 
             return Json(new
@@ -569,6 +585,7 @@ namespace WebApplication4.Controllers
             {
                 string username = Session["username"].ToString();
 
+                //simply deletes the review using the trackid and the username from the session
                 var sql = "DELETE from public.reviews where trackid=@track and username=@username;";
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
@@ -584,12 +601,13 @@ namespace WebApplication4.Controllers
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
                 db.SaveChanges();
+                TempData["ErrorMessage"] = "Review Deleted";
 
                 Response.Redirect(Request.RawUrl);
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>This cannot be deleted at the moment<p>";
+                TempData["ErrorMessage"] = "Review deleted";
             }
 
             return Json(new
@@ -602,9 +620,12 @@ namespace WebApplication4.Controllers
         {
             try
             {
-                string username = Session["username"].ToString();
 
-                var sql = "Insert into public.ratings VALUES(@username, @trackid, @rating)";
+                
+                string username = Session["username"].ToString();
+                //updates rating if not exists otherwise inserts it
+                var sql = "UPDATE ratings SET trackid=@trackid, rating = @rating WHERE username = @username;INSERT INTO ratings (username, trackid, rating) " +
+                    "SELECT @username, @trackid, @rating WHERE NOT EXISTS (SELECT 1 FROM ratings WHERE username = @username and trackid=@trackid);"; ;
                 var conn = "Server=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;Password=Ffgtte??";
 
                 var newConn = new NpgsqlConnection(conn);
@@ -615,16 +636,16 @@ namespace WebApplication4.Controllers
                 cmd.Parameters.AddWithValue("trackid", track);
                 cmd.Parameters.AddWithValue("rating", rating);
 
-                // db.UserObj.Add(userModel);
+                
                 cmd.Prepare();
                 cmd.ExecuteNonQuery();
-                
-
                 db.SaveChanges();
+                TempData["ErrorMessage"] = "Rating Added";
+
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorContent = "<p>This cannot be added at the moment<p>";
+                TempData["ErrorMessage"] = "Rating cannot be added";
             }
 
             return Json(new
@@ -641,7 +662,7 @@ namespace WebApplication4.Controllers
         {
             try
             {
-
+                //updates the users profile picture. This is set to a default one.
                 var sql = "UPDATE public.users set picture=@picture where username=@username";
                 var conn = "Host=playback-db.postgres.database.azure.com;Port=5432;Database=users;User Id=ethanm1;password=Ffgtte??";
 

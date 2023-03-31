@@ -244,8 +244,7 @@
 
         $("#album").css({ display: "inline" })
         $("#song-click").css({ display: "inline" })
-        //document.getElementById("search-div").style = "margin: 0 auto;text - align: center;position: relative;top: 100px; left: 25px;";
-        //document.getElementById("searchButton").style = "display: none";
+       
 
 
 
@@ -256,6 +255,8 @@
                 'Authorization': 'Bearer ' + accessToken
             }
         }
+
+        //these get all the tracks, albums and artists. These are then passed to the corresponding functions to be shown on the page
         var returnedTracks = fetch('https://api.spotify.com/v1/search?q=' + input + "&type=track", trackParams)
             .then(response => response.json())
             .then(data => {
@@ -276,7 +277,7 @@
 
             });
 
-        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + "0epOFNiUfyON9EYx7Tpr6V", trackParams)
+        var returnedArtists = fetch('https://api.spotify.com/v1/artists/' + "0epOFNiUfyON9EYx7Tpr6V", trackParams)
             .then(response => response.json())
             .then(result => {
                 console.log(result);
@@ -288,7 +289,7 @@
 
 
         function addData(data) {
-
+            //gets the tracks and displays them
             var returned = data.tracks.items;
             var container = document.getElementById("song-container");
             for (let i = 0; i < returned.length; i++) {
@@ -313,6 +314,7 @@
                 div.appendChild(songDetails);
                 container.appendChild(div);
 
+                //lets users click on the tracks and opens a new page to display them. AJAX is used to pass along the trackid which is genre in this case
 
                 $(div).on("click", function (e) {
                     e.preventDefault();
@@ -343,7 +345,7 @@
         }
 
         function addAlbum(data) {
-
+            //displays the albums
             var returned = data.albums.items;
             var container = document.getElementById("album-container");
             for (let i = 0; i < returned.length; i++) {
@@ -364,7 +366,7 @@
                 div.appendChild(albumDetails)
                 container.appendChild(div);
 
-
+                //allows users to click on the albums 
                 $(div).on("click", function (e) {
                     var value = this.innerHTML;
                     localStorage.setItem("albumName", value);
@@ -390,7 +392,7 @@
             }
         }
 
-
+        //displays or hides the songs/albums based on user input.
         $("#song-click").click(function () {
             $("#album-container").each(function () {
                 $(this).css({ display: "none" })

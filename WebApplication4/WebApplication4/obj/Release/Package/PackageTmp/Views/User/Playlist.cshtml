@@ -27,16 +27,33 @@
 
 
 <body>
+    <nav class="navbar navbar-fixed-top">
+        <div class="container" id="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png" alt="Logo" width="100" height="100" style="position:absolute;top: -35px;" /></a></div>
+            </div>
+           
+        </div>
+    </nav>
     <h1></h1>
     @for (int i = 0; i < 1; i++)
     {
         var playlist = Model.FirstOrDefault();
         if (playlist?.picture != null && playlist.picture.Length > 0)
         {
-            <div id="playlistImageDiv">
-                <img class="img-responsive center-block img-rounded" id="playlistImage" src="data:image/png;base64,@Convert.ToBase64String(playlist.picture)" />
+
+            <div style="display: flex; align-items: center; background-image: linear-gradient(to bottom, #212121, #14181C); padding-top: 20px; padding-bottom: 20px; " class="imageOnTop">
+                <input style="border-radius: 50%; border: none; width: 150px; height: 150px; background-image: url('data:image/png;base64,@Convert.ToBase64String(playlist.picture)');font-size:0;background-size:cover;color:none" class="form-control-file" id="picturePro" name="picturePro" accept="image/*">
+                <h1 style="margin-left: 20px;margin-bottom: 0;">@playlist.playlistname</h1>
+                <h4 style="margin: 0; margin-left: -200px; margin-bottom: 40px;">Playlist</h4>
             </div>
-           
+
 
         }
     }
@@ -55,10 +72,10 @@
         }
     </div>
     <div id="plots">
-        <div id="myPlot" style="width:100%;max-width:700px"></div>
-        <div id="myPlot2" style="width:100%;max-width:700px"></div>
+        <div id="myPlot" style="width:100%;max-width:500px;margin-top: 150px;margin-left: 5%;"></div>
+        <div id="myPlot2" style="width:60%; max-width: 500px; margin-top: 20px; margin-left: 5%;"></div>
     </div>
-    <button id="yourdata"onclick="dataShow()">Your data</button>
+    <button id="yourdata" onclick="dataShow()">Your data</button>
     <button id="yourtrack" onclick="playlistShow()">Your tracks</button>
     <script>
         var genreList = []
@@ -115,7 +132,8 @@
                         },
                         success: function (data) {
                             console.log(data.message);
-                            window.open('@Url.Action("Song", "User")');
+                            window.location.assign('@Url.Action("Song", "User")');
+
                         },
                     });
 
@@ -209,7 +227,7 @@
         var xArray = uniqueArtists
         var yArray = count
 
-        var layout = { plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: '#14181C', title: "Most listened to Artists" };
+        var layout = { plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: '#14181C', title: "Most listened to Artists"};
 
         var data = [{ labels: xArray, values: yArray, type: "pie" }];
 
@@ -217,46 +235,89 @@
 
 
         function dataShow() {
-            document.getElementById("plots").style.display = "block";
+            document.getElementById("plots").style.display = "grid";
             document.getElementById("playlist").style.display = "none";
         }
 
         function playlistShow() {
             document.getElementById("plots").style.display = "none";
-            document.getElementById("playlist").style.display = "block";
+            document.getElementById("playlist").style.display = "grid";
         }
     </script>
 
     <style>
         #plots {
             display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         #playlistImageDiv {
-            position:absolute;
+            position: absolute;
             top: 100px;
+            margin-left: 0;
         }
-        #playlistImage {
-            position: relative;
-            height: 200px;
-            width: 200px;
-        }
-        
+
 
         #playlist {
-            position: absolute;
-            top: 400px;
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr;
+            grid-gap: 10px;
+            position: relative;
+            top: 200px;
+            left: 1.5em;
         }
+
+        .center-block {
+            margin-left: 0;
+        }
+
 
         #yourdata {
             position: absolute;
-            top: 300px;
+            top: 314px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 86px;
+            color: black !important;
         }
 
         #yourtrack {
             position: absolute;
-            top: 300px;
-            left: 100px;
+            top: 290px;
+            color: black !important;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        body {
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .genres {
+            display: none;
+        }
+
+        @@media screen and (max-width: 767px) {
+            hr {
+                display: none;
+            }
+        }
+
+        @@media screen and (max-width: 600px) {
+
+            #playlist {
+                grid-template-columns: 8fr;
+                top: 350px;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
     </style>
 </body>

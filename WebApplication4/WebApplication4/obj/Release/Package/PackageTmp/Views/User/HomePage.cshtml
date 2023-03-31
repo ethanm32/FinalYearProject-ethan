@@ -25,11 +25,23 @@
 
 
 <style>
+    .icon-bar {
+        background-color: white;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px; /* width of the scrollbar */
+        height: 10px; /* height of the scrollbar */
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #f5f5f5; /* color of the track */
+    }
     #songs {
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-gap: 40px;
-        padding-left: 200px;
+        padding-left: 12vw;
         padding-top: 250px;
     }
 
@@ -39,7 +51,7 @@
         width: 1100px;
         height: 200px;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-gap: 50px;
         overflow-x: auto;
         white-space: nowrap;
@@ -49,7 +61,7 @@
 
     html, body {
         max-width: 100%;
-        overflow-x: hidden;
+        font-family: 'Circular Std', sans-serif;
     }
 
 
@@ -141,7 +153,7 @@
             background-size: 1200px;
             background-position-x: 50%;
             background-position-y: 100px;
-            box-shadow: inset -300px 100px 100px 0 #14181C, inset 300px 100px 100px 0 #14181C, 0 300px 100px 100px #14181C;
+            box-shadow: none;
             background-attachment: scroll;
             height: 700px;
         }
@@ -172,10 +184,7 @@
             overflow-x: hidden;
         }
 
-        body {
-            position: relative;
-        }
-
+       
     }
 
     
@@ -200,7 +209,7 @@
             background-size: cover;
             height: 500px;
             top: 30px;
-            box-shadow: none !important; /* add this */
+            box-shadow: none !important; 
         }
         #songs {
             position: absolute;
@@ -217,10 +226,12 @@
         css {
             overflow-x: hidden;
         }
-
-        body {
+        html, body {
+            overflow-x: hidden;
             position: relative;
         }
+       
+       
     }
 
 
@@ -246,6 +257,7 @@ function addData(data) {
         var newdiv = document.createElement("div");
         newdiv.setAttribute("id", "songId");
         var p = document.createElement("p");
+        p.setAttribute("id", "songClicked")
         var img = document.createElement("img");
         img.src = returned[i].image;
         img.style.borderRadius = "10px";
@@ -256,10 +268,12 @@ function addData(data) {
         div.appendChild(newdiv);
 
 
-        div.onclick = function () {
+        p.onclick = function () {
             var value = this.innerHTML;
-            localStorage.setItem("storageName", value);
-            window.open('@Url.Action("Song", "User")');
+            songValue = value.substring(value.indexOf("<br><b>") + 7, value.lastIndexOf('</b><br><br>'));
+            console.log(songValue);
+            localStorage.setItem("input", songValue);
+            window.location.assign('@Url.Action("Search", "User")');
 
 
         }

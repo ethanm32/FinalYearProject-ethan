@@ -1,67 +1,130 @@
 ﻿@model WebApplication4.Models.BigModel
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
 @{
     ViewBag.Title = "Album";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<h4>Album</h4>
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        $(document).ready(function () {
+            $('#cantCreate').modal('show');
+        });</script>
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<nav class="navbar navbar-fixed-top">
+    <div class="container" id="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png" alt="Logo" width="100" height="100" style="position:absolute;top: -35px;"></a></div>
+        </div>
+        <div id="navbar-collapse" class="main collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="profile"><a href='@Url.Action("Profile", "User")'><img style="border-radius: 50%; border: none; width: 20px; height: 20px;background-size:cover" src="data:image/png;base64,@Convert.ToBase64String(Model.UserModel.picture)" /> @Html.DisplayFor(o => o.UserModel.username)</a></li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="top">
+        <img id="artist-image" src="https://i.scdn.co/image/ab67616d0000b273c3742387ba41b20e3b717d7d" />
+        <div id="title"></div>
+    </div>
+    <div class="bottom">
+        <div class="left">
+            <div id="song-container">
+            </div>
+        </div>
+        <div class="right">
 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <input type="hidden" id="rating" name="rating" value="0">
 
-<div id="review">
-    <h2>Review</h2>
-<textarea id="text-note"></textarea>
-    <button onclick='createNote()' id="add">Add Review</button>
+            <div class="rating">
+                @{
+                    var rating = @Html.DisplayFor(o => o.RatingModel.total).ToString();
+                    <div id="rate"> <p style="font-size: 20px;">@rating <i class="rating_stars fa fa-star" data-rating="1"></i></p></div>
+
+                }
+                My Rating
+                <br />
+                <i class="rating_stars fa fa-star" data-rating="1"></i>
+                <i class="rating_stars fa fa-star" data-rating="2"></i>
+                <i class="rating_stars fa fa-star" data-rating="3"></i>
+                <i class="rating_stars fa fa-star" data-rating="4"></i>
+                <i class="rating_stars fa fa-star" data-rating="5"></i>
+            </div>
+
+            <div id="review">
+                <h2>Review</h2>
+                <div id="createReview">
+                    <textarea id="text-note"></textarea>
+                    <button onclick='createNote()' id="add" style="color: white;">Add Review</button>
+                    <p style="color: white;" contenteditable="true" id="edited">@Html.DisplayFor(o => o.YourReviewModel.review_desc)</p>
+                    <button id="deleteReview">Delete</button>
+
+                </div>
+                @{
+                    <p>User Reviews:</p>
+                    foreach (var item in Model.ReviewModel)
+                    {
+                        <div id="userReviews" style="color: white;">
+
+                            <p>@item.username</p>
+                            <p>@item.review_desc</p>
+                        </div>
+
+                    }
+                }
+
+
+            </div>
+            <div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <div id="tracks-container"></div>
 </div>
-<div id="album-container">
-    <button id="play-btn" onclick="Album()">▶</button>
-</div>
-<hr />
-<br />
-<br />
 
-<div class="rating">
-    <div id="rating" class="text-center">
-
-        My Rating
-        </br>
-        <i class="rating_stars fa fa-star"></i>
-        <i class="rating_stars fa fa-star"></i>
-        <i class="rating_stars fa fa-star"></i>
-        <i class="rating_stars fa fa-star"></i>
-        <i class="rating_stars fa fa-star"></i>
+<div class="modal fade modal-dark" id="cantCreate" tabindex="-1" role="dialog" aria-labelledby="playlistModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-borderless">
+            </div>
+            <div class="modal-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div role="alert">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                <br />
+            </div>
+        </div>
+        <br />
     </div>
 </div>
-<div style="float: right">
-    @{
-        foreach (var item in Model.ReviewModel)
-        {
-            <p>@item.username</p>
-            <p>@item.review_desc</p>
-
-        }
-        @Html.DisplayFor(o => o.RatingModel.total).ToString()
-
-    }
-
-
-
-</div>
-<div id="tracks-container"></div>
-
-<a href="#" id="send">Add</a>
 
 <script>
-    var id = localStorage.getItem("AlbumId");
+    console.log(trackid);
     var accessToken = null;
+
     window.onload = function getApiAccess() {
         const CLIENT_ID = '13825d1ddbcb4eb98c5265c4f453510e';
         const CLIENT_SECRET = '8e98f1bda24f4581acfeaed2b4bac525';
@@ -73,16 +136,20 @@
             body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
         }
 
-
         fetch('https://accounts.spotify.com/api/token', authParams)
             .then(response => response.json())
             .then(data => accessToken = data.access_token)
             .then(() => console.log(accessToken))
+            .then(() => localStorage.setItem("access", accessToken))
     }
+
+
 
     var album = localStorage.getItem("albumName");
     var img = document.createElement("img");
-    var newAlbum = document.getElementById('album-container');
+    var newAlbum = document.getElementById('song-container');
+    var songTitle = document.getElementById("title");
+
     newAlbum.style.padding = "0px";
     var p = document.createElement("p");
     p.setAttribute("id", "newP");
@@ -92,23 +159,20 @@
     img.setAttribute('class', 'img-responsive center-block img-rounded');
 
     newAlbum.appendChild(img);
-    var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<b"));
-    var genre = album.substring(album.indexOf("d:") + 2, album.lastIndexOf("</p><p>"));
-    console.log(genre);
+    var albumName1 = album.substring(album.indexOf("e:") + 2, album.lastIndexOf("<br>Artist:"));
+    var artist = album.substring(album.indexOf("st:") + 2, album.lastIndexOf("Id:"));
+    var trackid = album.substring(album.indexOf("d:") + 2, album.lastIndexOf("place"));
+    console.log(trackid);
+    var artists = album.substring(album.indexOf("ts:") + 3, album.lastIndexOf('<br></p>'));
+    console.log(artists);
     var rating = document.getElementById("rating");
     console.log(albumName1);
-    p.innerHTML += albumName1;
-    newAlbum.appendChild(p);
+    p.innerHTML += albumName1 + ' - ' + artist;
 
+    songTitle.appendChild(p);
 
+    var albumTracks = setTimeout(function () {
 
-    var InnerAlbum = newAlbum.innerHTML;
-    const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
-    console.log("p" + afterp);
-    p.style.float = "right"
-    var rating = document.getElementById("rating");
-
-    function Album() {
 
         var trackParams = {
             method: 'GET',
@@ -118,7 +182,7 @@
             }
         }
 
-        var returnedTracks = fetch('https://api.spotify.com/v1/albums/' + id, trackParams)
+        var returnedTracks = fetch('https://api.spotify.com/v1/albums/' + trackid, trackParams)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -130,46 +194,47 @@
             });
 
 
-    }
+    }, 800);
 
     function addAlbum(data) {
-        var container = document.getElementById("tracks-container");
-        $("#tracks-container").empty().toggle();
+        var container = document.getElementById("tracks-container");;
         var name = document.createElement("p");
         var title = document.createElement("p");
-        var duration = document.createElement("p");
+        var playSong = document.createElement("p");
         name.innerHTML = "#" + "<br>" + "<hr>";
         title.innerHTML = "Title";
-        duration.innerHTML = "Length";
         title.style.position = "relative";
         title.style.bottom = "59px";
         title.style.left = "300px";
-        duration.style.position = "relative";
-        duration.style.bottom = "90px";
-        duration.style.left = "900px";
-        //name.style.float = "left";
+        playSong.style.position = "relative";
+        playSong.style.bottom = "90px";
+        playSong.style.left = "900px";
         container.appendChild(name);
         container.appendChild(title);
-        container.appendChild(duration);
+        container.appendChild(playSong);
         var returned = data.tracks.items;
         for (let i = 0; i < returned.length; i++) {
             var div = document.createElement("div");
             var p = document.createElement("ul");
             var titleUl = document.createElement("ul");
-            var durationUl = document.createElement("ul");
+            var playSongUl = document.createElement("ul");
             var li = document.createElement("li")
             var titleLi = document.createElement("li")
-            var durationLi = document.createElement("li");
+            var playSongLi = document.createElement("li");
+            playSongLi.classList.add('playSong');
+            titleLi.classList.add('titleLi');
             console.log(data);
             div.style.color = "white";
             div.id = "albumText";
-            const duration = new Date(returned[i].duration_ms)
+            const playSong = new Date(returned[i].playSong_ms)
 
             li.innerHTML += i + 1 + "</br>";
             titleLi.innerHTML += returned[i].name;
+            playSongLi.innerHTML += '<iframe style="position: relative; left: 5vw; width: 100%; max-width: 300px; height: 10vh; " id="iframe" src="https://open.spotify.com/embed/track/' + returned[i].id + '?utm_source=generator" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media;fullscreen; picture-in-picture" loading="lazy"></iframe>'
+            playSongUl.appendChild(playSongLi);
             p.appendChild(li)
             titleUl.appendChild(titleLi)
-            durationUl.appendChild(titleUl);
+            titleUl.appendChild(playSongLi)
             p.style.padding = 0;
             p.style.width = "20px";
             li.style.padding = 0;
@@ -177,18 +242,82 @@
             li.style.width = "100px"
             p.style.padding = 0;
             titleLi.style.position = "relative";
+            playSongLi.style.position = "relative";
             p.style.position = "relative";
             p.style.top = "20px";
+            playSongLi.style.top = "-40px";
             titleLi.style.left = "260px"
+            playSongLi.style.left = "640px"
             titleUl.style.position = "relative";
             titleUl.style.bottom = "10px"
             li.style.listStyle = "none";
             titleLi.style.listStyle = "none";
             container.appendChild(p);
+            playSongLi.style.listStyle = "none"
             container.appendChild(titleUl);
-            container.appendChild(durationUl);
+            container.appendChild(playSongUl);
+
+
+            let myMediaQuery = window.matchMedia('(max-width: 800px)')
+
+            mediaqueryresponse(myMediaQuery);
+
+            myMediaQuery.addListener(mediaqueryresponse);
+
+            function mediaqueryresponse(myMediaQuery) {
+                if (myMediaQuery.matches) {
+                    titleLi.style.left = "10px";
+                    playSongLi.style.left = "40px";
+                    playSongLi.style.width = "70%";
+                    playSongLi.style.top = "30px";
+                }
+                else {
+                    for (let i = 0; i < titleLis.length; i++) {
+                        titleLis[i].style.left = "260px";
+                        playSongLis[i].style.left = "640px";
+                        playSongLis[i].style.width = "";
+                        playSongLis[i].style.top = "-40px";
+                    }
+                }
+            }
+
         }
     }
+
+    let titleLis = document.getElementsByClassName('titleLi');
+    let playSongLis = document.getElementsByClassName('playSong');
+
+    let myMediaQuery = window.matchMedia('(max-width: 1000px)')
+
+
+    mediaqueryresponse(myMediaQuery);
+
+    myMediaQuery.addListener(mediaqueryresponse);
+
+    function mediaqueryresponse(myMediaQuery) {
+        if (myMediaQuery.matches) {
+            for (let i = 0; i < titleLis.length; i++) {
+                titleLis[i].style.left = "10px";
+                playSongLis[i].style.left = "40px";
+                playSongLis[i].style.width = "70%";
+                playSongLis[i].style.top = "10px";
+            }
+        } else {
+            for (let i = 0; i < titleLis.length; i++) {
+                titleLis[i].style.left = "260px";
+                playSongLis[i].style.left = "640px";
+                playSongLis[i].style.width = "";
+                playSongLis[i].style.top = "-40px";
+            }
+        }
+    }
+
+    var InnerAlbum = newAlbum.innerHTML;
+    const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
+    console.log("p" + afterp);
+    p.style.float = "right"
+    var rating = document.getElementById("rating");
+
 
 
     $('.rating').on('click', '.rating_stars', function () {
@@ -215,33 +344,55 @@
             dataType: "json",
             url: "/User/AddToRating",
             data: {
-                track: genre,
+                track: trackid,
                 rating: star,
             },
             success: function (data) {
                 console.log(data.message);
+                alert("rating added");
+
             },
         });
 
     });
+
+    var artistSearch = setTimeout(function () {
+        var trackParams = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+
+        var returnedSongs = fetch('https://api.spotify.com/v1/artists/' + artists, trackParams)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result.images[0].url);
+                addImage(result.images[0].url);
+
+
+
+            });
+
+    }, 1000);
+
+
+
+
+
+
+
     let counter = 0;
     function createNote() {
         counter++;
-        var addBtn = document.getElementById("add");
-        addBtn.style.display = 'none';
+
         var divnote = document.createElement('div');
         var text = document.getElementById("text-note").value;
         divnote.innerHTML += text;
         divnote.setAttribute("id", "div" + counter);
         var review = document.getElementById("review");
         review.appendChild(divnote);
-        var deleteBtn = document.createElement('button');
-        deleteBtn.setAttribute("id", "div" + counter);
-        deleteBtn.innerHTML = "Delete";
-        var editBtn = document.createElement('button');
-        editBtn.innerHTML = "Edit";
-        editBtn.setAttribute("id", "div" + counter);
-        review.appendChild(deleteBtn);
         divnote.style.width = "fit-content";
         review.appendChild(editBtn);
         divnote.style.whiteSpace = "pre-wrap";
@@ -249,53 +400,36 @@
 
 
 
-
         divnote.style.border = "1px solid black";
         divnote.style.borderRadius = "5px";
 
-        deleteBtn.onclick = function () {
-            var id = event.srcElement.id;
-            document.getElementById(id).innerHTML = "";
-            deleteBtn.remove();
-            editBtn.remove();
-            addBtn.style.display = 'inline-block';
 
-        };
 
-        editBtn.onclick = function () {
-            var id = event.srcElement.id;
-            document.getElementById(id).contentEditable = "true";
-            var saveBtn = document.createElement('button');
-            saveBtn.innerHTML = "Save Changes";
-            saveBtn.setAttribute("id", id);
 
-            review.appendChild(saveBtn);
-
-            saveBtn.onclick = function () {
-                var saveId = event.srcElement.id;
-                console.log(counter);
-                document.getElementById(saveId).contentEditable = "false";
-                saveBtn.remove();
-            }
-        }
 
         return divnote.id;
     }
 
 
-    $("#add").on("click", function (e) {
 
-        var text = $("#text-note");
-        var review = text.val();
+
+
+    $(window).on("load", function (e) {
         e.preventDefault();
-
+        var text = $("#edited");
+        var value = text.text();
+        if (value == "") {
+            $("#deleteReview").css("display", "none")
+        }
+        else {
+            $("#deleteReview").css("display", "block")
+        }
         $.ajax({
             type: "post",
             dataType: "json",
-            url: "/User/AddToReview",
+            url: "/User/TrackId",
             data: {
-                track: genre,
-                review: review
+                track: trackid,
             },
             success: function (data) {
                 console.log(data.message);
@@ -303,14 +437,135 @@
         });
     });
 
+    $("#deleteReview").on("click", function (e) {
+        e.preventDefault();
+        $("deleteReview").css("display", "none");
+
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/DeleteReview",
+            data: {
+                track: trackid,
+            },
+            success: function (data) {
+                console.log(data.message);
+                alert("review deleted");
+            },
+        });
+
+        window.location.reload();
+    });
+
+
+    $("#send").on("click", function (e) {
+
+        var select = $("#SelectedPlaylist")
+        var playlistname = select.val();
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToPlaylist",
+            data: {
+                playlistname: playlistname,
+                trackname: nameSong,
+                artist: artist,
+                genre: artists,
+                img: img,
+                track: trackid,
+            },
+            success: function (data) {
+                console.log(data.message);
+                alert("added to playlist");
+                window.location.reload();
+            },
+        });
+    });
+
+    $("#add").on("click", function (e) {
+
+        $("deleteReview").css("display", "block");
+        var text = $("#text-note");
+        var review = text.val();
+
+
+        e.preventDefault();
+
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/User/AddToReview",
+            data: {
+                track: trackid,
+                review: review
+            },
+            success: function (data) {
+                console.log(data.message);
+                alert("review added");
+                window.location.reload();
+            },
+        });
+    });
+
+    function addImage(data) {
+        console.log(data);
+        $("#artist-image").attr("src", data);
+    }
 
 
 
 </script>
 <style>
 
-    div {
-        color: white;
+
+    #rate {
+        color: orange;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #song-img {
+        position: relative;
+        left: 5vw;
+    }
+
+    .top {
+        height: 300px; /* set the height of the top div */
+    }
+
+    .bottom {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .left, .right {
+        flex-basis: 50%; /* set the width of the bottom divs */
+        height: 500px;
+        min-width: 50px;
+    }
+
+    .right {
+        margin-top: 40px;
+    }
+
+    #artist-image {
+        width: 100%; /* make the image fill the top div */
+        height: 100%;
+        object-fit: cover; /* scale and crop the image to fill the container */
+        filter: blur(2px);
+        border-radius: 10px;
+        margin-top: 60px;
+    }
+
+
+    #rating {
+        margin-top: 10px;
     }
 
     .checked {
@@ -335,17 +590,23 @@
         color: orange;
     }
 
-    #review {
-        position: absolute;
-        left: 50%;
-        top: 100px;
+    .flex-container {
+        flex-direction: row;
     }
 
-    h4 {
+    #newP {
         color: white;
-        position: absolute;
-        top: 140px;
-        right: 57.5vw;
+        margin-top: 10px;
+        margin-left: 60px;
+        font-size: 2rem;
+    }
+
+    #edited {
+        width: fit-content;
+    }
+
+    #h2 {
+        color: white;
     }
 
     textarea {
@@ -357,16 +618,11 @@
         margin-bottom: 60px;
     }
 
-    img {
-        position: relative;
-        right: 28em;
-    }
-
-    #newP {
+    h4 {
+        color: white;
         position: absolute;
-        top: 180px;
-        right: 35vw;
-        font-size: 40px;
+        top: 140px;
+        right: 57.5vw;
     }
 
     #text-container {
@@ -374,22 +630,92 @@
         right: 20em;
     }
 
-    #play-btn {
-        position: absolute;
-        top: 270px;
-        right: 54vw;
-        width: 100px;
-        height: 100px;
-        font-size: 36px;
-        border-radius: 100px;
+    #song-img {
+        float: left;
     }
 
-    hr {
-        border: 0;
-        height: 1px;
-        background-image: linear-gradient(to right, rgb(128, 128, 128, 0.75), rgba(128, 128, 128, 0.75), rgba(128, 128, 128, 0));
+    #createReview {
+        float: left;
+        width: 50%;
     }
+
+    #userReviews {
+        float: left;
+        width: 50%;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    #playlist {
+        position: absolute;
+        left: 240px;
+    }
+
+    .rating {
+        margin-top: 100px;
+    }
+
+    #title {
+        margin-top: 30px;
+        position: absolute;
+        left: 48%;
+        transform: translate(-50%, -50%);
+    }
+
+    .icon-bar {
+        background-color: white;
+    }
+
+
+    #song-container {
+        margin-top: 120px;
+    }
+
+    #tracks-container {
+        color: white;
+    }
+
+    body {
+        color: white;
+    }
+
+    .modal-dark .modal-content {
+        background-color: #343541;
+        color: #8E919B;
+    }
+    @@media screen and (max-width: 787px) {
+        .bottom {
+            flex-direction: column;
+        }
+
+        .left {
+            width: 100%;
+        }
+
+        .right {
+            width: 100%;
+        }
+
+        .left, .right {
+            flex-basis: 100%;
+        }
+
+        #artist-image {
+            width: 130%;
+            position: relative;
+            left: -50px;
+        }
+
+        .icon-bar {
+            background-color: white;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
     }
 </style>
-
 

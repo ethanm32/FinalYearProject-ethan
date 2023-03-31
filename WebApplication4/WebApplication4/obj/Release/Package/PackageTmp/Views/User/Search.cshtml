@@ -8,6 +8,9 @@
 
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<!--[if Webkit]>
+<hr style="border-color: grey; border-width: 2px;">
+<![endif]-->
 <body>
     <nav class="navbar navbar-fixed-top">
         <div class="container" id="container">
@@ -36,7 +39,6 @@
 
         <div id="toggle-button">
             <button id="album">Album</button>
-
             <button id="song-click">Song</button>
         </div>
     </div>
@@ -48,7 +50,9 @@
 </body>
 
 <style>
-
+    .icon-bar {
+        background-color: white;
+    }
     #song-container {
         display: none;
         grid-template-columns: 2fr 2fr 2fr;
@@ -112,9 +116,21 @@
     }
 
     #album {
-        border-right: 2px solid grey;
+        display: inline-block;
+        position: relative;
+        width:100%;
+        border-radius: 5px;
     }
 
+        #album::after {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            border-bottom: 2px solid grey;
+        }
     #toggle-button {
         border-radius: 5px;
         margin: 0;
@@ -129,6 +145,24 @@
         background: #E9E9ED;
     }
 
+    @@media screen and (-webkit-min-device-pixel-ratio:0) {
+        hr {
+          border-color: grey;
+          border-width: 2px;
+        }
+
+        #album: {
+            border-right: none;
+        }
+      }
+
+    
+  @@media screen and (max-width: 767px) {
+        hr {
+          display: none;
+        }
+      }
+
     @@media screen and (max-width: 600px) {
 
 
@@ -142,16 +176,19 @@
 
         #song-container {
             grid-template-columns: 8fr;
-            position: absolute;
             top: 350px;
-            left: 85px;
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
         }
 
         #album-container {
             grid-template-columns: 8fr;
-            position: absolute;
             top: 350px;
-            left: 85px;
+           
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
         }
 
         #search-value {
@@ -160,8 +197,11 @@
 
         #toggle-button {
             position: absolute;
-            left: 180px;
+            left: 48%;
+            transform: translateX(-50%);
         }
+
+
     }
 
     #hidden {
@@ -318,7 +358,7 @@
                 div.style.color = "white";
                 div.id = "albumText";
                 div.appendChild(img);
-                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id;
+                p.innerHTML += 'Name:' + returned[i].name + '<br>' + 'Artist:' + returned[i].artists[0].name + "Id:" + returned[i].id + 'place' + '<br>' + "Artists:" + returned[i].artists[0].id + '<br>';
                 albumDetails.innerHTML += returned[i].name + '<br>' + returned[i].artists[0].name;
                 div.appendChild(p);
                 div.appendChild(albumDetails)
@@ -329,7 +369,7 @@
                     var value = this.innerHTML;
                     localStorage.setItem("albumName", value);
                     console.log(value)
-                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('</p><p>'));
+                    var genre = value.substring(value.indexOf("d:") + 2, value.lastIndexOf('place'));
                     console.log(genre)
 
                     $.ajax({

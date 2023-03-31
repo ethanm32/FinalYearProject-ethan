@@ -1,4 +1,9 @@
 ﻿@model WebApplication4.Models.BigModel
+
+@{ 
+    Layout = null;
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,12 +27,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <div style="position:relative; top: 20px;"class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+                <div style="position:relative; top: 20px;"class="logo"><a href='@Url.Action("HomePage", "User")'><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png" alt="Logo" width="100" height="100" style="position:absolute;top: -35px;"></a></div>
             </div>
             <div id="navbar-collapse" class="main collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="profile"><a href='@Url.Action("Profile", "User")'><img style="border-radius: 50%; border: none; width: 20px; height: 20px;background-size:cover" src="data:image/png;base64,@Convert.ToBase64String(Model.UserModel.picture)" /> @Html.DisplayFor(o => o.UserModel.username)</a></li>
-                    <li class="search-bar"><input type="search" id="search" name="q" placeholder="Search for some music.."></li>
+                    <li class="profile" style="position:relative;top: 10px;"><a href='@Url.Action("Profile", "User")'><img style="border-radius: 50%; border: none; width: 20px; height: 20px;background-size:cover;" src="data:image/png;base64,@Convert.ToBase64String(Model.UserModel.picture)" /> @Html.DisplayFor(o => o.UserModel.username)</a></li>
+                    <li class="search-bar" style="position:relative;top: 10px;"><input type="search" id="search" name="q" placeholder="Search for some music.."></li>
                 </ul>
             </div>
         </div>
@@ -36,7 +41,6 @@
     
     <div class="text">
         <h3>Rate and Review the Music you love</h3>
-        <button id="buttonSignUp">SIGN UP NOW</button>
     </div>
     <div id="background">
 
@@ -61,78 +65,80 @@
     @RenderSection("scripts", required: false)
 <style>
 
+   
+    label, h4 {
+        color: white;
+    }
 
-        html, body
+    div.navbar-collapse collapse {
+        color: #000000;
+    }
 
-        {
-            max-width: 100%;
-            overflow-x: hidden;
-            padding: 0;
-            margin: 0;
-            position: relative;
-            height: 1000px;
-        }
+    input.btn {
+        background-color: #d89898;
+        border-color: #d89898;
+    }
 
-        label, h4 {
-            color: white;
-        }
+    body {
+        background-color: #14181C;
+        font-family: 'Circular Std', sans-serif;
+    }
 
-        div.navbar-collapse collapse {
-            color: #000000;
-        }
+    a {
+        color: white;
+        text-decoration: none;
+    }
 
-        input.btn {
-            background-color: #d89898;
-            border-color: #d89898;
-        }
+    #head {
+        float: left;
+    }
 
-        body {
-            background-color: #14181C;
-            font-family: 'Circular Std';
-        }
+ 
+   
 
-        a {
-            color: white;
-            text-decoration: none;
-        }
+    #button {
+        background-color: #1e163a;
+        -webkit-text-fill-color: white;
+        border: none;
+        position: absolute;
+        padding-top: 0;
+        margin: 0;
+        height: 10px;
+    }
 
-        #head {
-            float: left;
-        }
+   
 
+    #list {
+        position: absolute;
+        top: 58px;
+        height: 300px;
+        left: 2%;
+        z-index: 9998 !important;
+    }
 
-
-        #list {
-            position: absolute;
-            top: 58px;
-            height: 300px;
-            left: 2%;
-            z-index: 9998 !important;
-        }
-
-        hr {
-            width: 96%;
-            color: #FFFF00;
-            padding: 0px;
-            margin: 0px;
-        }
-
-
-        #containSongs {
-            height: 300px;
-            background-attachment: scroll;
-        }
+    hr {
+        width: 96%;
+        color: #FFFF00;
+        padding: 0px;
+        margin: 0px;
+    }
 
 
-        #background {
-            background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
-            background-repeat: no-repeat;
-            background-size: 100vw;
-            background-position-x: 100vw;
-            background-position-y: 100px;
-            box-shadow: inset -150px 80px 80px 0 #14181C,inset 10px 80px 80px 0 #14181C, 0 80px 80px 80px #14181C;
-            background-attachment: local;
-        }
+    #containSongs {
+        height: 300px;
+        background-attachment: scroll;
+    }
+
+
+    #background {
+        background: url("https://media.pitchfork.com/photos/5e17c6a4516bdd0008561c76/2:1/w_2776,h_1388,c_limit/beatles-abbey-road.jpg");
+        background-repeat: no-repeat;
+        background-size: 100vw;
+        background-position-x: 100vw;
+        background-position-y: 100px;
+        box-shadow: inset -150px 80px 80px 0 #14181C,inset 10px 80px 80px 0 #14181C, 0 80px 80px 80px #14181C;
+        background-attachment: local;
+    }
 
         input[type="search"] {
             border-radius: 10px;
@@ -173,8 +179,7 @@
 
             .profile {
                 
-                top: 5px;
-                padding-top: 5px;
+                top: -10px !important; 
                 text-align: center;
                 position: absolute;
                 left: 40%;
@@ -208,17 +213,15 @@
                 height: 100px;
             }
 
-            
+            html, body {
+                font-family: 'Circular Std', sans-serif;
+                overflow-x: hidden;
+                position: relative;
+            }
         }
 
-        @@font-face {
-            font-family: myFont;
-            src: url(/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff)
-        }
 
-        body {
-            font-family: myFont;
-        }
+        
 
 
 </style>
@@ -247,7 +250,9 @@
             }
         })
 
-
+        function hello() {
+            console.log("hello");
+        }
 
     </script>
 </body>

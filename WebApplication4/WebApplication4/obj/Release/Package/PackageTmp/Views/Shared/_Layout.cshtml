@@ -28,11 +28,8 @@
 <style>
 
         @@font-face {
-            font-family: 'myFont';
-            src: url('/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff2') format('woff2'),
-                 url('/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+            font-family: myFont;
+            src: url(/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff)
         }
         label, h4 {
             color: white;
@@ -49,7 +46,7 @@
 
         body {
             background-color: #14181C;
-            font-family: 'Circular Std';
+            font-family: myFont;
         }
 
         a {
@@ -61,6 +58,9 @@
             float: left;
         }
 
+        body {
+            font-family: 'Circular Std', sans-serif;
+        }
 
 </style>
     <script>

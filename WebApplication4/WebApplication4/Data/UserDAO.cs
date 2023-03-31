@@ -38,7 +38,10 @@ namespace WebApplication4.Data
                     user.password = reader.GetString(1);
                     user.name = reader.GetString(2);
                     user.username = reader.GetString(3);
-                    user.picture = reader.GetFieldValue<byte[]>(4);
+                    if (!reader.IsDBNull(4) && reader.GetFieldType(4) == typeof(byte[]))
+                    {
+                        user.picture = reader.GetFieldValue<byte[]>(4);
+                    }
                 }
 
             }

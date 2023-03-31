@@ -17,7 +17,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png" alt="Logo" width="100" height="100" style="position:absolute;top: -35px;" /></a></div>
         </div>
         <div id="navbar-collapse" class="main collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -149,12 +149,11 @@
             <div class="modal-body">
                 @if (TempData["ErrorMessage"] != null)
                 {
-                    <div class="alert alert-danger" role="alert">
+                    <div  role="alert">
                         @TempData["ErrorMessage"]
                     </div>
                 }
                 <br />
-                <button type="submit" class="btn btn-primary" style="float:right;">Save</button>
             </div>
         </div>
         <br />
@@ -165,6 +164,7 @@
 
 <script>
 
+    //ensures the image changes when one is chosen. 
     function backgroundChange(event) {
         var input = event.target;
         var reader = new FileReader();
@@ -179,6 +179,7 @@
         reader.readAsDataURL(input.files[0]);
     }
 
+    //does the same as above but for the profile image
     function backgroundChangeprofile(event) {
         var input = event.target;
         var reader = new FileReader();
@@ -231,10 +232,7 @@
         border-top: 0 none;
     }
 
-    .modal-content {
-        height: 350px !important;
-    }
-
+   
     .form-control {
         border-radius: 10px;
         background-color: #343541;

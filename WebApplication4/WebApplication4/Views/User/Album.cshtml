@@ -7,6 +7,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        $(document).ready(function () {
+            $('#cantCreate').modal('show');
+        });</script>
+}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <nav class="navbar navbar-fixed-top">
     <div class="container" id="container">
@@ -18,7 +25,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'>Playback</a></div>
+            <div style="position:relative; top: 20px;" class="logo"><a href='@Url.Action("HomePage", "User")'><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png" alt="Logo" width="100" height="100" style="position:absolute;top: -35px;"></a></div>
         </div>
         <div id="navbar-collapse" class="main collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -31,7 +38,7 @@
 
 <div class="container">
     <div class="top">
-        <img id="artist-image" src="https://i.scdn.co/image/ab6761610000e5ebe926dd683e1700a6d65bd835" />
+        <img id="artist-image" src="https://i.scdn.co/image/ab67616d0000b273c3742387ba41b20e3b717d7d" />
         <div id="title"></div>
     </div>
     <div class="bottom">
@@ -86,15 +93,33 @@
             <div>
 
 
-                
+
             </div>
 
         </div>
-        
+
     </div>
     <div id="tracks-container"></div>
 </div>
 
+<div class="modal fade modal-dark" id="cantCreate" tabindex="-1" role="dialog" aria-labelledby="playlistModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-header-borderless">
+            </div>
+            <div class="modal-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div role="alert">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                <br />
+            </div>
+        </div>
+        <br />
+    </div>
+</div>
 
 <script>
     console.log(trackid);
@@ -146,9 +171,9 @@
 
     songTitle.appendChild(p);
 
-    var albumTracks = setTimeout(function() {
+    var albumTracks = setTimeout(function () {
 
-      
+
         var trackParams = {
             method: 'GET',
             headers: {
@@ -175,41 +200,41 @@
         var container = document.getElementById("tracks-container");;
         var name = document.createElement("p");
         var title = document.createElement("p");
-        var duration = document.createElement("p");
+        var playSong = document.createElement("p");
         name.innerHTML = "#" + "<br>" + "<hr>";
         title.innerHTML = "Title";
-        duration.innerHTML = "Length";
         title.style.position = "relative";
         title.style.bottom = "59px";
         title.style.left = "300px";
-        duration.style.position = "relative";
-        duration.style.bottom = "90px";
-        duration.style.left = "900px";
-        //name.style.float = "left";
+        playSong.style.position = "relative";
+        playSong.style.bottom = "90px";
+        playSong.style.left = "900px";
         container.appendChild(name);
         container.appendChild(title);
-        container.appendChild(duration);
+        container.appendChild(playSong);
         var returned = data.tracks.items;
         for (let i = 0; i < returned.length; i++) {
             var div = document.createElement("div");
             var p = document.createElement("ul");
             var titleUl = document.createElement("ul");
-            var durationUl = document.createElement("ul");
+            var playSongUl = document.createElement("ul");
             var li = document.createElement("li")
             var titleLi = document.createElement("li")
-            var durationLi = document.createElement("li");
+            var playSongLi = document.createElement("li");
+            playSongLi.classList.add('playSong');
+            titleLi.classList.add('titleLi');
             console.log(data);
             div.style.color = "white";
             div.id = "albumText";
-            const duration = new Date(returned[i].duration_ms)
+            const playSong = new Date(returned[i].playSong_ms)
 
             li.innerHTML += i + 1 + "</br>";
             titleLi.innerHTML += returned[i].name;
-            durationLi.innerHTML += '<iframe style="position: relative; left: 5vw; width: 100%; max-width: 300px; height: 10vh; " id="iframe" src="https://open.spotify.com/embed/track/' + returned[i].id + '?utm_source=generator" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media;fullscreen; picture-in-picture" loading="lazy"></iframe>'
-            durationUl.appendChild(durationLi);
+            playSongLi.innerHTML += '<iframe style="position: relative; left: 5vw; width: 100%; max-width: 300px; height: 10vh; " id="iframe" src="https://open.spotify.com/embed/track/' + returned[i].id + '?utm_source=generator" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media;fullscreen; picture-in-picture" loading="lazy"></iframe>'
+            playSongUl.appendChild(playSongLi);
             p.appendChild(li)
             titleUl.appendChild(titleLi)
-            durationUl.appendChild(durationLi);
+            titleUl.appendChild(playSongLi)
             p.style.padding = 0;
             p.style.width = "20px";
             li.style.padding = 0;
@@ -217,22 +242,75 @@
             li.style.width = "100px"
             p.style.padding = 0;
             titleLi.style.position = "relative";
-            durationLi.style.position = "relative";
+            playSongLi.style.position = "relative";
             p.style.position = "relative";
             p.style.top = "20px";
+            playSongLi.style.top = "-40px";
             titleLi.style.left = "260px"
-            durationLi.style.left = "500px"
+            playSongLi.style.left = "640px"
             titleUl.style.position = "relative";
             titleUl.style.bottom = "10px"
             li.style.listStyle = "none";
             titleLi.style.listStyle = "none";
             container.appendChild(p);
+            playSongLi.style.listStyle = "none"
             container.appendChild(titleUl);
-            container.appendChild(durationUl);
+            container.appendChild(playSongUl);
+
+
+            let myMediaQuery = window.matchMedia('(max-width: 800px)')
+
+            mediaqueryresponse(myMediaQuery);
+
+            myMediaQuery.addListener(mediaqueryresponse);
+
+            function mediaqueryresponse(myMediaQuery) {
+                if (myMediaQuery.matches) {
+                    titleLi.style.left = "10px";
+                    playSongLi.style.left = "40px";
+                    playSongLi.style.width = "70%";
+                    playSongLi.style.top = "30px";
+                }
+                else {
+                    for (let i = 0; i < titleLis.length; i++) {
+                        titleLis[i].style.left = "260px";
+                        playSongLis[i].style.left = "640px";
+                        playSongLis[i].style.width = "";
+                        playSongLis[i].style.top = "-40px";
+                    }
+                }
+            }
+
         }
     }
 
+    let titleLis = document.getElementsByClassName('titleLi');
+    let playSongLis = document.getElementsByClassName('playSong');
 
+    let myMediaQuery = window.matchMedia('(max-width: 1000px)')
+
+
+    mediaqueryresponse(myMediaQuery);
+
+    myMediaQuery.addListener(mediaqueryresponse);
+
+    function mediaqueryresponse(myMediaQuery) {
+        if (myMediaQuery.matches) {
+            for (let i = 0; i < titleLis.length; i++) {
+                titleLis[i].style.left = "10px";
+                playSongLis[i].style.left = "40px";
+                playSongLis[i].style.width = "70%";
+                playSongLis[i].style.top = "10px";
+            }
+        } else {
+            for (let i = 0; i < titleLis.length; i++) {
+                titleLis[i].style.left = "260px";
+                playSongLis[i].style.left = "640px";
+                playSongLis[i].style.width = "";
+                playSongLis[i].style.top = "-40px";
+            }
+        }
+    }
 
     var InnerAlbum = newAlbum.innerHTML;
     const afterp = InnerAlbum.substring(InnerAlbum.indexOf('<p'));
@@ -240,7 +318,7 @@
     p.style.float = "right"
     var rating = document.getElementById("rating");
 
-    
+
 
     $('.rating').on('click', '.rating_stars', function () {
         var star = $(this).index();
@@ -249,17 +327,20 @@
                 $(this).removeClass('selected');
         });
 
-        if (star == 1) {
-            star += 4;
-        }
-        else if (star == 2) {
-            star += 2;
+        if (star == 6) {
+            star -= 5;
         }
         else if (star == 5) {
-            star -= 4;
+            star -= 3;
         }
         else if (star == 4) {
-            star -= 2;
+            star -= 1;
+        }
+        else if (star == 3) {
+            star += 1;
+        }
+        else if (star == 2) {
+            star += 3;
         }
         $.ajax({
             type: "post",
@@ -271,7 +352,8 @@
             },
             success: function (data) {
                 console.log(data.message);
-                alert("rating added");
+                window.location.reload();
+
 
             },
         });
@@ -299,7 +381,7 @@
 
     }, 1000);
 
-   
+
 
 
 
@@ -332,7 +414,7 @@
         return divnote.id;
     }
 
-    
+
 
 
 
@@ -373,13 +455,16 @@
             },
             success: function (data) {
                 console.log(data.message);
-                alert("review deleted");
+                window.location.reload();
+
             },
         });
 
         window.location.reload();
+
     });
 
+    //adds to playlist using ajax.
 
     $("#send").on("click", function (e) {
 
@@ -390,7 +475,7 @@
         $.ajax({
             type: "post",
             dataType: "json",
-            url: "/User/TestFunction",
+            url: "/User/AddToPlaylist",
             data: {
                 playlistname: playlistname,
                 trackname: nameSong,
@@ -401,12 +486,12 @@
             },
             success: function (data) {
                 console.log(data.message);
-                alert("added to playlist");
                 window.location.reload();
             },
         });
     });
 
+    //adds to review using ajax
     $("#add").on("click", function (e) {
 
         $("deleteReview").css("display", "block");
@@ -426,11 +511,12 @@
             },
             success: function (data) {
                 console.log(data.message);
-                alert("review added");
                 window.location.reload();
             },
         });
     });
+
+    //sets the artist image
 
     function addImage(data) {
         console.log(data);
@@ -444,7 +530,7 @@
 
 
     #rate {
-        color: orange;
+        color: orange !important;
     }
 
     .container {
@@ -458,7 +544,7 @@
     }
 
     .top {
-        height: 300px; /* set the height of the top div */
+        height: 300px; 
     }
 
     .bottom {
@@ -467,7 +553,7 @@
     }
 
     .left, .right {
-        flex-basis: 50%; /* set the width of the bottom divs */
+        flex-basis: 50%; 
         height: 500px;
         min-width: 50px;
     }
@@ -477,9 +563,9 @@
     }
 
     #artist-image {
-        width: 100%; /* make the image fill the top div */
+        width: 100%; 
         height: 100%;
-        object-fit: cover; /* scale and crop the image to fill the container */
+        object-fit: cover; 
         filter: blur(2px);
         border-radius: 10px;
         margin-top: 60px;
@@ -586,10 +672,27 @@
         transform: translate(-50%, -50%);
     }
 
-    #song-container {
-        margin-top: 40px;
+    .icon-bar {
+        background-color: white;
     }
 
+
+    #song-container {
+        margin-top: 120px;
+    }
+
+    #tracks-container {
+        color: white;
+    }
+
+    body {
+        color: white;
+    }
+
+    .modal-dark .modal-content {
+        background-color: #343541;
+        color: #8E919B;
+    }
     @@media screen and (max-width: 787px) {
         .bottom {
             flex-direction: column;
@@ -613,8 +716,13 @@
             left: -50px;
         }
 
-        div#song-player {
-            height: 400px;
+        .icon-bar {
+            background-color: white;
+        }
+
+        body {
+            position: relative;
+            overflow-x: hidden;
         }
     }
 </style>

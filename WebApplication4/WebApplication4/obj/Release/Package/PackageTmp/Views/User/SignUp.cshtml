@@ -8,15 +8,15 @@
 
 
 <body>
-    <link rel="stylesheet" href="~/Fonts/webfontkit-20230222-113905/stylesheet.css">
+    <link href="https://fonts.cdnfonts.com/css/circular-std" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <div id="logo">
-       <a href="/User/HomePage"><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png"></a>
+        <a href="/User/HomePage"><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png"></a>
     </div>
-    
+
     <div id="signup-container">
 
         <h3>Sign Up</h3>
@@ -28,35 +28,36 @@
 
 
 
-            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("name", "Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("username", "Username", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("email", "Email", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
                 <br />
             </div>
 
-            @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("password", "Password", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
                 <br />
             </div>
 
             <div class="col-md-10">
+                <br />
                 <input type="submit" value="Sign Up" class="btn btn-default" />
                 @Html.Raw(@ViewBag.ErrorContent)
             </div>
@@ -69,12 +70,29 @@
         }
 
     </div>
-    <p id="hello">Hello</p>
 </body>
 
 <style>
+    @@font-face {
+        font-family: myFont;
+        src: url(/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff)
+    }
+
+    #password {
+        width: 100%;
+        height: 35px;
+        border-radius: 5px;
+    }
+
+
     label, h4, div, #login {
         color: white;
+    }
+
+    body {
+        background-color: #14181C;
+        font-family: 'Circular Std', sans-serif;
+        font-weight: bold;
     }
 
         div.navbar-collapse collapse {
@@ -86,9 +104,7 @@
         border-color: #d89898;
     }
 
-    body {
-        background-color: #1E163A;
-    }
+    
 
     .form-group {
         transform: translate(250px, 300px);
@@ -124,9 +140,7 @@
         background-color: rgba(0, 0, 0, 0.5);
     }
 
-    body {
-        font-family: 'circular_stdmedium';
-    }
+   
 
     .col-md-10 {
         width: 100%;
@@ -196,7 +210,11 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
+    <script>
+        $(window).on('load', function () {
+            $("#signup-container").fadeIn(2000); // fade in over 2 seconds (2000 milliseconds)
+        });
+    </script>
 
 }
 

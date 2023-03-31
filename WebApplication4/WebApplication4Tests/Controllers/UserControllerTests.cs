@@ -142,10 +142,8 @@ namespace WebApplication4.Controllers.Tests
             ratecontroller.Session["username"] = "testuser";
 
 
-            // Act
             var result = ratecontroller.AddToRating("testtrack", 4) as JsonResult;
             string json = new JavaScriptSerializer().Serialize(result.Data).Replace("\"", string.Empty); ;
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("{result:ok}", json);
             Debug.WriteLine("Json: " + json);

@@ -458,7 +458,6 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\SignUp.cshtml" />
-    <Content Include="Views\User\HomePageNL.cshtml" />
     <Content Include="Views\User\Search.cshtml" />
     <Content Include="Views\User\Song.cshtml" />
     <Content Include="Views\User\Profile.cshtml" />

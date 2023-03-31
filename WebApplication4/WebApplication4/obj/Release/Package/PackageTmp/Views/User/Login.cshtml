@@ -1,5 +1,4 @@
-﻿
-@model WebApplication4.Models.UserModel
+﻿@model WebApplication4.Models.UserModel
 @{
     Layout = null;
 
@@ -20,7 +19,7 @@
         <a href="/User/HomePage"><img src="https://i.ibb.co/TvLjbq4/Playback-logos-transparent.png"></a>
     </div>
 
-    <div id="login-container" class="animated bounceIn" style="display:none;">
+    <div id="login-container">
 
         <h3>Login</h3>
         <br />
@@ -48,22 +47,27 @@
                 <br />
             </div>
 
-            <div class="col-md-10">
+            <div class="col-md-10" style="color: white;">
                 <br />
                 <input type="submit" value="Login" class="btn btn-default" />
-                <br />
-                <br />
-                <p>@Html.Raw(@ViewBag.ErrorContent)</p>
-      
+                @Html.Raw(@ViewBag.ErrorContent)
             </div>
 
+            <div class="col-md-10">
+                @Html.ActionLink("Need to Sign Up? Click here", "SignUp")
+            </div>
         }
-    </div>           
+    </div>
 </body>
 
 <style>
+    @@font-face {
+        font-family: myFont;
+        src: url(/Content/Fonts/webfontkit-20230222-113905/circularstd-medium-webfont.woff);
 
-    label,h4 {
+    }
+
+    label, h4 {
         color: white;
     }
 
@@ -84,7 +88,6 @@
         width: 100%;
         height: 35px;
         border-radius: 5px;
-
     }
 
     h4 {
@@ -96,8 +99,7 @@
     }
 
     #login-container {
-        position: fixed;
-        border: 5px solid black;
+        border: 5px solid black;    
         position: absolute;
         top: 50%;
         right: 50%;
@@ -111,13 +113,10 @@
     }
 
     body {
-        background-color: #1E163A;
-        font-family: 'circular_stdmedium';
-        
+        font-family: 'Circular Std', sans-serif;
+        background-color: #14181C;
     }
-    p {
-        color: white;
-    }
+
     .col-md-10 {
         width: 100%;
         text-align: center;
@@ -127,6 +126,7 @@
         text-align: center;
         color: white;
     }
+
     .btn btn-default {
         margin: 0;
         position: absolute;
@@ -140,8 +140,8 @@
         width: 200px;
         height: 200px;
     }
-    @@media screen and (max-width: 1000px) {
 
+    @@media screen and (max-width: 1000px) {
         #login-container {
             width: 60%;
             height: 35%;
@@ -149,7 +149,6 @@
     }
 
     @@media screen and (max-width: 600px) {
-
         #login-container {
             width: 100%;
             height: 100%;
@@ -169,7 +168,6 @@
             width: 100%;
             height: 100%;
             padding-top: 5%;
-
         }
 
         #logo {
@@ -178,17 +176,15 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-
     }
-
-
-
+    
 </style>
+
 
 
 <script>
     $(document).ready(function () {
-        $("#login-container").fadeIn(2000); // fade in over 2 seconds (2000 milliseconds)
+        $("#login-container").fadeIn(5000); // fade in over 2 seconds (2000 milliseconds)
     });
 
 </script>
