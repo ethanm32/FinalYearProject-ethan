@@ -3,7 +3,9 @@ Final Year project
 
 https://playback-web.azurewebsites.net/User/HomePage
 
+![Screenshot (7)](https://github.com/ethanm32/FinalYearProject-ethan/assets/57529120/6931674d-ae40-415a-bda2-7ba7964874c7)
 
+Screenshot of Main Page
 
 PlayBack is be a website, which will be accessible to both desktop and mobile users. It will allow 
 for users to login, have a profile with lists of their favourite songs/albums, search songs/albums and 
