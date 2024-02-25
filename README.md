@@ -5,7 +5,7 @@ Final Year project
 
 **Screenshot of Main Page**
 
-PlayBack is be a website, which will be accessible to both desktop and mobile users. It will allow 
+PlayBack is a website, which will be accessible to both desktop and mobile users. It will allow 
 for users to login, have a profile with lists of their favourite songs/albums, search songs/albums and 
 rate/review music. The website will use C# and will implement the MVC model.
 
