@@ -1,8 +1,6 @@
 # fyp-ethan
 Final Year project
 
-https://playback-web.azurewebsites.net/User/HomePage
-
 ![Screenshot (7)](https://github.com/ethanm32/FinalYearProject-ethan/assets/57529120/6931674d-ae40-415a-bda2-7ba7964874c7)
 
 **Screenshot of Main Page**
